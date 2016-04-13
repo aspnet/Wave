@@ -1,6 +1,7 @@
 var http = require('http');
 var express = require("express");
 var RED = require("node-red");
+var path = require('path')
 
 // Create an Express app
 var app = express();
@@ -15,8 +16,10 @@ var server = http.createServer(app);
 var settings = {
     httpAdminRoot:"/red",
     httpNodeRoot: "/api",
-    userDir:"~/.node-red",
-    functionGlobalContext: { }    // enables global context
+    userDir:"./node-red-flows",
+    functionGlobalContext: { },    // enables global context
+    verbose:false,
+    flowFile:"./node-red-flows/flows_Dispatcher.json"
 };
 
 // Initialise the runtime with a server and settings
@@ -33,4 +36,7 @@ server.listen(8000);
 // Start the runtime
 RED.start();
 
-console.log("Node-Red Url : http://localhost:8000/red/");
+console.log("=================================================");
+console.log("Flows Dir      : " + path.resolve(settings.userDir));
+console.log("Node-Red Url   : http://localhost:8000/red/");
+console.log("=================================================");

@@ -19,4 +19,4 @@ A simple node-red based remote command scheduler. The flows can be invoked eithe
   export CMD_MQTT_BROKER=localhost
   ```
   
-2. Set `username` and `password` in [`node-red-flows\flows_Dispatcher_cred.json`](node-red-flows\flows_Dispatcher_cred.json)
+2. Set `username` and `password` in [`node-red-flows\flows_Dispatcher_cred.json`](node-red-flows/flows_Dispatcher_cred.json)

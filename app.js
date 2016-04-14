@@ -3,6 +3,7 @@ var express = require("express");
 var RED = require("node-red");
 var path = require('path')
 var os = require('os')
+var process = require('process')
 
 // Create an Express app
 var app = express();
@@ -15,8 +16,6 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 
-
-
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
@@ -26,7 +25,7 @@ var settings = {
     flowFile: "./node-red-flows/flows_Dispatcher.json",
     mqtt_dynamic:
     {
-        broker: "172.30.168.182",
+        broker: process.env.CMDPORT_MQTT_BROKER,
         clientid: os.hostname(),
         topic: os.hostname(),
         birthtopic: os.hostname() + "/config",

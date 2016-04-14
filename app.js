@@ -29,6 +29,7 @@ var settings = {
         broker: "172.30.168.182",
         clientid: os.hostname(),
         topic: os.hostname(),
+        birthtopic: os.hostname() + "/config",
         clientconfig: {
             "hostname": os.hostname(),
             "arch": os.arch(),

@@ -1,1 +1,6 @@
-{"b788e70f.487718":{"user":"username","password":"password"}}
+{
+    "b788e70f.487718": {
+        "user": "{mqtt_dynamic.broker_username}",
+        "password": "{mqtt_dynamic.broker_password}"
+    }
+}

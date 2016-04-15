@@ -4,6 +4,7 @@ var RED = require("node-red");
 var path = require('path')
 var os = require('os')
 var process = require('process')
+var config = require('./config');
 
 // Create an Express app
 var app = express();
@@ -25,7 +26,9 @@ var settings = {
     flowFile: "./node-red-flows/flows_Dispatcher.json",
     mqtt_dynamic:
     {
-        broker: process.env.CMDPORT_MQTT_BROKER,
+        broker: config.broker.hostname,
+        broker_username: config.broker.username,
+        broker_password: config.broker.password,
         clientid: os.hostname(),
         topic: os.hostname(),
         birthtopic: os.hostname() + "/config",

@@ -50,17 +50,18 @@ A simple node-red based remote command scheduler. The flows can be invoked eithe
     export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
     export HOME=/home/{username}
     export CMDPORT_MQTT_BROKER={BROKER_ADDRESS}
+    
     case "$1" in
-    start)
-    exec forever --sourceDir=/home//cmdport -p /home/aspnet/.forever app.js
-    ;;
-    stop)
-    exec forever stop --sourceDir=/home/{username}/cmdport app.js
-    ;;
-    *)
-    echo "Usage: /etc/init.d/cmdport {start|stop}"
-    exit 1
-    ;;
+        start)
+            exec forever --sourceDir=/home//cmdport -p /home/aspnet/.forever app.js
+        ;;
+        stop)
+            exec forever stop --sourceDir=/home/{username}/cmdport app.js
+        ;;
+        *)
+        echo "Usage: /etc/init.d/cmdport {start|stop}"
+        exit 1
+        ;;
     esac
 
     exit 0

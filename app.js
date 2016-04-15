@@ -29,13 +29,14 @@ var settings = {
         clientid: os.hostname(),
         topic: os.hostname(),
         birthtopic: os.hostname() + "/config",
+        statustopic : os.hostname() + "/status",
         clientconfig: {
             "hostname": os.hostname(),
             "arch": os.arch(),
             "ostype": os.type(),
             "os": os.platform(),
             "ips": GetClientIPs()
-        }
+        }    
     }
 };
 

@@ -1,7 +1,6 @@
 #!/bin/sh
 #/etc/init.d/cmdport
 
-
 ### BEGIN INIT INFO
 # Provides:          scriptname
 # Required-Start:    $remote_fs $syslog
@@ -14,17 +13,17 @@
 
 export PATH=$PATH:/usr/local/bin
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
-export HOME={installpath}
+export HOME={home}
 export CMDPORT_BROKER={broker}
 export CMDPORT_BROKER_USERNAME={username}
 export CMDPORT_BROKER_PASSWORD={password}
 
 case "$1" in
   start)
-  exec forever --sourceDir={installpath}/cmdport -p {installpath}/.forever app.js
+  exec forever --sourceDir={installpath} -p {home}/.forever app.js
   ;;
 stop)
-  exec forever stop --sourceDir={installpath}/cmdport app.js
+  exec forever stop --sourceDir={installpath} app.js
   ;;
 *)
   echo "Usage: /etc/init.d/cmdport {start|stop}"

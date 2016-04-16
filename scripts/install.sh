@@ -31,9 +31,10 @@ echo "USER HOME = $HOME"
 echo ==========================================
 
 #Replace the values for INSTALL_PATH,HOME,BROKER,USERNAME,PASSWORD
-sudo sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" -e "s#{broker}#$1#g" -e "s#{username}#$2#g" -e "s#{password}#$3#g" ./scripts/cmdport > /etc/init.d/cmdport
+sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" -e "s#{broker}#$1#g" -e "s#{username}#$2#g" -e "s#{password}#$3#g" ./scripts/cmdport > _cmdport
+sudo mv _cmdport /etc/init.d/cmdport
 cat /etc/init.d/cmdport
 sudo chmod 755 /etc/init.d/cmdport
 sudo update-rc.d cmdport defaults
 sudo forever list
-sudo /etc/init.d/cmdport start &
+sudo /etc/init.d/cmdport start </dev/null &>/dev/null &

@@ -1,0 +1,35 @@
+#!/bin/sh
+#/etc/init.d/cmdport
+
+
+### BEGIN INIT INFO
+# Provides:          scriptname
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start daemon at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+
+export PATH=$PATH:/usr/local/bin
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+export HOME={installpath}
+export CMDPORT_BROKER={broker}
+export CMDPORT_BROKER_USERNAME={username}
+export CMDPORT_BROKER_PASSWORD={password}
+
+case "$1" in
+  start)
+  exec forever --sourceDir={installpath}/cmdport -p {installpath}/.forever app.js
+  ;;
+stop)
+  exec forever stop --sourceDir={installpath}/cmdport app.js
+  ;;
+*)
+  echo "Usage: /etc/init.d/cmdport {start|stop}"
+  exit 1
+  ;;
+esac
+
+exit 0

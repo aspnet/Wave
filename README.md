@@ -9,74 +9,20 @@ A simple node-red based remote command scheduler. The flows can be invoked eithe
 | `hostname/status` | Last executed command | 
   
 
-## Configuration
+## Configuration - Ubuntu 14.04
  
-1. The Broker is configured through and environment variable - 
-
-    ```cmd
-    setx -M CMDPORT_MQTT_BROKER=127.0.0.1
-    ```
-    ```sh
-    export CMDPORT_MQTT_BROKER=localhost
-    ```
-
-2. Set `username` and `password` in [`node-red-flows\flows_Dispatcher_cred.json`](node-red-flows/flows_Dispatcher_cred.json)
-
-3. Setting up cmdport on an Azure Ubuntu VM 
-    ```
-	sudo apt-get -y install mosquitto-clients 	
-	sudo apt-get -y install git
-	sudo apt-get -y install nodejs
-	sudo apt-get -y install npm
-	sudo ln -s /usr/bin/nodejs /usr/sbin/node
-	git clone http://github.com/sajayantony/cmdport
-	cd cmdport
-	npm install
-	node app.js
-    ```
-
-4. Setup and environment variable which can be picked up by the flow. 
-    ```
-    sudo nano /etc/environment
-    CMDPORT_MQTT_BROKER=<BROKER_ADDRESS>
-    ```
-
-5. Configure the the app to startup on reboot - Make sure you configure /etc/init.d/cmdport with the following script. 
-    ```
-    !/bin/sh
-    #/etc/init.d/cmdport
-
-    export PATH=$PATH:/usr/local/bin
-    export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
-    export HOME=/home/{username}
-    export CMDPORT_MQTT_BROKER={BROKER_ADDRESS}
+ Git clone the repo and run the install script as follows. 
+```
+git clone http://github.com/sajayantony/cmdport
+sudo ./cmdport/scripts/install.sh testbroker testuser testpassword
+```
     
-    case "$1" in
-        start)
-            exec forever --sourceDir=/home//cmdport -p /home/aspnet/.forever app.js
-        ;;
-        stop)
-            exec forever stop --sourceDir=/home/{username}/cmdport app.js
-        ;;
-        *)
-        echo "Usage: /etc/init.d/cmdport {start|stop}"
-        exit 1
-        ;;
-    esac
-
-    exit 0
-    ```
-
-6. Make the script an executable.  
-    ```
-    sudo chmod 755 /etc/init.d/cmdport
-    ```
-
-7. The following commands setup or remove the agent as needed. 
-    ```
-    sudo update-rc.d cmdport defaults 
-    sudo update-rc.d -f cmdport remove
-    ```
+This sets up the flow and connects to the broker and makes the machine ready for remote commands. Refer [`install.sh`](/scripts/install.sh) for details.    
+The following commands should be used to setup or remove the agent as needed. 
+```
+sudo update-rc.d cmdport defaults 
+sudo update-rc.d -f cmdport remove
+```
 
 ## Broker Configuration
 

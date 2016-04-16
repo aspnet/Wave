@@ -22,7 +22,7 @@ sudo update-rc.d -f cmdport remove
 
 #Move upto the root to install packages for cmdport
 pushd ../
-npm install
+sudo npm install
 
 INSTALL_PATH=`pwd`
 echo ==========================================

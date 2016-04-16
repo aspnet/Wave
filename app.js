@@ -26,7 +26,7 @@ var settings = {
     flowFile: "./node-red-flows/flows_Dispatcher.json",
     mqtt_dynamic:
     {
-        broker: config.broker.hostname,
+        broker: config.broker.host,
         broker_username: config.broker.username,
         broker_password: config.broker.password,
         clientid: os.hostname(),

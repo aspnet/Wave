@@ -2,22 +2,23 @@
 'use strict';
 
 try {
- // a path we KNOW is totally bogus and not a module
- var credentials = require('./_creds')
+    // a path we KNOW is totally bogus and not a module
+    var credentials = require('./_creds')
 }
 catch (e) {
- console.log('Setup credentials using setup.js');
- return;
+    console.log('Setup credentials using setup.js');
+    return;
 }
 
 var broker = credentials.broker;
 
 function cli() {
-    
-    var commist = require('commist')(),
-        helpMe = require('help-me')({ dir: './node_modules/mqtt/doc' });
+
+    var commist = require('commist')()
+        , helpMe = require('help-me')({ dir: './node_modules/mqtt/doc' });
 
     commist.register('publish', require('./node_modules/mqtt/bin/pub'));
+    commist.register('send', require('./node_modules/mqtt/bin/pub'));
     commist.register('subscribe', require('./node_modules/mqtt/bin/sub'));
     commist.register('version', function() {
         console.log('MQTT.js version:', require('./node_modules/mqtt/package.json').version);

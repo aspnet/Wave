@@ -1,9 +1,10 @@
 #Cmdport Client CLI
 
 The client is just a wrapper on top of the node MQTT implemenation. The main change is that it reads credentials from a file called `_creds.json`. 
-The credentials file can be generated using setup.js as follows.
+The credentials file can be generated using setup.js as follows. **Make sure you npm install the modules needed.**
 
 ```
+npm install
 ./setup.js broker username password
 ```
 

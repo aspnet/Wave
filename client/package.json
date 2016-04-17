@@ -24,6 +24,6 @@
   "dependencies": {
     "commist": "^1.0.0",
     "help-me": "^0.2.0",
-    "mqtt": "^1.8.0",
+    "mqtt": "^1.8.0"
   }
 }

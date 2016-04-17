@@ -10,7 +10,7 @@ catch (e) {
  return;
 }
 
-var broker = config.broker;
+var broker = credentials.broker;
 
 function cli() {
     

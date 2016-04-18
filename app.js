@@ -34,9 +34,6 @@ var settings = {
         broker_username: config.broker.username,
         broker_password: config.broker.password,
         clientid: os.hostname(),
-        topic: os.hostname(),
-        birthtopic: os.hostname() + "/config",
-        statustopic : os.hostname() + "/status",
         clientconfig: {
             "hostname": os.hostname(),
             "arch": os.arch(),

@@ -39,7 +39,8 @@ var settings = {
             "arch": os.arch(),
             "ostype": os.type(),
             "os": os.platform(),
-            "ips": GetClientIPs()
+            "ips": GetClientIPs(),
+            "timestamp" : new Date()
         }    
     }
 };

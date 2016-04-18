@@ -2,7 +2,7 @@
 'use strict';
 
 try {
-    // a path we KNOW is totally bogus and not a module
+    // a path we KNOW might not exists since it might not be configured.
     var credentials = require('./_creds')
 }
 catch (e) {

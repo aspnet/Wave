@@ -6,6 +6,10 @@ var os = require('os')
 var process = require('process')
 var config = require('./config');
 
+if(!config.broker  || !config.broker.host){
+    return;
+}
+
 // Create an Express app
 var app = express();
 

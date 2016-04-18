@@ -1,8 +1,13 @@
+try {
+    // a path we KNOW might not exists since it might not be configured.
+    var credentials = require('./_creds')
+}
+catch (e) {
+    console.log('Setup credentials using setup.js');
+    return;
+}
+
 var config = {};
-config.broker = {
-    host: process.env.CMDPORT_BROKER,
-    username: process.env.CMDPORT_BROKER_USERNAME,
-    password: process.env.CMDPORT_BROKER_PASSWORD,
-};
+config.broker = credentials.broker;
 
 module.exports = config;

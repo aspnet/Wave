@@ -30,8 +30,11 @@ echo "INSTALL PATH = $INSTALL_PATH"
 echo "USER HOME = $HOME"
 echo ==========================================
 
-#Replace the values for INSTALL_PATH,HOME,BROKER,USERNAME,PASSWORD
-sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" -e "s#{broker}#$1#g" -e "s#{username}#$2#g" -e "s#{password}#$3#g" ./scripts/cmdport > _cmdport
+#Setup the credentials
+setup.js $1 $2 $3
+
+#SETUP home and install path variables in the init.d script
+sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" ./scripts/cmdport > _cmdport
 sudo mv _cmdport /etc/init.d/cmdport
 cat /etc/init.d/cmdport
 sudo chmod 755 /etc/init.d/cmdport

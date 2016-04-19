@@ -69,11 +69,11 @@
         "type": "debug",
         "z": "2f36ab1a.d0c954",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
-        "complete": "payload",
-        "x": 930.5,
-        "y": 160.27001953125,
+        "complete": "true",
+        "x": 860.5,
+        "y": 443.27001953125,
         "wires": []
     },
     {
@@ -116,8 +116,8 @@
         "type": "http response",
         "z": "2f36ab1a.d0c954",
         "name": "/api/exec",
-        "x": 1274.25,
-        "y": 337,
+        "x": 1459.25,
+        "y": 336,
         "wires": []
     },
     {
@@ -128,12 +128,11 @@
         "func": "msg.payload = msg.payload||msg.stderr||msg.error;\nreturn msg",
         "outputs": 1,
         "noerr": 0,
-        "x": 916,
-        "y": 339.75,
+        "x": 1058,
+        "y": 340.75,
         "wires": [
             [
-                "9a393a6d.89fd58",
-                "da4e7177.76ea6"
+                "9a393a6d.89fd58"
             ]
         ]
     },
@@ -171,14 +170,16 @@
         "command": " ",
         "addpay": true,
         "append": "",
-        "useSpawn": false,
+        "useSpawn": true,
         "name": "Exec payload",
-        "x": 686,
+        "x": 605,
         "y": 340.6199951171875,
         "wires": [
             [
+                "d93a799f.6813c8",
+                "da4e7177.76ea6",
                 "86be65fd.794198",
-                "1af21182.e50dee"
+                "8c0930f5.febc8"
             ]
         ]
     },
@@ -187,8 +188,8 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 1113,
-        "y": 340,
+        "x": 1281,
+        "y": 342,
         "wires": [
             [
                 "3c8d9683.c3726a"
@@ -216,8 +217,8 @@
         "topic": "{mqtt_dynamic.clientid}/async",
         "broker": "b788e70f.487718",
         "async": "true",
-        "x": 95,
-        "y": 512,
+        "x": 80,
+        "y": 448,
         "wires": [
             [
                 "5c2811a9.e3c59",
@@ -231,8 +232,8 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 334,
-        "y": 512,
+        "x": 322,
+        "y": 451,
         "wires": [
             [
                 "51ad98c3.ae5268"
@@ -248,8 +249,8 @@
         "qos": "1",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 1135,
-        "y": 445,
+        "x": 872,
+        "y": 57,
         "wires": []
     },
     {
@@ -274,6 +275,41 @@
         "complete": "false",
         "x": 323,
         "y": 561,
+        "wires": []
+    },
+    {
+        "id": "d93a799f.6813c8",
+        "type": "switch",
+        "z": "2f36ab1a.d0c954",
+        "name": "HasExitCode",
+        "property": "payload.exitcode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 869,
+        "y": 341,
+        "wires": [
+            [
+                "1af21182.e50dee"
+            ]
+        ]
+    },
+    {
+        "id": "8c0930f5.febc8",
+        "type": "file",
+        "z": "2f36ab1a.d0c954",
+        "name": "Log",
+        "filename": "./node-red-flows/logs/log.txt",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "x": 853,
+        "y": 228,
         "wires": []
     }
 ]

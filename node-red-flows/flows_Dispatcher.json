@@ -20,10 +20,10 @@
         "willQos": "0",
         "willRetain": "false",
         "willPayload": "",
-        "birthTopic": "{mqtt_dynamic.clientid}/config",
+        "birthTopic": "client/{mqtt_dynamic.clientid}/config",
         "birthQos": "1",
         "birthRetain": "true",
-        "birthPayload": "clients/{mqtt_dynamic.clientconfig}"
+        "birthPayload": "{mqtt_dynamic.clientconfig}"
     },
     {
         "id": "73cb19d6.de22d8",

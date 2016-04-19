@@ -34,3 +34,6 @@ node_modules
 
 #Exclude credentials
 _creds.json
+
+#Exclude logs
+logs/

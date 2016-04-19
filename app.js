@@ -21,21 +21,29 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 
+var _getlogdir = function(){
+  return "./node-red-flows/logs"  
+};
+
+var hostname = os.hostname().toLowerCase();
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
-    functionGlobalContext: {},    // enables global context
+    functionGlobalContext: {
+        path : require('path'),        
+        getlogdir  : _getlogdir 
+    },    // enables global context
     verbose: false,
     flowFile: "./node-red-flows/flows_Dispatcher.json",
     mqtt_dynamic:
     {
         broker: config.broker.host,
         broker_username: config.broker.username,
-        broker_password: config.broker.password,
-        clientid: os.hostname(),
+        broker_password: config.broker.password,        
+        clientid: hostname,
         clientconfig: {
-            "hostname": os.hostname(),
+            "hostname": hostname,
             "arch": os.arch(),
             "ostype": os.type(),
             "os": os.platform(),

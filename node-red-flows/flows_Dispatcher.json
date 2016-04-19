@@ -10,7 +10,7 @@
         "z": "2f36ab1a.d0c954",
         "broker": "{mqtt_dynamic.broker}",
         "port": "1883",
-        "clientid": "{mqtt_dynamic.clientid}",
+        "clientid": "{mqtt_dynamic.clientid}_async",
         "usetls": false,
         "verifyservercert": true,
         "compatmode": true,
@@ -23,7 +23,7 @@
         "birthTopic": "client/{mqtt_dynamic.clientid}/config",
         "birthQos": "1",
         "birthRetain": "true",
-        "birthPayload": "clients/{mqtt_dynamic.clientconfig}"
+        "birthPayload": "{mqtt_dynamic.clientconfig}"
     },
     {
         "id": "73cb19d6.de22d8",
@@ -179,7 +179,7 @@
                 "d93a799f.6813c8",
                 "da4e7177.76ea6",
                 "86be65fd.794198",
-                "8c0930f5.febc8"
+                "224a3492.220c2c"
             ]
         ]
     },
@@ -258,7 +258,7 @@
         "type": "debug",
         "z": "2f36ab1a.d0c954",
         "name": "",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "false",
         "x": 326,
@@ -270,7 +270,7 @@
         "type": "debug",
         "z": "2f36ab1a.d0c954",
         "name": "",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "false",
         "x": 323,
@@ -303,13 +303,29 @@
         "id": "8c0930f5.febc8",
         "type": "file",
         "z": "2f36ab1a.d0c954",
-        "name": "Log",
-        "filename": "./node-red-flows/logs/log.txt",
+        "name": "logs",
+        "filename": "",
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 853,
-        "y": 228,
+        "x": 1013,
+        "y": 283,
         "wires": []
+    },
+    {
+        "id": "224a3492.220c2c",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "logdir",
+        "func": "var filename = context.global.path.resolve(\n        context.global.getlogdir(), \n        msg.pid|| \"log.txt\");\nmsg.filename = filename;        \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 843,
+        "y": 284,
+        "wires": [
+            [
+                "8c0930f5.febc8"
+            ]
+        ]
     }
 ]

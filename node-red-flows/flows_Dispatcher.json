@@ -23,7 +23,7 @@
         "birthTopic": "client/{mqtt_dynamic.clientid}/config",
         "birthQos": "1",
         "birthRetain": "true",
-        "birthPayload": "{mqtt_dynamic.clientconfig}"
+        "birthPayload": "clients/{mqtt_dynamic.clientconfig}"
     },
     {
         "id": "73cb19d6.de22d8",
@@ -31,7 +31,7 @@
         "z": "2f36ab1a.d0c954",
         "broker": "{mqtt_dynamic.broker}",
         "port": "1883",
-        "clientid": "{mqtt_dynamic.clientid}_sync",
+        "clientid": "{mqtt_dynamic.clientid}",
         "usetls": false,
         "verifyservercert": true,
         "compatmode": true,

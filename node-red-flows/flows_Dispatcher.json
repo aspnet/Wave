@@ -23,7 +23,7 @@
         "birthTopic": "{mqtt_dynamic.clientid}/config",
         "birthQos": "1",
         "birthRetain": "true",
-        "birthPayload": "{mqtt_dynamic.clientconfig}"
+        "birthPayload": "clients/{mqtt_dynamic.clientconfig}"
     },
     {
         "id": "73cb19d6.de22d8",

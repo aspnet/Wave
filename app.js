@@ -21,10 +21,12 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 var hostname = os.hostname().toLowerCase();
-var _getlogdir = function (pid) {
-    var filename = require('util').format("agent-%s-%s-log.txt", hostname, pid || '0');
+var _setlogdir = function (msg) {
+    var pid = msg.pid || 0;
+    var filename = require('util').format("agent_%s_%s_log.txt", hostname, pid);
     var fullpath = path.resolve("./node-red-flows/logs/" + filename);
-    return fullpath;
+    msg.filename = fullpath;
+    return msg;
 };
 
 var settings = {
@@ -32,7 +34,7 @@ var settings = {
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
-        getlogdir: _getlogdir
+        setlogfilename: _setlogdir
     },    // enables global context
     verbose: false,
     flowFile: "./node-red-flows/flows_Dispatcher.json",

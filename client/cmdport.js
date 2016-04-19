@@ -20,14 +20,22 @@ function cli() {
     commist.register('publish', require('./node_modules/mqtt/bin/pub'));
     commist.register('send', require('./node_modules/mqtt/bin/pub'));
     commist.register('subscribe', require('./node_modules/mqtt/bin/sub'));
-    commist.register('version', function() {
+    commist.register('clean', require('./clean'));
+    
+    commist.register('version', function() {    
         console.log('MQTT.js version:', require('./node_modules/mqtt/package.json').version);
     });
 
     commist.register('help', helpMe.toStdout);
-    var creds = ["--hostname", broker.host, "--username", broker.username, "--password", broker.password];
+    var options = 
+        [
+            "--hostname", broker.host, 
+            "--username", broker.username,
+            "--password", broker.password,
+            "-q", "1"
+        ];
 
-    var args = process.argv.slice(2).concat(creds);
+    var args = process.argv.slice(2).concat(options);
 
     if (null !== commist.parse(args)) {
         console.log('No such command:', '\n');

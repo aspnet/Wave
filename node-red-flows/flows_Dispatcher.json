@@ -317,7 +317,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "logdir",
-        "func": "var filename = context.global.path.resolve(\n        context.global.getlogdir(), \n        msg.pid|| \"log.txt\");\nmsg.filename = filename;        \nreturn msg;",
+        "func": "msg.filename = context.global.getlogdir(msg.pid);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 843,

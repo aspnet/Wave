@@ -6,7 +6,7 @@ var os = require('os')
 var process = require('process')
 var config = require('./config');
 
-if(!config.broker  || !config.broker.host){
+if (!config.broker || !config.broker.host) {
     return;
 }
 
@@ -20,19 +20,19 @@ app.use("/", express.static("public"));
 var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
-
-var _getlogdir = function(){
-  return "./node-red-flows/logs"  
+var hostname = os.hostname().toLowerCase();
+var _getlogdir = function (pid) {
+    var filename = require('util').format("agent-%s-%s-log.txt", hostname, pid || '0');
+    var fullpath = path.resolve("./node-red-flows/logs/" + filename);
+    return fullpath;
 };
 
-var hostname = os.hostname().toLowerCase();
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
-        path : require('path'),        
-        getlogdir  : _getlogdir 
+        getlogdir: _getlogdir
     },    // enables global context
     verbose: false,
     flowFile: "./node-red-flows/flows_Dispatcher.json",
@@ -40,7 +40,7 @@ var settings = {
     {
         broker: config.broker.host,
         broker_username: config.broker.username,
-        broker_password: config.broker.password,        
+        broker_password: config.broker.password,
         clientid: hostname,
         clientconfig: {
             "hostname": hostname,
@@ -48,8 +48,8 @@ var settings = {
             "ostype": os.type(),
             "os": os.platform(),
             "ips": GetClientIPs(),
-            "timestamp" : new Date()
-        }    
+            "timestamp": new Date()
+        }
     }
 };
 

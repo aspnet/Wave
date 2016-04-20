@@ -5,6 +5,7 @@ var path = require('path')
 var os = require('os')
 var process = require('process')
 var config = require('./config');
+const fs = require('fs');
 
 if (!config.broker || !config.broker.host) {
     return;
@@ -21,21 +22,64 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 var hostname = os.hostname().toLowerCase();
+var logslink = path.resolve('./node-red-flows/logslink/')
+var locallogsdir = path.resolve('./node-red-flows/logs/');
+
 var _setlogdir = function (msg) {
     var pid = msg.pid || 0;
     var filename = require('util').format("agent_%s_%s_log.txt", hostname, pid);
-    var fullpath = path.resolve("./node-red-flows/logs/" + filename);
+    var fullpath = path.resolve(logslink, filename);
     msg.filename = fullpath;
     return msg;
 };
+
+if (!fs.existsSync(locallogsdir)) {
+    fs.mkdirSync(locallogsdir);
+}
+
+try {
+    stats = fs.lstatSync(logslink);
+    if (stats.isSymbolicLink()) {
+    }
+}
+catch (e) {
+}
+fs.symlink(locallogsdir, logslink, 'dir', function (err, stats) {
+
+});
+
+var _updateloglink = function (msg) {
+    if (msg.payload && (typeof msg.payload == 'string')) {
+        var cmd = msg.payload.split(' ');
+        if (cmd.length == 2 && cmd[0].toLowerCase() == 'updatelogpath') {
+            var logpath = cmd[1];
+            try {
+                stats = fs.lstatSync(logslink);
+                if (stats.isSymbolicLink()) {
+                    fs.unlinkSync(logslink)
+                }
+            }
+            catch (e) {
+            }
+            fs.symlink(logpath, logslink, 'dir', function (err, stats) {
+            });
+
+            //Noop Exe
+            msg.payload = "hostname";
+        }
+    }
+
+    return msg;
+}
 
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
-        setlogfilename: _setlogdir
-    },    // enables global context
+        setlogfilename: _setlogdir,
+        tryupdatelogpath: _updateloglink
+    },
     verbose: false,
     flowFile: "./node-red-flows/flows_Dispatcher.json",
     mqtt_dynamic:

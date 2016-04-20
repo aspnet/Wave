@@ -58,9 +58,9 @@
         "y": 200,
         "wires": [
             [
-                "51ad98c3.ae5268",
                 "5398ae93.322b8",
-                "289d7b33.a4aaf4"
+                "289d7b33.a4aaf4",
+                "858755a6.aec618"
             ]
         ]
     },
@@ -72,8 +72,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 860.5,
-        "y": 443.27001953125,
+        "x": 1069.2500133514404,
+        "y": 438.27001953125,
         "wires": []
     },
     {
@@ -116,8 +116,8 @@
         "type": "http response",
         "z": "2f36ab1a.d0c954",
         "name": "/api/exec",
-        "x": 1459.25,
-        "y": 336,
+        "x": 1668.0000133514404,
+        "y": 331,
         "wires": []
     },
     {
@@ -128,8 +128,8 @@
         "func": "msg.payload = msg.payload||msg.stderr||msg.error;\nreturn msg",
         "outputs": 1,
         "noerr": 0,
-        "x": 1058,
-        "y": 340.75,
+        "x": 1266.7500133514404,
+        "y": 335.75,
         "wires": [
             [
                 "9a393a6d.89fd58"
@@ -172,8 +172,8 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 605,
-        "y": 340.6199951171875,
+        "x": 755.0000076293945,
+        "y": 341.8699998855591,
         "wires": [
             [
                 "d93a799f.6813c8",
@@ -188,8 +188,8 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 1281,
-        "y": 342,
+        "x": 1489.7500133514404,
+        "y": 337,
         "wires": [
             [
                 "3c8d9683.c3726a"
@@ -232,11 +232,11 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 322,
-        "y": 451,
+        "x": 248,
+        "y": 448,
         "wires": [
             [
-                "51ad98c3.ae5268"
+                "858755a6.aec618"
             ]
         ]
     },
@@ -249,8 +249,8 @@
         "qos": "1",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 872,
-        "y": 57,
+        "x": 1080.7500133514404,
+        "y": 52,
         "wires": []
     },
     {
@@ -291,8 +291,8 @@
         ],
         "checkall": "true",
         "outputs": 1,
-        "x": 869,
-        "y": 341,
+        "x": 1077.7500133514404,
+        "y": 336,
         "wires": [
             [
                 "1af21182.e50dee"
@@ -308,8 +308,8 @@
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 1013,
-        "y": 283,
+        "x": 1221.7500133514404,
+        "y": 278,
         "wires": []
     },
     {
@@ -320,11 +320,27 @@
         "func": "return context.global.setlogfilename(msg);",
         "outputs": 1,
         "noerr": 0,
-        "x": 843,
-        "y": 284,
+        "x": 1051.7500133514404,
+        "y": 279,
         "wires": [
             [
                 "8c0930f5.febc8"
+            ]
+        ]
+    },
+    {
+        "id": "858755a6.aec618",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "logpath",
+        "func": "return context.global.tryupdatelogpath(msg)",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 517.7500076293945,
+        "y": 340.5000066757202,
+        "wires": [
+            [
+                "51ad98c3.ae5268"
             ]
         ]
     }

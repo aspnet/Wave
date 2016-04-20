@@ -51,7 +51,7 @@ fs.symlink(locallogsdir, logslink, 'dir', function (err, stats) {
 var _updateloglink = function (msg) {
     if (msg.payload && (typeof msg.payload == 'string')) {
         var cmd = msg.payload.split(' ');
-        if (cmd.length == 2 && cmd[0].toLowerCase() == 'updatelogpath') {
+        if (cmd.length == 2 && cmd[0].toLowerCase() == 'setlogdir') {
             var logpath = cmd[1];
             try {
                 stats = fs.lstatSync(logslink);

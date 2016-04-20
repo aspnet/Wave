@@ -31,7 +31,7 @@ echo "USER HOME = $HOME"
 echo ==========================================
 
 #Setup the credentials
-setup.js $1 $2 $3
+./setup.js $1 $2 $3
 
 #SETUP home and install path variables in the init.d script
 sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" ./scripts/cmdport > _cmdport

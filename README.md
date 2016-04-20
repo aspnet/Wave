@@ -1,13 +1,18 @@
 # Command Portal
 
-A simple node-red based remote command scheduler. The flows can be invoked either through http or can be initiated through an MQTT payload. The flow subscribes to a topic which is the hostname. 
+A simple node-red based remote command executor. The flows are scheduled using MQTT. The flow subscribes to a topic which is the hostname. 
 
 |Topic|Description|
 |----|-----------|
-|`hostname`| Subscribed by the host | 
-| `hostname/config` | Birth message which is retained and includes config details like IP |
-| `hostname/status` | Last executed command | 
-  
+|`hostname`| Subscribed by the host |
+|`hostname/async`| Subscribed by the host |
+|`hostname/output`| User command output stream | 
+| `hostname/status` | Retained messsage of last executed command | 
+| `client/hostname/config` | Birth message which is retained and includes config details like IP |  
+
+## Client CLI
+For details of the command line client goto [`./client`](/client)
+
 
 ## Configuration - Ubuntu 14.04
  
@@ -54,9 +59,7 @@ sudo update-rc.d -f cmdport remove
     sudo service mosquitto restart
     ```
 
-5. To be able to connect to the broker you need to open up the port 1883 for Mosquitto. 
-Follow the bread crumb  described below and add port 1883. 
-
+5. To be able to connect to the broker you need to open up the port 1883 for Mosquitto. Follow the bread crumb  described below and allow incoming packets for port 1883 for Azure VMs.
     ```
     VM >> Settings >> Network Interfaces >> Network Interface >> Settings >> Network Security Group >> Settings >> Inbound Rules 
     ```

@@ -6,8 +6,8 @@
   "dependencies": {
     "express": "^4.13.4",
     "node-red": "^0.13.4",
-    "node-red-contrib-execute": "^1.0.4",
-    "node-red-contrib-mqtt-dynamic": "^1.0.7",
+    "node-red-contrib-execute": "^1.0.5",
+    "node-red-contrib-mqtt-dynamic": "^1.0.8",
     "process": "^0.11.2"
   },
   "devDependencies": {},

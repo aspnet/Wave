@@ -50,116 +50,34 @@
         "id": "159f16c3.ea60e9",
         "type": "mqtt-dynamic in",
         "z": "2f36ab1a.d0c954",
-        "name": "Sync",
+        "name": "sync",
         "topic": "{mqtt_dynamic.clientid}",
         "broker": "73cb19d6.de22d8",
         "async": "",
-        "x": 99,
-        "y": 200,
+        "x": 74,
+        "y": 109,
         "wires": [
             [
-                "5398ae93.322b8",
-                "289d7b33.a4aaf4",
-                "858755a6.aec618"
+                "5033105d.4c52c"
             ]
         ]
-    },
-    {
-        "id": "86be65fd.794198",
-        "type": "debug",
-        "z": "2f36ab1a.d0c954",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 1069.2500133514404,
-        "y": 438.27001953125,
-        "wires": []
     },
     {
         "id": "aae66842.551998",
         "type": "inject",
         "z": "2f36ab1a.d0c954",
-        "name": "",
-        "topic": "hostname",
+        "name": "Test hostname",
+        "topic": "",
         "payload": "hostname",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 321,
-        "y": 673,
+        "x": 129.28571319580078,
+        "y": 427.2857246398926,
         "wires": [
             [
-                "51ad98c3.ae5268"
-            ]
-        ]
-    },
-    {
-        "id": "5811f4ac.a7ee0c",
-        "type": "http in",
-        "z": "2f36ab1a.d0c954",
-        "name": "/api/exec",
-        "url": "/exec",
-        "method": "put",
-        "swaggerDoc": "",
-        "x": 118.5,
-        "y": 71,
-        "wires": [
-            [
-                "b0e30169.4f1d"
-            ]
-        ]
-    },
-    {
-        "id": "3c8d9683.c3726a",
-        "type": "http response",
-        "z": "2f36ab1a.d0c954",
-        "name": "/api/exec",
-        "x": 1668.0000133514404,
-        "y": 331,
-        "wires": []
-    },
-    {
-        "id": "1af21182.e50dee",
-        "type": "function",
-        "z": "2f36ab1a.d0c954",
-        "name": "Combined output",
-        "func": "msg.payload = msg.payload||msg.stderr||msg.error;\nreturn msg",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1266.7500133514404,
-        "y": 335.75,
-        "wires": [
-            [
-                "9a393a6d.89fd58"
-            ]
-        ]
-    },
-    {
-        "id": "b0e30169.4f1d",
-        "type": "change",
-        "z": "2f36ab1a.d0c954",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "payload.command",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 374.5,
-        "y": 73,
-        "wires": [
-            [
-                "51ad98c3.ae5268"
+                "5033105d.4c52c"
             ]
         ]
     },
@@ -172,14 +90,13 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 755.0000076293945,
-        "y": 341.8699998855591,
+        "x": 678.5714263916016,
+        "y": 238.19143867492676,
         "wires": [
             [
                 "d93a799f.6813c8",
                 "da4e7177.76ea6",
-                "86be65fd.794198",
-                "224a3492.220c2c"
+                "8c0930f5.febc8"
             ]
         ]
     },
@@ -188,11 +105,11 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 1489.7500133514404,
-        "y": 337,
+        "x": 1157.2857818603516,
+        "y": 85.57150459289551,
         "wires": [
             [
-                "3c8d9683.c3726a"
+                "cd1da007.7b54d"
             ]
         ]
     },
@@ -205,8 +122,8 @@
         "qos": "1",
         "retain": "true",
         "broker": "b788e70f.487718",
-        "x": 321,
-        "y": 344,
+        "x": 655.5714263916016,
+        "y": 335.57144355773926,
         "wires": []
     },
     {
@@ -217,26 +134,11 @@
         "topic": "{mqtt_dynamic.clientid}/async",
         "broker": "b788e70f.487718",
         "async": "true",
-        "x": 80,
-        "y": 448,
+        "x": 70.71428298950195,
+        "y": 236.57145500183105,
         "wires": [
             [
-                "5c2811a9.e3c59",
-                "5398ae93.322b8",
-                "edc76c51.c0ac8"
-            ]
-        ]
-    },
-    {
-        "id": "5c2811a9.e3c59",
-        "type": "mqtt-dynamic complete",
-        "z": "2f36ab1a.d0c954",
-        "name": "Complete",
-        "x": 248,
-        "y": 448,
-        "wires": [
-            [
-                "858755a6.aec618"
+                "5033105d.4c52c"
             ]
         ]
     },
@@ -249,32 +151,8 @@
         "qos": "1",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 1080.7500133514404,
-        "y": 52,
-        "wires": []
-    },
-    {
-        "id": "289d7b33.a4aaf4",
-        "type": "debug",
-        "z": "2f36ab1a.d0c954",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "false",
-        "x": 326,
-        "y": 199,
-        "wires": []
-    },
-    {
-        "id": "edc76c51.c0ac8",
-        "type": "debug",
-        "z": "2f36ab1a.d0c954",
-        "name": "",
-        "active": true,
-        "console": "false",
-        "complete": "false",
-        "x": 323,
-        "y": 561,
+        "x": 950.5714263916016,
+        "y": 270.57144355773926,
         "wires": []
     },
     {
@@ -291,11 +169,11 @@
         ],
         "checkall": "true",
         "outputs": 1,
-        "x": 1077.7500133514404,
-        "y": 336,
+        "x": 946.8571929931641,
+        "y": 85.71438789367676,
         "wires": [
             [
-                "1af21182.e50dee"
+                "9a393a6d.89fd58"
             ]
         ]
     },
@@ -303,44 +181,117 @@
         "id": "8c0930f5.febc8",
         "type": "file",
         "z": "2f36ab1a.d0c954",
-        "name": "logs",
-        "filename": "",
+        "name": "Log",
+        "filename": "./node-red-flows/logs/log.txt",
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 1221.7500133514404,
-        "y": 278,
+        "x": 943.5714263916016,
+        "y": 390.57144355773926,
         "wires": []
     },
     {
-        "id": "224a3492.220c2c",
-        "type": "function",
+        "id": "133801d9.f16bee",
+        "type": "inject",
         "z": "2f36ab1a.d0c954",
-        "name": "logdir",
-        "func": "return context.global.setlogfilename(msg);",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1051.7500133514404,
-        "y": 279,
+        "name": "Test controller.",
+        "topic": "",
+        "payload": "{\"cmd\":\"hostname\", \"callbacktopic\" : \"\"}",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 130.42857360839844,
+        "y": 492.2857360839844,
         "wires": [
             [
-                "8c0930f5.febc8"
+                "5033105d.4c52c"
             ]
         ]
     },
     {
-        "id": "858755a6.aec618",
+        "id": "5033105d.4c52c",
         "type": "function",
         "z": "2f36ab1a.d0c954",
-        "name": "logpath",
-        "func": "return context.global.tryupdatelogpath(msg)",
+        "name": "SetupCallback",
+        "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = msg.payload;\n    msg.callbacktopic = payload.callbacktopic;\n    msg.payload = payload.cmd;\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 517.7500076293945,
-        "y": 340.5000066757202,
+        "x": 448.07142639160156,
+        "y": 237.57144355773926,
         "wires": [
             [
-                "51ad98c3.ae5268"
+                "51ad98c3.ae5268",
+                "5398ae93.322b8"
+            ]
+        ]
+    },
+    {
+        "id": "cd1da007.7b54d",
+        "type": "switch",
+        "z": "2f36ab1a.d0c954",
+        "name": "",
+        "property": "callbacktopic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 964.0715484619141,
+        "y": 182.57147407531738,
+        "wires": [
+            [
+                "b0e9b472.cdcf48"
+            ]
+        ]
+    },
+    {
+        "id": "da10be31.a4f09",
+        "type": "mqtt-dynamic out",
+        "z": "2f36ab1a.d0c954",
+        "name": "Callback",
+        "topic": "",
+        "qos": "1",
+        "retain": "",
+        "broker": "73cb19d6.de22d8",
+        "x": 1363.2142486572266,
+        "y": 184.57147407531738,
+        "wires": []
+    },
+    {
+        "id": "b0e9b472.cdcf48",
+        "type": "change",
+        "z": "2f36ab1a.d0c954",
+        "name": "Topic and payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "callbacktopic",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "requestpayload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1156.142837524414,
+        "y": 183.28576850891113,
+        "wires": [
+            [
+                "da10be31.a4f09"
             ]
         ]
     }

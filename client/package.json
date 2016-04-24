@@ -1,31 +1,33 @@
 {
-    "name": "cmdport-client",
-    "version": "1.0.0",
-    "description": "Client commands for cmd port",
-    "main": "cmdport.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@github.com/sajayantony/cmdport.git"
-    },
-    "keywords": [
-        "cmdport",
-        "node-red",
-        "mqtt"
-    ],
-    "author": "Sajay Antony",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/sajayantony/cmdport/issues"
-    },
-    "homepage": "https://github.com/sajayantony/cmdport#readme",
-    "dependencies": {
-        "commist": "^1.0.0",
-        "concat-stream": "^1.4.7",
-        "minimist": "^1.1.0",
-        "help-me": "^0.2.0",
-        "mqtt": "^1.8.0"
-    }
+  "name": "cmdport-client",
+  "version": "1.0.0",
+  "description": "Client commands for cmd port",
+  "main": "cmdport.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sajayantony/cmdport.git"
+  },
+  "keywords": [
+    "cmdport",
+    "node-red",
+    "mqtt"
+  ],
+  "author": "Sajay Antony",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sajayantony/cmdport/issues"
+  },
+  "homepage": "https://github.com/sajayantony/cmdport#readme",
+  "dependencies": {
+    "commist": "^1.0.0",
+    "concat-stream": "^1.4.7",
+    "minimist": "^1.1.0",
+    "help-me": "^0.2.0",
+    "mqtt": "^1.8.0",
+    "colors": "~1.1.2",
+    "sleep": "~3.0.1"
+  }
 }

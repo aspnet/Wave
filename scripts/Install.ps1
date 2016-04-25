@@ -1,34 +1,34 @@
 ﻿param(
      [Parameter(Mandatory = $true, ValueFromPipeline = $true)] 
-     [string]$url,
+     [string]$url = "https://coreperf.blob.core.windows.net/cmdport/win/cmdport.zip",
      [ValidateScript({[System.IO.Path]::IsPathRooted($_)})]
-     [string]$target,
-     [string]$broker,
-     [string]$username,
-     [string]$password
+     [string]$target_dir = $target,
+     [string]$broker_addr = $broker,
+     [string]$broker_username = $username,
+     [string]$broker_password = $password
 )
 
-if(test-path $target)
+if(test-path $target_dir)
 {
-    Write-Error "$target already exists"
+    Write-Error "$target_dir already exists"
     exit 1;
 }
 
-mkdir -p $target
-$zipfilePath = Join-Path $target "_temp_download.zip"
+mkdir -p $target_dir
+$zipfilePath = Join-Path $target_dir "_temp_download.zip"
 
 "Downloading [$url]`n"
 $client = new-object System.Net.WebClient
 $client.DownloadFile( $url, $zipfilePath )
 
-"Unzipping to [$target]`n"
+"Unzipping to [$target_dir]`n"
 #Load the assembly
 [System.Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.FileSystem") | Out-Null
 #Unzip the file
-[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfilePath, $target);
+[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfilePath, $target_dir);
 
-pushd $target
-node setup.js $broker $username $password
+pushd $target_dir
+node setup.js $broker_addr $broker_username $password
 
 npm install -g forever 
 forever start app.js

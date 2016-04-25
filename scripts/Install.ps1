@@ -30,5 +30,5 @@ $client.DownloadFile( $url, $zipfilePath )
 pushd $target
 node setup.js $broker $username $password
 
-npm install -g forver 
+npm install -g forever 
 forever start app.js

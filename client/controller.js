@@ -1,91 +1,107 @@
 #!/usr/bin/env node
-
 'use strict';
 
 var exec = require('child_process').exec,
+    os = require('os'),
     util = require('util'),
     minimist = require('minimist'),
     mqtt = require('mqtt'),
     args_util = require('./args-util.js'),
-    MessageProcessor = require('./messageprocessor.js');
+    msgProcessor = require('./messageprocessor.js'),
+    cmdport = require('./cmdport');
 
-var args = args_util.process(process.argv.slice(2));
-var myargs = minimist(process.argv.slice(2), {
-    string: ['--test', '--verbose', '-start']
-});
-
-if (!args.topic) {
-    var os = require('os');
-    args.topic = 'job/' + os.hostname();
-}
-if (myargs.test) {
-    args.topic = args.topic + '/test';
+function updateQosClientId(inputargs){ 
+    inputargs = inputargs.concat("--no-clean" , "-i" , os.hostname().toLowerCase() + "_controller")   
+    return inputargs;
 }
 
-var client = mqtt.connect(args);
-
-client.on('connect', function() {
-    client.subscribe(args.topic, {
-        qos: args.qos
-    }, function(err, result) {
-        result.forEach(function(sub) {
-            if (sub.qos > 2) {
-                console.error('subscription negated to', sub.topic, 'with code', sub.qos);
-                process.exit(1);
-            }
-        })
+function start(inputargs) {
+    inputargs = updateQosClientId(inputargs);
+    var args = args_util.process(inputargs);
+    var myargs = minimist(inputargs, {
+        string: ['--test', '--verbose', '--start']
     });
-});
 
-client.on('message', process_message);
-
-function process_message(topic, msg) {
-    log('InMsg: ' + msg);
-    var processor = new MessageProcessor(msg, args.topic);
-    if (processor.out_target == null) {
-        log('End of test spec.');
-        if (myargs.test) {
-            process.exit();
-        }
-        return;
+    if (!args.topic) {
+        args.topic = 'job/' + os.hostname();
     }
-    var clientTopic = 'client/' + processor.out_target;
+
     if (myargs.test) {
-        clientTopic = clientTopic + '/test';
-    }
-    log('OutMsg: To ' + clientTopic + ': ' + JSON.stringify(processor.out_msg));
-
-    var cmd = util.format("node ./cmdport.js send -t '%s' -m '%s'", clientTopic, JSON.stringify(processor.out_msg));
-    exec_cmd(cmd);
-}
-
-function log(msg) {
-    if (myargs.verbose) {
-        console.log(msg);
-    }
-}
-
-function start_run() {
-    if (myargs.start) {
-        var cmd = util.format("node ./cmdport.js send -t '%s' -m '%s'", args.topic, JSON.stringify(myargs.start));
-	exec_cmd(cmd);
+        args.topic = args.topic + '/test';
     }
 
-}
-function exec_cmd(cmd)
-{
+    args.topic = args.topic.toLowerCase();
+
+    var client = mqtt.connect(args);
+
+    client.on('connect', function() {
+        client.subscribe(args.topic, { qos: args.qos }, function(err, result) {
+            result.forEach(function(sub) {
+                console.log("[Controller][Subscribe] " + args.topic);
+                if (sub.qos > 2) {
+                    console.error('subscription negated to', sub.topic, 'with code', sub.qos);
+                    process.exit(1);
+                }
+            })
+        });
+    });
+
+    client.on('message', function(topic, msg) {
+        log('[Controller][Receive]: ' + msg);
+
+        //Execute dummy message
+        if (myargs.test) {
+            console.log("[Controller][Exec] :" + JSON.parse(msg).command);
+        }
+
+        var nextcmd = msgProcessor.process(msg, args.topic);
+        if (nextcmd == null) {
+            if (myargs.test) {
+                log('End of test spec.');
+                client.end();
+                process.exit(0);
+            }
+            return;
+        }
+
+        var clientTopic = nextcmd.target;
+
+        //For the test we send it back to the controller.
+        if (myargs.test) {
+            clientTopic = args.topic;
+        }
+
+        log('[Controller][Send] ' + clientTopic + ': ' + JSON.stringify(nextcmd));
+        cmdport.send(clientTopic, nextcmd.msg);
+    });
+
+    function log(msg) {
+        if (myargs.verbose) {
+            console.log(msg);
+        }
+    }
+
+    function exec_cmd(cmd) {
         var child = exec(cmd,
             function(error, stdout, stderr) {
-		if(stdout){ 
-                console.log('stdout: ' + stdout);
-	}
-	if(stderr) {
-                console.log('stderr: ' + stderr);
-	}
+                if (stdout) {
+                    console.log('stdout: ' + stdout);
+                }
+                if (stderr) {
+                    console.log('stderr: ' + stderr);
+                }
                 if (error !== null) {
                     console.log('exec error: ' + error);
                 }
             });
+    }
 }
 
-start_run();
+
+
+module.exports.start = start;
+
+if (require.main === module) {
+    console.log("[Controller] Starting...")
+    start(process.argv.slice(2))
+}

@@ -3,5 +3,5 @@
 | Command     | Host      |Description|
 |-------------|-----------|-----------|
 | `first.bat` | $(server) |server command| 
-| `.\second.bat >> logfile 'test'` | $(client) | Client command |
+| `.\second.bat $(server) >> logfile 'test'` | $(client) | Client command |
 

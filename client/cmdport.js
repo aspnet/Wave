@@ -12,7 +12,7 @@ catch (e) {
 
 var broker = credentials.broker;
 
-function cli() {
+function cli(inputargs) {
 
     var commist = require('commist')()
         , helpMe = require('help-me')({ dir: './node_modules/mqtt/doc' });
@@ -22,7 +22,7 @@ function cli() {
     commist.register('subscribe', require('./node_modules/mqtt/bin/sub'));
     commist.register('clean', require('./clean'));
 
-    commist.register('version', function () {
+    commist.register('version', function() {
         console.log('MQTT.js version:', require('./node_modules/mqtt/package.json').version);
     });
 
@@ -34,16 +34,15 @@ function cli() {
             "--password", broker.password,
             "-q", "1"
         ];
-    
-    var args = process.argv.slice(2).concat(options);
-        
+
+    var args = inputargs.concat(options);
+
     // Canonicalize the hostname.
     for (var i = 0; i <= args.length; i++) {
         if (args[i] == '-t') {
             args[i + 1] = args[i + 1].toLowerCase();
         }
     }
-    
 
     if (null !== commist.parse(args)) {
         console.log('No such command:', '\n');
@@ -52,5 +51,17 @@ function cli() {
 }
 
 if (require.main === module) {
-    cli();
+    cli(process.argv.slice(2));
 }
+
+function send(topic, payload) {
+    var args = process.argv.slice(2);
+    if (typeof (payload) != 'string') {
+        payload = JSON.stringify(payload);
+    }
+    args = ["send", "-t", topic, "-m", payload].concat(args);
+    cli(args);
+}
+
+module.exports.cli = cli;
+module.exports.send = send;

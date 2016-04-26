@@ -19,6 +19,7 @@ function process(in_msg, callbacktopic) {
     //msg = msg.toString().replace(/'/g, "\"");
     result.msg.callbacktopic = callbacktopic;
     result.msg.step = getnextstep(result.msg.step);
+    result.msg.exitcode = undefined;
 
     //Get next command
     var cmd = mdparser.getcommand(result.msg.testspec, result.msg.step, result.msg.env);

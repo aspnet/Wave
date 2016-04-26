@@ -45,8 +45,8 @@ function applyEnv(cmd, env) {
 
 function _replaceEnv(input, env) {
     if (typeof (input) == 'string')
-        return input.replace(/\$\((.*?)\)/g, function(match) {
-            return env[match] || match;
+        return input.replace(/\$\((.*?)\)/g, function(match, $1) {
+            return env[$1] || match;
         });
 
     return null;

@@ -27,7 +27,6 @@ function getcommandText(filename, index, env) {
                         target: parts[2]
                     }
                     //console.log(command);
-                    console.log(command);
                     return command;
                 }
             }

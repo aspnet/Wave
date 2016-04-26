@@ -1,5 +1,4 @@
 ﻿param(
-     [Parameter(Mandatory = $true, ValueFromPipeline = $true)] 
      [string]$url = "https://coreperf.blob.core.windows.net/cmdport/win/cmdport.zip",
      [ValidateScript({[System.IO.Path]::IsPathRooted($_)})]
      [string]$target_dir = $target,
@@ -14,7 +13,7 @@ if(test-path $target_dir)
     exit 1;
 }
 
-mkdir -p $target_dir
+mkdir -force $target_dir
 $zipfilePath = Join-Path $target_dir "_temp_download.zip"
 
 "Downloading [$url]`n"

@@ -215,7 +215,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetupCallback",
-        "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = msg.payload;\n    msg.callbacktopic = payload.callbacktopic;\n    msg.payload = payload.command;\n    msg.cwd = payload.cwd;\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
+        "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = payload;\n    msg.callbacktopic = payload.callbacktopic;\n    msg.payload = payload.command;\n    msg.cwd = payload.cwd;\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 448.07142639160156,
@@ -273,6 +273,13 @@
                 "p": "topic",
                 "pt": "msg",
                 "to": "callbacktopic",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "requestpayload.exitcode",
+                "pt": "msg",
+                "to": "payload.exitcode",
                 "tot": "msg"
             },
             {

@@ -59,7 +59,7 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/client/test.js",
 			"stopOnEntry": false,
-			"args": ["--test", "./test.md", "--start", "--verbose"],
+			"args": [],
 			"cwd": "${workspaceRoot}/client",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,

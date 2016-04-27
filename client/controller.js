@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 var exec = require('child_process').exec,
     os = require('os'),
@@ -9,6 +8,9 @@ var exec = require('child_process').exec,
     args_util = require('./args-util.js'),
     msgProcessor = require('./messageprocessor.js'),
     cmdport = require('./cmdport');
+
+var Emitter = require('events').EventEmitter,
+    emitter = new Emitter();
 
 function updateQosClientId(inputargs) {
     inputargs = inputargs.concat("--no-clean", "-i", os.hostname().toLowerCase() + "_controller")
@@ -45,46 +47,111 @@ function start(inputargs) {
             })
         });
     });
+    var subscriptions = {};
+    subscriptions[args.topic] = {
+        handler: function (topic, msg) {
+            log('[Controller][Receive       ] ' + msg);
+            var msg = JSON.parse(msg);
+
+            //Execute dummy message
+            if (myargs.test) {
+                // We know that we need to execute this as it has an undefined exitcode.
+                if (msg.command && msg.exitcode == undefined) {
+                    console.log("[Controller][Exec+Callback]  " + msg.command);
+                    msg.exitcode = 0;
+                    // Send message back to controller.
+                    cmdport.send(args.topic, msg);
+                    return;
+                }
+            }
+
+            if (msg.testspec && msg.step == undefined)
+                console.log("[Controller][StartTest     ] " + msg.testspec)
+            
+            if(msg.exitcode && msg.exitcode != 0){
+                console.log("[Controller][Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode);
+            }
+            
+            var nextcmd = msgProcessor.process(msg, args.topic);
+            if (nextcmd == null) {
+                log('[Controller][EndTest       ] ');
+                client.end();
+                setTimeout(function() {
+                    process.exit();
+                }, 1000);
+                return;
+            }
+
+            var clientTopic = nextcmd.target;
+
+            //For the test we send it back to the controller.
+            if (myargs.test) {
+                clientTopic = args.topic;
+            }
+
+            emitter.emit('send', clientTopic, nextcmd.msg);
+        }
+    };
 
     client.on('message', function (topic, msg) {
-        log('[Controller][Receive       ] ' + msg);
-
-        //Execute dummy message
-        if (myargs.test) {
-            var testmsg = JSON.parse(msg);
-            // We know that we need to execute this as it has an undefined exitcode.
-            if (testmsg.command && testmsg.exitcode == undefined) {
-                console.log("[Controller][Exec+Callback]  " + testmsg.command);
-                testmsg.exitcode = 0;
-                // Send message back to controller.
-                cmdport.send(args.topic, testmsg);
-                return;
-            }else{
-                if(testmsg.testspec && testmsg.step == undefined)
-                    console.log("[Controller][StartTest     ] " + testmsg.testspec)
-            }
+        var subscription = subscriptions[topic];
+        if (!subscription) {
+            //Get client topic
+            var clientTopic = getClientTopic(topic);
+            subscription = subscriptions[clientTopic];
         }
-        
-        var nextcmd = msgProcessor.process(msg, args.topic);
-        if (nextcmd == null) {
-            if (myargs.test) {
-                log('End of test spec.');
-                client.end();
-                process.exit(0);
-            }
+
+        if (subscription) {
+            subscription.handler(topic, msg);
+        }
+    });
+
+    emitter.on('send', function (topic, msg) {
+        if (myargs.verbose) {
+            subscribeToOutput(client, subscriptions, topic);
+        }
+
+        log('[Controller][Send          ] ' + topic + ': ' + JSON.stringify(msg));
+        cmdport.send(topic, msg);
+    })
+
+    function subscribeToOutput(client, subscriptions, targetTopic) {
+        var clientTopic = targetTopic + "/output"
+        if (!clientTopic) {
+            return;
+        }
+        if (subscriptions[clientTopic]) {
             return;
         }
 
-        var clientTopic = nextcmd.target;
-        
-        //For the test we send it back to the controller.
-        if(myargs.test){
-            clientTopic = args.topic;
+        subscriptions[clientTopic] = {
+            handler: function (t, msg) {
+                console.log(util.format("[%s]\t%s", t, msg));
+            }
         }
-        
-        log('[Controller][Send          ] ' + clientTopic + ': ' + JSON.stringify(nextcmd));
-        cmdport.send(clientTopic, nextcmd.msg);
-    });
+
+        client.subscribe(clientTopic, {
+            qos: 0
+        }, function (err, result) {
+            if (err) {
+                console.log("ERR: " + err);
+                process.exit(1);
+            }
+            console.log("[Controller][Subscribe     ]" + clientTopic);
+        });
+    }
+
+    function getClientTopic(topic) {
+        //Get client topic
+        if (topic.indexOf('\\') > -1) {
+            var match = topic.match(/(.*?)\//);
+            if (match) {
+                return match[1] + "/output";
+            }
+        }
+
+        return topic = topic + "/output";
+    }
 
     function log(msg) {
         if (myargs.verbose) {
@@ -107,8 +174,6 @@ function start(inputargs) {
             });
     }
 }
-
-
 
 module.exports.start = start;
 

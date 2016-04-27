@@ -9,12 +9,15 @@ function getnextstep(step) {
 }
 
 function process(in_msg, callbacktopic) {
-    var msg = in_msg;
+    var msg = (typeof (in_msg) == 'string') ? JSON.parse(in_msg) : in_msg;
     var result =
         {
-            msg: JSON.parse(msg),
+            msg: msg,
             target: ''
         };
+    if (msg.exitcode && msg.exitcode != 0) {                
+        return null;
+    }
 
     //msg = msg.toString().replace(/'/g, "\"");
     result.msg.callbacktopic = callbacktopic;

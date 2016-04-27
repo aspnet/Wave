@@ -2,7 +2,7 @@
 'use strict';
 
 var os = require('os');
-var cmdport = require('./cmdport');
+var cmdport = require('../cmdport');
 
 var controllertopic = ('job/' + os.hostname() + '/test').toLowerCase();
 var payload = { 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec,
+    colors = require('colors'),
     os = require('os'),
     util = require('util'),
     minimist = require('minimist'),
@@ -39,7 +40,7 @@ function start(inputargs) {
     client.on('connect', function () {
         client.subscribe(args.topic, { qos: args.qos }, function (err, result) {
             result.forEach(function (sub) {
-                console.log("[Controller][Subscribe     ] " + args.topic);
+                console.log("[Subscribe     ] " + args.topic);
                 if (sub.qos > 2) {
                     console.error('subscription negated to', sub.topic, 'with code', sub.qos);
                     process.exit(1);
@@ -50,14 +51,14 @@ function start(inputargs) {
     var subscriptions = {};
     subscriptions[args.topic] = {
         handler: function (topic, msg) {
-            log('[Controller][Receive       ] ' + msg);
+            log('[Receive       ] ' + msg);
             var msg = JSON.parse(msg);
 
             //Execute dummy message
             if (myargs.test) {
                 // We know that we need to execute this as it has an undefined exitcode.
                 if (msg.command && msg.exitcode == undefined) {
-                    console.log("[Controller][Exec+Callback]  " + msg.command);
+                    console.log("[Exec+Callback]  " + msg.command);
                     msg.exitcode = 0;
                     // Send message back to controller.
                     cmdport.send(args.topic, msg);
@@ -66,15 +67,15 @@ function start(inputargs) {
             }
 
             if (msg.testspec && msg.step == undefined)
-                console.log("[Controller][StartTest     ] " + msg.testspec)
+                console.log(colors.blue("[StartTest     ] ") + msg.testspec)
             
             if(msg.exitcode && msg.exitcode != 0){
-                console.log("[Controller][Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode);
+                console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
             }
             
             var nextcmd = msgProcessor.process(msg, args.topic);
             if (nextcmd == null) {
-                log('[Controller][EndTest       ] ');
+                log('[EndTest       ] ');
                 client.end();
                 setTimeout(function() {
                     process.exit();
@@ -111,7 +112,7 @@ function start(inputargs) {
             subscribeToOutput(client, subscriptions, topic);
         }
 
-        log('[Controller][Send          ] ' + topic + ': ' + JSON.stringify(msg));
+        log('[Send          ] ' + topic + ': ' + JSON.stringify(msg));
         cmdport.send(topic, msg);
     })
 
@@ -126,7 +127,7 @@ function start(inputargs) {
 
         subscriptions[clientTopic] = {
             handler: function (t, msg) {
-                console.log(util.format("[%s]\t%s", t, msg));
+                console.log(colors.yellow(util.format("[%s]\t%s", t, msg)));
             }
         }
 
@@ -134,10 +135,10 @@ function start(inputargs) {
             qos: 0
         }, function (err, result) {
             if (err) {
-                console.log("ERR: " + err);
+                console.log(colors.red("ERR: " + err));
                 process.exit(1);
             }
-            console.log("[Controller][Subscribe     ]" + clientTopic);
+            console.log("[Subscribe     ]" + clientTopic);
         });
     }
 
@@ -178,6 +179,6 @@ function start(inputargs) {
 module.exports.start = start;
 
 if (require.main === module) {
-    console.log("[Controller] Starting...")
+    console.log(" Starting...")
     start(process.argv.slice(2))
 }

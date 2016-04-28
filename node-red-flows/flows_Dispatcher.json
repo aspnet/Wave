@@ -73,8 +73,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 129.28571319580078,
-        "y": 427.2857246398926,
+        "x": 103.28571319580078,
+        "y": 393.2857360839844,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -90,8 +90,8 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 678.5714263916016,
-        "y": 238.19143867492676,
+        "x": 894.7142181396484,
+        "y": 320.6199588775635,
         "wires": [
             [
                 "d93a799f.6813c8",
@@ -106,8 +106,8 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 1157.2857818603516,
-        "y": 85.57150459289551,
+        "x": 1307.285758972168,
+        "y": 88.42863273620605,
         "wires": [
             [
                 "cd1da007.7b54d"
@@ -123,8 +123,8 @@
         "qos": "1",
         "retain": "true",
         "broker": "b788e70f.487718",
-        "x": 655.5714263916016,
-        "y": 335.57144355773926,
+        "x": 456.5713882446289,
+        "y": 89.57146549224854,
         "wires": []
     },
     {
@@ -152,8 +152,8 @@
         "qos": "1",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 950.5714263916016,
-        "y": 270.57144355773926,
+        "x": 1220.571388244629,
+        "y": 274.4285697937012,
         "wires": []
     },
     {
@@ -170,8 +170,8 @@
         ],
         "checkall": "true",
         "outputs": 1,
-        "x": 946.8571929931641,
-        "y": 85.71438789367676,
+        "x": 1096.8571701049805,
+        "y": 88.5715160369873,
         "wires": [
             [
                 "9a393a6d.89fd58"
@@ -187,8 +187,8 @@
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 943.5714263916016,
-        "y": 390.57144355773926,
+        "x": 1234.5714111328125,
+        "y": 376.4285583496094,
         "wires": []
     },
     {
@@ -202,8 +202,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 130.42857360839844,
-        "y": 492.2857360839844,
+        "x": 91.42857360839844,
+        "y": 459.2857360839844,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -218,12 +218,12 @@
         "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = payload;\n    msg.callbacktopic = payload.callbacktopic;\n    msg.payload = payload.command;\n    msg.cwd = payload.cwd;\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 448.07142639160156,
-        "y": 237.57144355773926,
+        "x": 360.0714111328125,
+        "y": 306.5714416503906,
         "wires": [
             [
-                "51ad98c3.ae5268",
-                "5398ae93.322b8"
+                "5398ae93.322b8",
+                "cefc1dda.7ba13"
             ]
         ]
     },
@@ -241,8 +241,8 @@
         ],
         "checkall": "true",
         "outputs": 1,
-        "x": 964.0715484619141,
-        "y": 182.57147407531738,
+        "x": 1114.0715255737305,
+        "y": 185.42860221862793,
         "wires": [
             [
                 "b0e9b472.cdcf48"
@@ -258,8 +258,8 @@
         "qos": "1",
         "retain": "",
         "broker": "73cb19d6.de22d8",
-        "x": 1363.2142486572266,
-        "y": 184.57147407531738,
+        "x": 1513.214225769043,
+        "y": 187.42860221862793,
         "wires": []
     },
     {
@@ -295,8 +295,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1156.142837524414,
-        "y": 183.28576850891113,
+        "x": 1306.1428146362305,
+        "y": 186.14289665222168,
         "wires": [
             [
                 "da10be31.a4f09"
@@ -314,8 +314,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 116,
-        "y": 600,
+        "x": 81,
+        "y": 550,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -327,11 +327,92 @@
         "type": "debug",
         "z": "2f36ab1a.d0c954",
         "name": "",
-        "active": false,
+        "active": true,
         "console": "false",
-        "complete": "false",
-        "x": 949,
-        "y": 517,
+        "complete": "true",
+        "x": 1078.9999771118164,
+        "y": 519.8571281433105,
         "wires": []
+    },
+    {
+        "id": "cefc1dda.7ba13",
+        "type": "switch",
+        "z": "2f36ab1a.d0c954",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "setenv",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 540.5714378356934,
+        "y": 308.1428747177124,
+        "wires": [
+            [
+                "ff324216.8651e"
+            ],
+            [
+                "9e0aeee2.77626"
+            ]
+        ]
+    },
+    {
+        "id": "ff324216.8651e",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "SetEnv",
+        "func": "var env = global.get('env');\nenv.set(msg.requestpayload.env)\nmsg.payload = \"hostname\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 707.28564453125,
+        "y": 69.85712814331055,
+        "wires": [
+            [
+                "51ad98c3.ae5268"
+            ]
+        ]
+    },
+    {
+        "id": "2557ee98.bc49a2",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "setenv",
+        "topic": "",
+        "payload": "{\"command\": \"setenv\",\"env\": {\"Test\": \"TestValue\" } }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 101.77777862548828,
+        "y": 655.6666460037231,
+        "wires": [
+            [
+                "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "9e0aeee2.77626",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "GetEnv",
+        "func": "var env = global.get('env');\nmsg.env = env.get();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 707.777717590332,
+        "y": 316.6666660308838,
+        "wires": [
+            [
+                "51ad98c3.ae5268"
+            ]
+        ]
     }
 ]

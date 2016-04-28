@@ -6,6 +6,7 @@ var os = require('os')
 var process = require('process')
 var config = require('./config');
 const fs = require('fs');
+const env = require('./libs/env')
 
 if (!config.broker || !config.broker.host) {
     return;
@@ -45,7 +46,9 @@ try {
 catch (e) {
 }
 fs.symlink(locallogsdir, logslink, 'dir', function (err, stats) {
-
+    if (err) {
+        console.log("ERR : " + err);        
+    }
 });
 
 var _updateloglink = function (msg) {
@@ -72,13 +75,16 @@ var _updateloglink = function (msg) {
     return msg;
 }
 
+
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
         setlogfilename: _setlogdir,
-        tryupdatelogpath: _updateloglink
+        tryupdatelogpath: _updateloglink,
+        env: env
+
     },
     verbose: false,
     flowFile: "./node-red-flows/flows_Dispatcher.json",
@@ -98,6 +104,8 @@ var settings = {
         }
     }
 };
+
+env.setFilename(path.join(settings.userDir, "environmentVars.json"));
 
 // Initialise the runtime with a server and settings
 RED.init(server, settings);

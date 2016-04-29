@@ -73,8 +73,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 103.28571319580078,
-        "y": 393.2857360839844,
+        "x": 119.28571319580078,
+        "y": 394.2857360839844,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -90,14 +90,14 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 894.7142181396484,
-        "y": 320.6199588775635,
+        "x": 909.7142333984375,
+        "y": 244.61996459960938,
         "wires": [
             [
                 "d93a799f.6813c8",
                 "da4e7177.76ea6",
-                "8c0930f5.febc8",
-                "933b6237.c0614"
+                "933b6237.c0614",
+                "a68bc475.cf4e88"
             ]
         ]
     },
@@ -187,8 +187,8 @@
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 1234.5714111328125,
-        "y": 376.4285583496094,
+        "x": 1404.5714111328125,
+        "y": 361.4285583496094,
         "wires": []
     },
     {
@@ -202,8 +202,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 91.42857360839844,
-        "y": 459.2857360839844,
+        "x": 111.42857360839844,
+        "y": 460.2857360839844,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -314,8 +314,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 81,
-        "y": 550,
+        "x": 91,
+        "y": 518,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -329,8 +329,8 @@
         "name": "",
         "active": true,
         "console": "false",
-        "complete": "true",
-        "x": 1078.9999771118164,
+        "complete": "payload",
+        "x": 1098.9999771118164,
         "y": 519.8571281433105,
         "wires": []
     },
@@ -338,7 +338,7 @@
         "id": "cefc1dda.7ba13",
         "type": "switch",
         "z": "2f36ab1a.d0c954",
-        "name": "",
+        "name": "Commands",
         "property": "payload",
         "propertyType": "msg",
         "rules": [
@@ -348,16 +348,24 @@
                 "vt": "str"
             },
             {
+                "t": "eq",
+                "v": "setlogdir",
+                "vt": "str"
+            },
+            {
                 "t": "else"
             }
         ],
         "checkall": "true",
-        "outputs": 2,
-        "x": 540.5714378356934,
-        "y": 308.1428747177124,
+        "outputs": 3,
+        "x": 527.5714416503906,
+        "y": 189.14288330078125,
         "wires": [
             [
                 "ff324216.8651e"
+            ],
+            [
+                "d175418.dd879c"
             ],
             [
                 "9e0aeee2.77626"
@@ -391,8 +399,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 101.77777862548828,
-        "y": 655.6666460037231,
+        "x": 91.77777862548828,
+        "y": 580.6666259765625,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -411,7 +419,78 @@
         "y": 316.6666660308838,
         "wires": [
             [
+                "51ad98c3.ae5268",
+                "933b6237.c0614"
+            ]
+        ]
+    },
+    {
+        "id": "7756923c.c7ef4c",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "NonWin-Env",
+        "topic": "",
+        "payload": "{\"command\":\"printenv TEST\", \"cwd\" :\"/usr\" }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 116.5,
+        "y": 653,
+        "wires": [
+            [
+                "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "d175418.dd879c",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "setlogdir",
+        "func": "var logutil = global.get('logutil');\nlogutil.setlogdir(msg.logdir)\nmsg.payload = \"hostname\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 698.5,
+        "y": 176,
+        "wires": [
+            [
                 "51ad98c3.ae5268"
+            ]
+        ]
+    },
+    {
+        "id": "12510a55.257166",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "setlogdir",
+        "topic": "",
+        "payload": "{\"command\" : \"setlogdir\" , \"logdir\" :\"./testlog/\" }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 126.5,
+        "y": 720,
+        "wires": [
+            [
+                "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "a68bc475.cf4e88",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "setlogfilename",
+        "func": "var logutil = global.get('logutil');\nlogutil.setlogfilename(msg)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1213.5,
+        "y": 363,
+        "wires": [
+            [
+                "8c0930f5.febc8"
             ]
         ]
     }

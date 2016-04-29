@@ -18,7 +18,7 @@ if (isWin) {
 else {
     procInfo = {
         command: "printenv TEST",
-        cwd: "/home",
+        cwd: "/usr",
         env: {
             "TEST": "RandomNonWindowsValue"
         }

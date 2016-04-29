@@ -67,26 +67,26 @@ function startprocess(options) {
         procEntry.data = {
             stderr: isUtf8(data) ? data.toString() : new Buffer(data)
         }
-        
+
         instance.emit('data', procEntry);
     });
 
     proc.on('close', function (code) {
-        procEntry.exitcode = 0;
+        procEntry.exitcode = code;
         instance.emit('complete', procEntry);
     });
 
     proc.on('error', function (code) {
         procEntry.exitcode = code;
         instance.emit('complete', procEntry);
-        instance.error(code, procEntry);
+        instance.emit('error', procEntry);
     });
 }
 
 instance.on('data', function (procEntry) {
     if (spawnerOptions.verbose) {
         if (procEntry.exitcode) {
-            console.log("Exiting process %s", procEntry.pid);
+            console.log("Exiting process %s", procEntry.pid || JSON.stringify(procEntry.exitcode));
         }
         else {
             console.log("%s : %s", procEntry.pid, procEntry.data);
@@ -104,6 +104,10 @@ instance.on('complete', function (proc) {
     if (proc) {
         delete instance.processes[proc.pid];
     }
+})
+
+instance.on('error', function (proc) {
+    console.log("ERR : %s", JSON.stringify(proc.exitcode));
 })
 
 function mergeEnv(env) {

@@ -55,3 +55,32 @@ host-nix/config {"hostname":"host-nix","arch":"x64","ostype":"Linux","os":"linux
 client/host-win/config {"hostname":"host-host","arch":"x64","ostype":"Windows_NT","os":"win32","ips":["10.30.169.104"]}
 client/host-Linux1/config {"hostname":"host-Linux1","arch":"x64","ostype":"Linux","os":"linux","ips":["10.2.0.1"]}
 ```
+
+# Command Formats 
+
+## Basic Command Format
+
+Commands can be directly executed or options can be passed in using json as follow. 
+
+```
+{
+  command : "/home/aspuser/.dotnet/dotnet run"  
+  cwd : "/home/aspuser/app/"
+  logfile : "dotnet_out.txt"
+}
+```
+
+## Setting Environment Variables. 
+
+The following command enables the client to persist a set of environment variables which will be available when spawing a process on the node. 
+`logdir` enables setting the output log location. Command fails if the `logdir` doesn't exist. 
+
+```
+{
+	"command": "setenv",
+	"env": {
+		 "Test": "TestValue"
+		}, 
+	"logdir": "X:/logoutputpath" 
+}
+```

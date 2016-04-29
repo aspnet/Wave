@@ -33,7 +33,7 @@ function getEnv() {
 
 }
 
-var _envFilename = "environmentVariables.json";
+var _envFilename = "config-env.json";
 
 function setFilename(filename) {
     _envFilename = filename;

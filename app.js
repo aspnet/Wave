@@ -7,7 +7,7 @@ var process = require('process')
 var config = require('./config');
 const fs = require('fs');
 const env = require('./libs/env')
-
+const log = require('./libs/log')
 if (!config.broker || !config.broker.host) {
     return;
 }
@@ -23,54 +23,18 @@ var server = http.createServer(app);
 
 // Create the settings object - see default settings.js file for other options
 var hostname = os.hostname().toLowerCase();
-var logslink = path.resolve('./node-red-flows/logslink/')
-var locallogsdir = path.resolve('./node-red-flows/logs/');
 
-if (!fs.existsSync(locallogsdir)) {
-    fs.mkdirSync(locallogsdir);
-}
 
-try {
-    stats = fs.lstatSync(logslink);
-    if (stats.isSymbolicLink()) {
-    }
-}
-catch (e) {
-}
-fs.symlink(locallogsdir, logslink, 'dir', function (err, stats) {
-    if (err) {
-        console.log("ERR : " + err);
-    }
-});
-
-var logutil = {
-    setlogdir: function (msg) {
-        try {
-            stats = fs.lstatSync(logslink);
-            if (stats.isSymbolicLink()) {
-                fs.unlinkSync(logslink)
-            }
-        }
-        catch (e) {
-        }
-        fs.symlink(logpath, logslink, 'dir', function (err, stats) {
-        });
-    },
-    setlogfilename: function (msg) {
-        var pid = msg.pid || 0;
-        var filename = require('util').format("agent_%s_%s_log.txt", hostname, pid);
-        var fullpath = path.resolve(logslink, filename);
-        msg.filename = fullpath;
-        return msg;
-    }
-}
+var basedir = './node-red-flows/';
+var localdir = path.resolve(path.join(basedir), 'logs/');
+log.init(localdir);
 
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
-        logutil: logutil,
+        logutil: log,
         env: env
 
     },

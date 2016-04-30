@@ -90,8 +90,8 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 909.7142333984375,
-        "y": 244.61996459960938,
+        "x": 882.7142333984375,
+        "y": 285.6199645996094,
         "wires": [
             [
                 "d93a799f.6813c8",
@@ -330,8 +330,8 @@
         "active": true,
         "console": "false",
         "complete": "payload",
-        "x": 1098.9999771118164,
-        "y": 519.8571281433105,
+        "x": 1051,
+        "y": 510.85711669921875,
         "wires": []
     },
     {
@@ -348,24 +348,16 @@
                 "vt": "str"
             },
             {
-                "t": "eq",
-                "v": "setlogdir",
-                "vt": "str"
-            },
-            {
                 "t": "else"
             }
         ],
         "checkall": "true",
-        "outputs": 3,
+        "outputs": 2,
         "x": 527.5714416503906,
         "y": 282.14288330078125,
         "wires": [
             [
                 "ff324216.8651e"
-            ],
-            [
-                "d175418.dd879c"
             ],
             [
                 "51ad98c3.ae5268"
@@ -377,11 +369,11 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetEnv",
-        "func": "var env = global.get('env');\nenv.set(msg.requestpayload.env)\nmsg.payload = \"hostname\";\nreturn msg;",
+        "func": "var req = msg.requestpayload;\nif(req.env){\n    var env = global.get('env');\n    env.set(req.env)\n}\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(!created){\n        msg.payload = \"ERR_NOLOGDIR\";\n        return msg;\n    }\n}\nmsg.payload = 'hostname'\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 707.28564453125,
-        "y": 69.85712814331055,
+        "x": 684.28564453125,
+        "y": 126.85712814331055,
         "wires": [
             [
                 "51ad98c3.ae5268"
@@ -427,33 +419,17 @@
         ]
     },
     {
-        "id": "d175418.dd879c",
-        "type": "function",
-        "z": "2f36ab1a.d0c954",
-        "name": "setlogdir",
-        "func": "var logutil = global.get('logutil');\nvar created = logutil.setlogdir(msg.requestpayload.logdir)\nif(!created){\n    msg.requestpayload.exitcode = -1;\n    msg.payload = \"__NOLOGDIR\"\n    return msg;\n}\n\nmsg.payload = \"hostname\";\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 698.5,
-        "y": 176,
-        "wires": [
-            [
-                "51ad98c3.ae5268"
-            ]
-        ]
-    },
-    {
         "id": "12510a55.257166",
         "type": "inject",
         "z": "2f36ab1a.d0c954",
-        "name": "setlogdir",
+        "name": "setenv logdir",
         "topic": "",
-        "payload": "{\"command\" : \"setlogdir\" , \"logdir\" :\"./testlog/\" }",
+        "payload": "{\"command\" : \"setenv\" , \"logdir\" :\"./testlog/\" }",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 126.5,
+        "x": 136.5,
         "y": 720,
         "wires": [
             [
@@ -466,7 +442,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "setlog",
-        "func": "var logutil = global.get('logutil');\nvar pid = msg.pid;\nmsg.filename = logutil.resolveFilename(pid);\nreturn msg;",
+        "func": "var logutil = global.get('log');\nvar pid = msg.pid;\nmsg.filename = logutil.resolveFilename(pid);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 1183.5,

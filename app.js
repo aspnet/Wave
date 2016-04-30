@@ -34,7 +34,7 @@ var settings = {
     httpNodeRoot: "/api",
     userDir: "./node-red-flows",
     functionGlobalContext: {
-        logutil: log,
+        log: log,
         env: env
 
     },

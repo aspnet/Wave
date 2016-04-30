@@ -1,6 +1,13 @@
 # Command Portal
 
-A simple node-red based remote command executor. The flows are scheduled using MQTT. The flow subscribes to a topic which is the hostname. 
+A cross platform remote command executor. 
+
+* Based on nodejs for platform abstraction 
+* Uses MQTT broker for communication.
+* Mark down based execution engine
+* CLI for sending commands and viewing realtime outputs from targets.
+
+---- 
 
 ![Alt text](http://sajayantony.github.io/cmdport/images/diagram.svg)
 
@@ -45,7 +52,7 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
-### Broker Configuration
+### Mosquitto Broker Setup
 
 1. Use the following instructions to setup an MQTT broker for command dispatch. 
     

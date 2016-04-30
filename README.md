@@ -2,6 +2,8 @@
 
 A simple node-red based remote command executor. The flows are scheduled using MQTT. The flow subscribes to a topic which is the hostname. 
 
+![Alt text](http://sajayantony.github.io/cmdport/images/diagram.svg)
+
 |Topic|Description|
 |----|-----------|
 |`hostname`| Subscribed by the host |

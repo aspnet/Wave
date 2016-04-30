@@ -1,6 +1,0 @@
-[submodule "libs/node-red-contrib-execute"]
-	path = libs/node-red-contrib-execute
-	url = git@github.com:sajayantony/node-red-contrib-execute
-[submodule "libs/node-red-contrib-mqtt-dynamic"]
-	path = libs/node-red-contrib-mqtt-dynamic
-	url = git@github.com:sajayantony/node-red-contrib-mqtt-dynamic

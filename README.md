@@ -15,8 +15,22 @@ A simple node-red based remote command executor. The flows are scheduled using M
 ## Client CLI
 For details of the command line client goto [`./client`](/client)
 
+## Controller
 
-## Configuration - Ubuntu 14.04
+The controller is a simple orchestrator that coordinates and sequences multiple commands. The controller subscribes on `job/controllerid` topic and uses commands from a markdown table as follows. 
+
+| Command     | Host      |Description|
+|-------------|-----------|-----------|
+| `first.bat` | $(server) |server command| 
+| `.\second.bat $(server) $(serverurl)` | $(client) | Client command |
+
+* [`Environment variables`](/../../issues/9) may be persisted across commands in the agent which will be available in a spawned process.
+* `logdir` can be changed as a part of the [environment command](/client#setting-environment-variables). 
+
+
+## Configuration
+
+### Ubuntu 14.04
  
  Git clone the repo and run the install script as follows. 
 ```
@@ -31,7 +45,7 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
-## Broker Configuration
+### Broker Configuration
 
 1. Use the following instructions to setup an MQTT broker for command dispatch. 
     

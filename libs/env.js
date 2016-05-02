@@ -39,7 +39,7 @@ function getEnv(extras) {
 }
 
 function merge(all, obj) {    
-    if (!obj) {
+    if (obj) {
         for (var k in obj) {
             all[k] = obj[k];
         }

@@ -8,7 +8,8 @@ var exec = require('child_process').exec,
     mqtt = require('mqtt'),
     args_util = require('./args-util.js'),
     msgProcessor = require('./messageprocessor.js'),
-    cmdport = require('./cmdport');
+    cmdport = require('./cmdport'),
+    fs = require('fs');
 
 var Emitter = require('events').EventEmitter,
     emitter = new Emitter();
@@ -22,7 +23,7 @@ function start(inputargs) {
     inputargs = updateQosClientId(inputargs);
     var args = args_util.process(inputargs);
     var myargs = minimist(inputargs, {
-        string: ['--test', '--verbose', '--start']
+        string: ['--test', '--verbose', '--start', 'testspec', 'testenv']
     });
 
     if (!args.topic) {
@@ -89,7 +90,17 @@ function start(inputargs) {
             if (myargs.test) {
                 clientTopic = args.topic;
             }
-
+            
+            if(msg.env) {               
+                var envmsg = {
+                    command : "setenv",
+                    env : msg.env,
+                }
+                var machineList = msg.env.machines.split(",");  
+                for(var i=0; i< machineList.length; ++i){            
+                    emitter.emit('send', machineList[i], envmsg );
+                }  
+            }
             emitter.emit('send', clientTopic, nextcmd.msg);
         }
     };
@@ -111,8 +122,8 @@ function start(inputargs) {
         if (myargs.verbose) {
             subscribeToOutput(client, subscriptions, topic);
         }
+        log('[Send          ] ' +   topic + ': ' + JSON.stringify(msg));
 
-        log('[Send          ] ' + topic + ': ' + JSON.stringify(msg));
         cmdport.send(topic, msg);
     })
 
@@ -174,6 +185,15 @@ function start(inputargs) {
                 }
             });
     }
+    
+    if (myargs.testenv && myargs.testspec) {
+        var msg = {
+            testspec: args.testspec,
+            env: JSON.parse(fs.readFileSync(args.testenv))
+        };
+        cmdport.send(args.topic, msg);
+    }
+
 }
 
 module.exports.start = start;

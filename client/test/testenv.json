@@ -1,0 +1,5 @@
+{
+    "machines": "$(server),$(client)",
+    "server": "wincell1-win1",
+    "client": "wincell1-win2"
+}

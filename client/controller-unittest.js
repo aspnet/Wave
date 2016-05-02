@@ -19,6 +19,9 @@ controller.on('close', function(code) {
 controller.stdout.on('data', function(data) {
     process.stdout.write(colors.green('[Controller]: ') + data);
 });
+controller.stderr.on('data', function(data) {
+    process.stdout.write(colors.green('[Controller]: Error') + data);
+});
 console.log(colors.green('[Controller] Started - Listening on '+ controllertopic));
 
 var agenttopic = 'client/+/test';

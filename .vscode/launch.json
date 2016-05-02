@@ -54,12 +54,32 @@
 			"outDir": null
 		},
 		{
-			"name": "Launch-Controller",
+			"name": "Launch-Controller-test",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/client/test.js",
 			"stopOnEntry": false,
 			"args": [],
+			"cwd": "${workspaceRoot}/client",
+			"preLaunchTask": null,
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+		{
+			"name": "Launch-Controller",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/client/controller.js",
+			"stopOnEntry": false,
+			"args": [ "--testspec", "./test/test.md", "--testenv","./test/testenv.json", "--verbose"],
 			"cwd": "${workspaceRoot}/client",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,

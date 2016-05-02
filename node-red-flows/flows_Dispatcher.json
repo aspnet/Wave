@@ -405,13 +405,13 @@
         "z": "2f36ab1a.d0c954",
         "name": "PrintEnv-SH",
         "topic": "",
-        "payload": "{\"command\":\"printenv TEST\", \"cwd\" :\"/usr\" , \"env\" : { \"TEST\" : \"InjectedTestValue\" }}",
+        "payload": "{\"command\":\"printenv DYNAMIC\", \"cwd\" :\"/usr\" , \"env\" : { \"DYNAMIC\" : \"InjectedTestValue\" }}",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 116.5,
-        "y": 653,
+        "x": 117.5,
+        "y": 688,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -430,7 +430,7 @@
         "crontab": "",
         "once": false,
         "x": 136.5,
-        "y": 720,
+        "y": 748,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -450,6 +450,25 @@
         "wires": [
             [
                 "8c0930f5.febc8"
+            ]
+        ]
+    },
+    {
+        "id": "e4a4d08.0ed383",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "getenv",
+        "topic": "",
+        "payload": "{\"command\":\"printenv TEST\", \"cwd\" :\"/usr\" }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 96,
+        "y": 630,
+        "wires": [
+            [
+                "5033105d.4c52c"
             ]
         ]
     }

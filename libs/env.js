@@ -1,39 +1,53 @@
 const fs = require('fs');
 
 function setEnv(env) {
+    _envConfigValues = null;
     var configStr = JSON.stringify(env, null, '\t');
-    fs.writeFile(_envFilename, configStr, function (err) {
-        if (err) {
-            return console.log(err);
-        }
-
-        console.log("Environment variables written to " + _envFilename);
-    });
+    fs.writeFileSync(_envFilename, configStr);
+    console.log("Environment variables written to " + _envFilename);
+    _envConfigValues = getConfigValues();
 }
 
-function getEnv() {
+function getConfigValues() {
+    if (_envConfigValues) {
+        return _envConfigValues;
+    }
+
     try {
         var fstats = fs.statSync(_envFilename);
         if (fstats && fstats.isFile()) {
-            var all = {};
-            for (var k in process.env) {
-                all[k] = process.env[k]
-            }
             var obj = JSON.parse(fs.readFileSync(_envFilename, 'utf8'));
-            for (var k in obj) {
-                all[k] = obj[k];
-            }
-
-            return all;
+            configValue = obj;
+            return configValue;
         }
     } catch (e) {
     }
+}
 
-    return process.env;
+function getEnv(extras) {
+    var configValue = getConfigValues();
+    if (configValue || extras) {
+        var all = {};
+        merge(all, process.env);
+        merge(all, configValue);
+        merge(all, extras);
+        return all;
+    }
+    else {
+        return process.env;
+    }
+}
 
+function merge(all, obj) {
+    all = all || {};
+    for (var k in obj) {
+        all[k] = obj[k];
+    }
+    return all;
 }
 
 var _envFilename = "config-env.json";
+var _envConfigValues = null;
 
 function setFilename(filename) {
     _envFilename = filename;

@@ -2,7 +2,6 @@
 
 | Command     | Host      |Description|
 |-------------|-----------|-----------|
-| `hostname` | $(localhost) |server command| 
-| `ifconfig /?` | $(localhost) |server command| 
-| `hostname` | $(localhost) |server command| 
-
+| `hostname` | $(server) |server command| 
+| `ifconfig /?` | $(server) |server command| 
+| `hostname` | $(server) |server command| 

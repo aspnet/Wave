@@ -54,10 +54,10 @@
 			"outDir": null
 		},
 		{
-			"name": "Launch-Controller-test",
+			"name": "Launch-localhost-e2e",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/client/test.js",
+			"program": "${workspaceRoot}/client/test/test-localhost.js",
 			"stopOnEntry": false,
 			"args": [],
 			"cwd": "${workspaceRoot}/client",

@@ -38,12 +38,12 @@ function getEnv(extras) {
     }
 }
 
-function merge(all, obj) {
-    all = all || {};
-    for (var k in obj) {
-        all[k] = obj[k];
+function merge(all, obj) {    
+    if (!obj) {
+        for (var k in obj) {
+            all[k] = obj[k];
+        }
     }
-    return all;
 }
 
 var _envFilename = "config-env.json";

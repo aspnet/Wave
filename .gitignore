@@ -35,6 +35,9 @@ node_modules
 #Exclude credentials
 _creds.json
 
+#exclude environment variables 
+_envVars.json
+
 #Exclude logs
 logs/
 logslink

@@ -57,7 +57,7 @@ var settings = {
     }
 };
 
-env.setFilename(path.join(settings.userDir, "environmentVars.json"));
+env.setFilename(path.join(settings.userDir, "_envVars.json"));
 
 // Initialise the runtime with a server and settings
 RED.init(server, settings);

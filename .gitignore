@@ -34,6 +34,7 @@ node_modules
 
 #Exclude credentials
 _creds.json
+_creds.js
 
 #exclude environment variables 
 _envVars.json

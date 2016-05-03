@@ -6,15 +6,16 @@ function Machine(payload) {
 
 var ViewModel = function () {
     var self = this;
-
+    var creds = _creds;
     self.Input = ko.observable();
     self.Output = ko.observable();
     self.Machines = ko.observableArray();
     self.broker = ko.observable();
     self.username = ko.observable();
     self.password = ko.observable();
-    self.broker("job-controller.northcentralus.cloudapp.azure.com");
-    self.username("admin");
+    self.broker((creds && creds.broker) ? creds.broker.host : "broker");
+    self.username((creds && creds.broker) ? creds.broker.username : "admin");
+    self.password((creds && creds.broker) ? creds.broker.password : "");
     var command = {
         command: "hostname"
     };

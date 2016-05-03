@@ -56,28 +56,45 @@ if (require.main === module) {
 }
 
 function send(topic, payload) {
-    var args = process.argv.slice(2);
     if (typeof (payload) != 'string') {
         payload = JSON.stringify(payload);
     }
-    args = ["send", "-t", topic, "-m", payload].concat(args);
-    cli(args);
+    var args = ["send", "-t", topic, "-m", payload];
+        cli(args);
 }
 
-function start() {
+function start(args) {
     var minimist = require('minimist');
+    var utils = require('./libs/utils');
+    var fs = require('fs');
     var myargs = minimist(process.argv.slice(2), {
-        string: ['testspec', 'testenv']
+        string: ['testspec', 'testenv','job']
     });
 
-    var payload = {
-        testspec : myargs.testspec,
-        env: myargs.testenv
-    };
+    function startTest(test,jobid){
+        var msg = {
+            testspec: test.testspec,
+            env: JSON.parse(fs.readFileSync(test.testenv)),
+            jobid: jobid,
+            testid: utils.guid()
+        };
+        var args = ["send", "-t", myargs.topic, "-m", JSON.stringify(msg)];
+        cli(args);
+    }
 
-    var args = ["send", "-t", myargs.topic, "-m", payload];
-    cli(args);
+    var jobid = utils.guid();
+    
+    if(myargs.job) {
+        var jobspec = JSON.parse(fs.readFileSync(myargs.job));
+        for(var test in jobspec) {
+            startTest(jobspec[test],jobid);            
+        }       
+    }else if (myargs.testenv && myargs.testspec) {
+        startTest(myargs,jobid);
+    }
+    
 }
 
 module.exports.cli = cli;
 module.exports.send = send;
+module.exports.start = start;

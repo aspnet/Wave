@@ -1,0 +1,16 @@
+{
+    "logdir": "c:\\$(testid)",
+    "path" : "%localappdata%\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd",
+    "basepath" : "c:\\$(testid)",
+    "scriptSource": "https://github.com/aspnet/Performance.git", 
+    "appDll": "HelloWorldMvc.dll",
+    "buildPath": "",
+    "$targets": {
+        "server": {
+            "name": "wincell1-win1"
+        },
+        "client": {
+            "name": "wincell1-win2"
+        }
+    }
+}

@@ -9,10 +9,10 @@ var exec = require('child_process').exec,
     args_util = require('./args-util.js'),
     msgProcessor = require('./messageprocessor.js'),
     cmdport = require('./cmdport'),
-    fs = require('fs');
-
-var Emitter = require('events').EventEmitter,
-    emitter = new Emitter();
+    fs = require('fs'),
+    utils = require('./libs/utils'),
+    http = require('http'),
+    Q = require('q');
 
 function updateQosClientId(inputargs) {
     inputargs = inputargs.concat("--no-clean", "-i", os.hostname().toLowerCase() + "_controller")
@@ -23,7 +23,7 @@ function start(inputargs) {
     inputargs = updateQosClientId(inputargs);
     var args = args_util.process(inputargs);
     var myargs = minimist(inputargs, {
-        string: ['--test', '--verbose', '--start', 'testspec', 'testenv']
+        string: ['--test', '--verbose', '--start', 'testspec', 'testenv', 'job']
     });
 
     if (!args.topic) {
@@ -36,8 +36,17 @@ function start(inputargs) {
 
     args.topic = args.topic.toLowerCase();
 
+    var environment = {};
+    
     var client = mqtt.connect(args);
-
+     client.on('error', function(error) {
+        console.log(error);
+        return;    
+     });
+        client.on('close', function(error) {
+        console.log(error);
+        return;    
+     });  
     client.on('connect', function () {
         client.subscribe(args.topic, { qos: args.qos }, function (err, result) {
             result.forEach(function (sub) {
@@ -52,7 +61,7 @@ function start(inputargs) {
     var subscriptions = {};
     subscriptions[args.topic] = {
         handler: function (topic, msg) {
-            log('[Receive       ] ' + msg);
+            log('['+topic+'] ' + msg);
             var msg = JSON.parse(msg);
 
             //Execute dummy message
@@ -66,24 +75,27 @@ function start(inputargs) {
                     return;
                 }
             }
-
-            if (msg.testspec && msg.step == undefined)
-                console.log(colors.blue("[StartTest     ] ") + msg.testspec)
-            
-            if(msg.exitcode && msg.exitcode != 0){
-                console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
-            }
-            
+    
             var nextcmd = msgProcessor.process(msg, args.topic);
             if (nextcmd == null) {
                 log('[EndTest       ] ');
-                client.end();
-                setTimeout(function() {
-                    process.exit();
-                }, 1000);
+                //client.end();
+                // setTimeout(function() {
+                //     process.exit();
+                // }, 1000);
                 return;
             }
-
+            var setenvPromise = Q.resolve();
+            if(nextcmd.setenv) {
+                for (var target in nextcmd.env) {
+                    var envmsg = {
+                        command: "setenv",
+                        env: nextcmd.env[target],
+                        logdir: nextcmd.env[target]["logdir"],                        
+                    }
+                    setenvPromise = sendCommand(nextcmd.env[target][target], envmsg);
+                }
+            }
             var clientTopic = nextcmd.target;
 
             //For the test we send it back to the controller.
@@ -91,17 +103,9 @@ function start(inputargs) {
                 clientTopic = args.topic;
             }
             
-            if(msg.env) {               
-                var envmsg = {
-                    command : "setenv",
-                    env : msg.env,
-                }
-                var machineList = msg.env.machines.split(",");  
-                for(var i=0; i< machineList.length; ++i){            
-                    emitter.emit('send', machineList[i], envmsg );
-                }  
-            }
-            emitter.emit('send', clientTopic, nextcmd.msg);
+            setenvPromise.then (function() {
+                sendCommand(clientTopic, nextcmd.msg);
+            });
         }
     };
 
@@ -118,27 +122,47 @@ function start(inputargs) {
         }
     });
 
-    emitter.on('send', function (topic, msg) {
+    function  sendCommand(topic, msg) {
+                
+        var promise;
+            
         if (myargs.verbose) {
-            subscribeToOutput(client, subscriptions, topic);
+           promise = subscribeToTopic(topic + "/status")
+            .then( function() {
+                return subscribeToTopic(topic); 
+            })            
+            .then( function() {
+                return subscribeToTopic(topic+"/output");
+            });
         }
-        log('[Send          ] ' +   topic + ': ' + JSON.stringify(msg));
+        
+        promise = promise.then ( function() {
+            return cmdportSend(topic, msg);
+            });
+         return promise;
+    };
 
-        cmdport.send(topic, msg);
-    })
-
-    function subscribeToOutput(client, subscriptions, targetTopic) {
-        var clientTopic = targetTopic + "/output"
+function cmdportSend(topic, msg){
+            var deferred = Q.defer();
+        log('[Send          ]' +   topic + ': ' + JSON.stringify(msg));        
+            cmdport.send(topic, msg);
+        deferred.resolve();
+        return deferred.promise;                
+}
+    function subscribeToTopic(clientTopic) {
+        var deferred = Q.defer();
         if (!clientTopic) {
-            return;
+            deferred.resolve();
+            return deferred.promise;
         }
         if (subscriptions[clientTopic]) {
-            return;
+            deferred.resolve();
+            return deferred.promise;           
         }
 
         subscriptions[clientTopic] = {
             handler: function (t, msg) {
-                console.log(colors.yellow(util.format("[%s]\t%s", t, msg)));
+                console.log(colors.yellow(util.format("[%s]%s: ", t, msg)));
             }
         }
 
@@ -147,10 +171,13 @@ function start(inputargs) {
         }, function (err, result) {
             if (err) {
                 console.log(colors.red("ERR: " + err));
-                process.exit(1);
+                return deferred.reject("Error in susbscribing to "+clientTopic);
+                //process.exit(1);
             }
-            console.log("[Subscribe     ]" + clientTopic);
-        });
+            console.log("[Subscribe     ]" + clientTopic+":");
+            deferred.resolve();
+        });                
+        return deferred.promise;
     }
 
     function getClientTopic(topic) {
@@ -186,14 +213,9 @@ function start(inputargs) {
             });
     }
     
-    if (myargs.testenv && myargs.testspec) {
-        var msg = {
-            testspec: args.testspec,
-            env: JSON.parse(fs.readFileSync(args.testenv))
-        };
-        cmdport.send(args.topic, msg);
+    if(myargs.job || (myargs.testenv && myargs.testspec) ) {
+        cmdport.start(myargs);
     }
-
 }
 
 module.exports.start = start;

@@ -74,12 +74,32 @@
 			"outDir": null
 		},
 		{
-			"name": "Launch-Controller",
+			"name": "HelloWorldMvc-Test-Controller",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/client/controller.js",
 			"stopOnEntry": false,
-			"args": [ "--testspec", "./test/test.md", "--testenv","./test/testenv.json", "--verbose"],
+			"args": [ "--job", "test/test-job-helloworldmvc.json", "--topic", "cgrp/aspnet","--verbose"],
+			"cwd": "${workspaceRoot}/client",
+			"preLaunchTask": null,
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+		{
+			"name": "MusicStore-Test-Controller",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/client/controller.js",
+			"stopOnEntry": false,
+			"args": [ "--job", "test/test-job-musicstore.json", "--topic", "cgrp/aspnet","--verbose"],
 			"cwd": "${workspaceRoot}/client",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,

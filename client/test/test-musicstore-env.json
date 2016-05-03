@@ -1,0 +1,16 @@
+{
+    "logdir": "c:\\$(testid)",
+    "path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd",
+    "basepath" : "c:\\$(testid)",
+    "scriptSource": "https://github.com/aspnet/Musicstore.git", 
+    "appDll": "musicstore.dll",
+    "buildPath": "",
+    "$targets": {
+        "server": {
+            "name": "wincell1-win1"
+        },
+        "client": {
+            "name": "wincell1-win2"
+        }
+    }
+}

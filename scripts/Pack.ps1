@@ -1,4 +1,7 @@
-﻿function npmdedupe($dir){
+﻿#Check 7Zip before running anything. 
+if (-not (test-path "$env:ProgramFiles\7-Zip\7z.exe")) {throw "$env:ProgramFiles\7-Zip\7z.exe needed"} 
+
+function npmdedupe($dir){
     pushd $dir
     Write-Host NPM dedupe $PWD
     npm dedupe

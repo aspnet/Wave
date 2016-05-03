@@ -42,3 +42,4 @@ _envVars.json
 #Exclude logs
 logs/
 logslink
+artifacts/

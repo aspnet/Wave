@@ -1,0 +1,103 @@
+<html>
+
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+    crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+    crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+  <script type="text/javascript" src="./web/mqttws31.js">
+
+  </script>
+  <script type="text/javascript" src="./web/agent.js">
+
+  </script>
+  <link rel="stylesheet" href="./web/shoot.css">
+
+</head>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+        aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+      <a class="navbar-brand" href="#">Shoot</a>
+    </div>
+  </div>
+</nav>
+
+<br/>
+<div class="container-fluid">
+  <div class="row">
+    <div class=" col-md-2 sidebar">
+      <ul class="nav nav-sidebar">
+        <li class="active"><a href="#">Nodes <span class="sr-only">(current)</span></a></li>
+        <div data-bind="foreach: Machines">
+          <li class="nav nav-sidebar">
+            <blockquote>
+              <p>
+                <a href='#' data-bind="text: config.hostname, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
+                <p>
+            </blockquote>
+          </li>
+        </div>
+      </ul>
+    </div>
+
+    <div class="col-md-8 main" vertical-align:top>
+      </br>
+      </br>
+      </br>
+      <div data-bind="visible: authVisible">
+        <form class="form-inline">
+          <div class="form-group">
+            <input type="text" class="form-control" data-bind="value: broker" placeholder="Broker">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" data-bind="value: username" placeholder="Username">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" data-bind="value: password" placeholder="Password">
+          </div>
+          <button type="submit" class="btn btn-default" data-bind="click: Login">Connect</button>
+        </form>
+      </div>
+      <div data-bind="visible: cmdVisible">
+        <div class="col-md-3 main">
+          </br>
+          <h6>Command to Host: </h6><strong><span data-bind="text: CurrentNode"></span></strong> &nbsp;&nbsp;
+          <button class="btn btn-default" data-bind="click: Send">Send</button>
+          </br>
+          </br>
+          <textarea class="form-control" data-bind="value: Command" type="text" rows="10" style="width: 200px;"> </textarea>
+        </div>
+        <div class="col-md-1   main">
+        </div>
+        <div class="col-md-3   main">
+          <strong>Output</strong>
+          <textarea class="form-control" data-bind="value: Output" type="text" rows="25" style="width: 600px"> </textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10  main">
+    </div>
+  </div>
+</div>
+</body>
+
+</html>

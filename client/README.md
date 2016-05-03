@@ -39,13 +39,14 @@ CmdPort writes the outputs from the command execution to its log file. The log f
 
 # Management operations 
 
-## Client notifications
-To get notification and birth messages for clients use the `client/+` topic. 
-```sh
-./cmdport.js subscribe -t "client/+"
-```
+| Command | Description | 
+|---------|-------------|
+| `./cmdport.js subscribe -t "client/+"` |  Client notifications -  To get notification and birth messages for clients use the `client/+` topic. |
+| `./cmdport.js publish -t "client/[hostname]/config" -p -n -r` | Remove host - Sends a null message to delete the config info | 
+| `./cmdport.js subscribe -t '#' -v` | Subscribe to Universe - Used for debugging the broker and viewing all message. |
 
-## Debugging the broker 
+
+### Debugging the broker 
 
 As a test you can subscribe to all topics as well using the cmdport client as it is just a simple wrapper over mqtt. 
 

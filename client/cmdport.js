@@ -21,6 +21,7 @@ function cli(inputargs) {
     commist.register('send', require('./node_modules/mqtt/bin/pub'));
     commist.register('subscribe', require('./node_modules/mqtt/bin/sub'));
     commist.register('clean', require('./clean'));
+    commist.register('start', start);
 
     commist.register('version', function() {
         console.log('MQTT.js version:', require('./node_modules/mqtt/package.json').version);
@@ -60,6 +61,21 @@ function send(topic, payload) {
         payload = JSON.stringify(payload);
     }
     args = ["send", "-t", topic, "-m", payload].concat(args);
+    cli(args);
+}
+
+function start() {
+    var minimist = require('minimist');
+    var myargs = minimist(process.argv.slice(2), {
+        string: ['testspec', 'testenv']
+    });
+
+    var payload = {
+        testspec : myargs.testspec,
+        env: myargs.testenv
+    };
+
+    var args = ["send", "-t", myargs.topic, "-m", payload];
     cli(args);
 }
 

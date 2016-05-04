@@ -369,7 +369,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetEnv",
-        "func": "var req = msg.requestpayload;\nif(req.env){\n    var env = global.get('env');\n    env.set(req.env)\n}\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(!created){\n        msg.payload = \"ERR_NOLOGDIR\";\n        return msg;\n    }\n}\nmsg.payload = 'hostname'\nreturn msg;",
+        "func": "var env = global.get('env');\nvar req = msg.requestpayload;\nenv.set(req.env, req.path);\n\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(!created){\n        msg.payload = \"ERR_NOLOGDIR\";\n        return msg;\n    }\n}\nmsg.payload = 'hostname'\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 684.28564453125,
@@ -386,7 +386,7 @@
         "z": "2f36ab1a.d0c954",
         "name": "setenv",
         "topic": "",
-        "payload": "{\"command\": \"setenv\",\"env\": {\"TEST\": \"TestValue\" } }",
+        "payload": "{\"command\": \"setenv\",\"env\": {\"TEST\": \"TestValue\"}, \"path\" : \"e:\\\\tools\\\\ab\\\\\" }",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",
@@ -411,7 +411,7 @@
         "crontab": "",
         "once": false,
         "x": 117.5,
-        "y": 688,
+        "y": 678,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -429,8 +429,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 136.5,
-        "y": 748,
+        "x": 116.5,
+        "y": 724,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -466,6 +466,25 @@
         "once": false,
         "x": 96,
         "y": 630,
+        "wires": [
+            [
+                "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "3116358d.3b84da",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "clearenv",
+        "topic": "",
+        "payload": "{\"command\": \"setenv\",\"env\": \"\", \"path\" : \"\" }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 108,
+        "y": 771,
         "wires": [
             [
                 "5033105d.4c52c"

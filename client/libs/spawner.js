@@ -89,7 +89,7 @@ instance.on('data', function (procEntry) {
             console.log("Exiting process %s", procEntry.pid || JSON.stringify(procEntry.exitcode));
         }
         else {
-            console.log("%s : %s", procEntry.pid, procEntry.data);
+            console.log("%s : %s", procEntry.pid, JSON.stringify(procEntry.data));
         }
     }
 });

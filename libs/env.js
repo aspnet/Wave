@@ -1,44 +1,72 @@
 const fs = require('fs');
+const path = require('path');
 
-function setEnv(env) {
-    _envConfigValues = null;
-    var configStr = JSON.stringify(env, null, '\t');
-    fs.writeFileSync(_envFilename, configStr);
-    console.log("Environment variables written to " + _envFilename);
-    _envConfigValues = getConfigValues();
+function saveConfig(key, value) {
+    var config = getConfig() || {};
+    config[key] = value;
+    if (!value) {
+        delete config[key];
+    }
+    var configStr = JSON.stringify(config, null, '\t');
+    fs.writeFileSync(_configFilename, configStr);
+    console.log("Environment Configuration  written to " + _configFilename);
+    _configValues = getConfig();
 }
 
-function getConfigValues() {
-    if (_envConfigValues) {
-        return _envConfigValues;
+function getConfig() {
+    if (_configValues) {
+        return _configValues;
     }
 
     try {
-        var fstats = fs.statSync(_envFilename);
+        var fstats = fs.statSync(_configFilename);
         if (fstats && fstats.isFile()) {
-            var obj = JSON.parse(fs.readFileSync(_envFilename, 'utf8'));
+            var obj = JSON.parse(fs.readFileSync(_configFilename, 'utf8'));
             configValue = obj;
             return configValue;
         }
-    } catch (e) {
-    }
+    } catch (e) {}
 }
 
-function getEnv(extras) {
-    var configValue = getConfigValues();
-    if (configValue || extras) {
+function get(commandEnv) {
+    var env = getEnv(commandEnv);
+    if (env) {
+        var envPath = getPath(env);
+        if (envPath) {
+            if ((process.platform === 'win32')) {
+                env.Path = envPath; // windows path is actually `Path`
+                env.PATH = envPath; // NODEJS spawn path  is case sensitive and is `PATH`.
+            } else {
+                env.PATH = envPath;
+            }
+        }
+    }
+    
+    return env || process.env;
+}
+
+function set(env, path)
+{
+      saveConfig("env", env);
+      saveConfig('extraPaths', paths);
+}
+
+function getEnv(commandEnv) {
+    var config = getConfig();
+    // Merge if we need to modify the process environment variables.
+    var shouldClone = (config && config['env']) || (config && config['extraPaths']) || commandEnv;
+    if (shouldClone) {
         var all = {};
         merge(all, process.env);
-        merge(all, configValue);
-        merge(all, extras);
+        merge(all, config ? config.env : null);
+        merge(all, commandEnv);
         return all;
     }
-    else {
-        return process.env;
-    }
+
+    return null;
 }
 
-function merge(all, obj) {    
+function merge(all, obj) {
     if (obj) {
         for (var k in obj) {
             all[k] = obj[k];
@@ -46,14 +74,26 @@ function merge(all, obj) {
     }
 }
 
-var _envFilename = "config-env.json";
-var _envConfigValues = null;
+function getPath(env) {
+    var config = getConfig();
+    var extraPaths = config ? config['extraPaths'] : null;
+    if (extraPaths) {
+        return extraPaths + path.delimiter + (env.PATH || env.Path);
+    }
 
-function setFilename(filename) {
-    _envFilename = filename;
+    return null;
 }
 
-module.exports.set = setEnv;
-module.exports.get = getEnv;
+
+var _configFilename = "config-env.json";
+var _configValues = null;
+
+function setFilename(filename) {
+    _configFilename = filename;
+}
+
+
+module.exports.set = set;
+module.exports.get = get;
 module.exports.setFilename = setFilename
 

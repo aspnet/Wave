@@ -3,9 +3,7 @@ var express = require("express");
 var RED = require("node-red");
 var path = require('path')
 var os = require('os')
-var process = require('process')
 var config = require('./config');
-const fs = require('fs');
 const env = require('./libs/env')
 const log = require('./libs/log')
 if (!config.broker || !config.broker.host) {

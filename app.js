@@ -25,21 +25,21 @@ var server = http.createServer(app);
 var hostname = os.hostname().toLowerCase();
 
 
-var basedir = './node-red-flows/';
-var localdir = path.resolve(path.join(basedir), 'logs/');
+var basedir = path.resolve('./flows/');
+var localdir = path.join(basedir, 'logs/');
 log.init(localdir);
 
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
-    userDir: "./node-red-flows",
+    userDir: basedir,
     functionGlobalContext: {
         log: log,
         env: env
 
     },
     verbose: false,
-    flowFile: "./node-red-flows/flows_Dispatcher.json",
+    flowFile: path.join(basedir, 'flows_Dispatcher.json'),
     mqtt_dynamic:
     {
         broker: config.broker.host,
@@ -58,6 +58,7 @@ var settings = {
 };
 
 env.setFilename(path.join(settings.userDir, "_envVars.json"));
+log.setFilename(path.join(settings.userDir, "_logdir.json"));
 
 // Initialise the runtime with a server and settings
 RED.init(server, settings);

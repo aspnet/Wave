@@ -38,6 +38,7 @@ _creds.js
 
 #exclude environment variables 
 _envVars.json
+_logdir.json
 
 #Exclude logs
 logs/

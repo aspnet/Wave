@@ -72,6 +72,11 @@ function resolveFilename(seed) {
     return fullpath;
 }
 
+function setConfigFilePath(filename){
+    _configFilename = filename;
+}
+
+module.exports.setFilename = setConfigFilePath;
 module.exports.init = init
 module.exports.setlogdir = set;
 module.exports.resolveFilename = resolveFilename;

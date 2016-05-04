@@ -25,7 +25,7 @@ function getConfig() {
             configValue = obj;
             return configValue;
         }
-    } catch (e) {}
+    } catch (e) { }
 }
 
 function get(commandEnv) {
@@ -40,15 +40,37 @@ function get(commandEnv) {
                 env.PATH = envPath;
             }
         }
+
+        //TODO : Fix the same for non-windows platforms. 
+        resolveDependentVars(env);
     }
-    
+
     return env || process.env;
 }
 
-function set(env, path)
-{
-      saveConfig("env", env);
-      saveConfig('extraPaths', paths);
+function resolveDependentVars(env) {
+    for (var k in env) {
+        env[k] = resolveVariabale(env[k], env)
+    }
+
+    return env;
+}
+
+function resolveVariabale(input, env) {
+    if (!input)
+        return;
+        
+    if (process.platform === 'win32') {
+        return input.replace(/%([^%]+)%/g, function (_, n) {
+            return env[n] || ("%" + n + "%");
+        });
+    }
+    return input;
+}
+
+function set(env, path) {
+    saveConfig("env", env);
+    saveConfig('extraPaths', path);
 }
 
 function getEnv(commandEnv) {
@@ -95,5 +117,6 @@ function setFilename(filename) {
 
 module.exports.set = set;
 module.exports.get = get;
+module.exports.resolve = resolveVariabale
 module.exports.setFilename = setFilename
 

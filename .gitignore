@@ -43,3 +43,4 @@ _logdir.json
 #Exclude logs
 logs/
 logslink
+artifacts/

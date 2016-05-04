@@ -35,9 +35,20 @@ The controller is a simple orchestrator that coordinates and sequences multiple 
 * `logdir` can be changed as a part of the [environment command](/client#setting-environment-variables). 
 
 
-## Configuration
+## Agent Configuration
 
-### Ubuntu 14.04
+#### Windows 
+
+Install Node if needed. 
+```
+msiexec /i https://nodejs.org/dist/v5.11.0/node-v5.11.0-x64.msi /passive
+```
+Setup the agent with the required credentials. 
+```ps
+@powershell -NoProfile -ExecutionPolicy unrestricted -Command "&{$target='c:\cmdport\';$broker='test';$username='test';$password='test';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/SajayAntony/cmdport/master/scripts/Install.ps1'))}" 
+```
+
+#### Ubuntu 14.04
  
  Git clone the repo and run the install script as follows. 
 ```
@@ -52,7 +63,9 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
-### Mosquitto Broker Setup
+## Broker Setup
+
+The following instructions are for a standard [`Mosquitto`](http://mosquitto.org/) MQTT broker. 
 
 1. Use the following instructions to setup an MQTT broker for command dispatch. 
     
@@ -82,7 +95,7 @@ sudo update-rc.d -f cmdport remove
     sudo service mosquitto restart
     ```
 
-5. To be able to connect to the broker you need to open up the port 1883 for Mosquitto. Follow the bread crumb  described below and allow incoming packets for port 1883 for Azure VMs.
+5. To be able to connect to the broker you need to open up the port 1883 for Mosquitto. The following setup is for an azure VM. Follow the bread crumb  described below and allow incoming packets for port 1883 for Azure VMs.
     ```
     VM >> Settings >> Network Interfaces >> Network Interface >> Settings >> Network Security Group >> Settings >> Inbound Rules 
     ```

@@ -1,4 +1,5 @@
-const fs = require('fs');
+const fs = require('fs-extra');
+const util = require('util');
 const path = require('path');
 const os = require('os');
 
@@ -24,14 +25,10 @@ function set(logpath) {
 function dirExists(fullpath) {
     var isDir = false;
     try {
-        var fstats = fs.statSync(fullpath);
-        if (fstats && fstats.isDirectory()) {
-            isDir = true;
-        }
-    } catch (e) {
-    }
+        return fs.ensureDirSync(fullpath);
+    } catch (e) { }
 
-    return isDir;
+    return false;
 }
 
 function get() {
@@ -65,14 +62,23 @@ function init(localdir) {
     }
 }
 
-function resolveFilename(seed) {
-    var seed = seed || os.hostname();
-    var filename = require('util').format("agent_%s_log.txt", seed);
+function resolveFilename(pid, logfile) {
+    var filename = null;
+
+    if (logfile) {
+        var extension = path.extname(logfile);
+        var name = extension ? path.basename(logfile, extension) : logfile;
+        filename = util.format("%s_%s%s", name, pid, extension|| ".txt");
+    }
+    else {
+        filename = util.format("agent_%s_log.txt", pid);
+    }
+    
     var fullpath = path.resolve(_logpath, filename);
     return fullpath;
 }
 
-function setConfigFilePath(filename){
+function setConfigFilePath(filename) {
     _configFilename = filename;
 }
 

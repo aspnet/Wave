@@ -26,4 +26,4 @@ Write-Host Packing [$sourceDir] into [$destination]
 $sourceDir7zip = Join-Path $sourceDir   "*";
 if (-not (test-path "$env:ProgramFiles\7-Zip\7z.exe")) {throw "$env:ProgramFiles\7-Zip\7z.exe needed"} 
 set-alias sz "$env:ProgramFiles\7-Zip\7z.exe"  
-sz a -mx=9 "-x!_creds.js" $zipfile $sourceDir7zip
+sz a -mx=9 "-x!_creds.js" "-x!_envVars.json" "-x!_logdir.json.js" $zipfile $sourceDir7zip

@@ -5,3 +5,13 @@ div.placeholder {
     margin-right: 50px;
     margin-left: 80px;
 }
+
+.text-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* This is where the magic happens! */
+}
+
+.text-ellipsis:hover{
+    white-space: normal;
+}

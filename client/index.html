@@ -47,11 +47,13 @@
           <li class="nav nav-sidebar">
             <blockquote>
               <p>
-                <span data-bind="if: (config.status=='offline')" class="text-danger">
-                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                  <span class="sr-only">Error:</span>
-                </span>              
-                <a href='#' data-bind="text: config.hostname, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>                
+                <div class='text-ellipsis'>
+                  <span data-bind="if: (config.status=='offline')" class="text-danger">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                  </span>              
+                  <a href='#' data-bind="text: config.hostname, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
+                 </div>                
                 <p>
             </blockquote>
           </li>

@@ -2,6 +2,7 @@
 function Machine(payload) {
     var self = this;
     self.config = JSON.parse(payload);
+    self.name  = self.config.hostname;
 };
 
 var ViewModel = function () {
@@ -57,7 +58,15 @@ var ViewModel = function () {
         function onMessageArrived(message) {
             if (message.destinationName.indexOf("config") > -1) {
                 var msg = new Machine(message.payloadString);
-                self.Machines.push(msg);
+                var match = ko.utils.arrayFirst(self.Machines(), function(item) {
+                     return msg.name === item.name;
+                });
+                if(match){
+                    self.Machines.replace(match, msg);
+                }
+                else{
+                    self.Machines.push(msg);                    
+                }
                 self.onNodeClick(msg);
             }
 

@@ -3,10 +3,10 @@ if (-not (test-path "$env:ProgramFiles\7-Zip\7z.exe")) {throw "$env:ProgramFiles
 
 function npmdedupe($dir){
     pushd $dir
+    npm install
     Write-Host NPM dedupe $PWD
     npm dedupe
     popd
-
 }
 
 $sourceDir = Resolve-Path ( Join-Path $PSScriptRoot ".." )

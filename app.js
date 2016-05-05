@@ -26,7 +26,14 @@ var hostname = os.hostname().toLowerCase();
 var basedir = path.resolve('./flows/');
 var localdir = path.join(basedir, 'logs/');
 log.init(localdir);
-
+var clientconfig = {
+    "hostname": hostname,
+    "arch": os.arch(),
+    "ostype": os.type(),
+    "os": os.platform(),
+    "ips": GetClientIPs(),
+    "timestamp": new Date()
+};
 var settings = {
     httpAdminRoot: "/red",
     httpNodeRoot: "/api",
@@ -44,14 +51,8 @@ var settings = {
         broker_username: config.broker.username,
         broker_password: config.broker.password,
         clientid: hostname,
-        clientconfig: {
-            "hostname": hostname,
-            "arch": os.arch(),
-            "ostype": os.type(),
-            "os": os.platform(),
-            "ips": GetClientIPs(),
-            "timestamp": new Date()
-        }
+        clientconfig: extend(clientconfig, { "status": "online" }),
+        clientconfig_offline: extend(clientconfig, { "status": "offline" })
     }
 };
 
@@ -100,4 +101,12 @@ function GetClientIPs() {
         });
     });
     return ips;
+}
+
+function extend(obj, extra) {
+    var clone = JSON.parse(JSON.stringify(obj));
+    for (var i in extra) {
+        clone[i] = extra[i];
+    }
+    return clone;
 }

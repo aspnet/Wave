@@ -21,7 +21,7 @@ If(Test-path $zipfile) {Remove-item $zipfile}
 
 $versionFile = Join-Path $artifactsDir "version.txt"
 new-item -force -path $versionFile -value "" -type file
-git log -n1 --format="%h" > $versionFile
+git log -n1 --format="%h" | Out-File -FilePath $versionFile -Encoding ascii 
 
 #Zip files. 
 Write-Host Packing [$sourceDir] into [$zipfile]

@@ -10,14 +10,17 @@ function npmdedupe($dir){
 }
 
 $sourceDir = Resolve-Path ( Join-Path $PSScriptRoot ".." )
+$artifactsDir = Join-Path $sourceDir "artifacts\"
 $zipfile = Join-Path $sourceDir "artifacts\win\cmdport.zip"
-$artifactsDir = [System.IO.Path]::GetDirectoryName($zipfile);
 
 #flatten the packages. 
 npmdedupe($sourceDir)
 npmdedupe(Join-Path $sourceDir "client")
 
 If(Test-path $zipfile) {Remove-item $zipfile}
+
+$versionFile = Join-Path $artifactsDir "version.txt"
+git log -n1 --format="%h" > $versionFile
 
 #Zip files. 
 Write-Host Packing [$sourceDir] into [$destination]

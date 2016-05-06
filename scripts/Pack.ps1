@@ -20,10 +20,11 @@ npmdedupe(Join-Path $sourceDir "client")
 If(Test-path $zipfile) {Remove-item $zipfile}
 
 $versionFile = Join-Path $artifactsDir "version.txt"
+new-item -force -path $versionFile -value "" -type file
 git log -n1 --format="%h" > $versionFile
 
 #Zip files. 
-Write-Host Packing [$sourceDir] into [$destination]
+Write-Host Packing [$sourceDir] into [$zipfile]
 
 #remove root dir for 7zip. 
 $sourceDir7zip = Join-Path $sourceDir   "*";

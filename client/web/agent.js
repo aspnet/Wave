@@ -1,8 +1,13 @@
 
 function Machine(payload) {
     var self = this;
-    self.config = JSON.parse(payload);
-    self.name  = self.config.hostname;
+    try{
+        self.config = JSON.parse(payload);
+        self.name  = self.config.hostname;            
+    }catch(e){
+        self.config = {};
+        self.name = 'Unknown';    
+    }            
 };
 
 var ViewModel = function () {
@@ -104,9 +109,9 @@ var ViewModel = function () {
         });
         self.Output("");
         //self.Input("");
-        self.CurrentNode(machine.config.hostname);
-        self.client.subscribe(machine.config.hostname);
-        self.client.subscribe(machine.config.hostname + "/output");
+        self.CurrentNode(machine.name);
+        self.client.subscribe(machine.name);
+        self.client.subscribe(machine.name + "/output");
     };
 
 };

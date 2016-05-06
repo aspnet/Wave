@@ -44,18 +44,16 @@
       <ul class="nav nav-sidebar">
         <li class="active"><a href="#">Nodes <span class="sr-only">(current)</span></a></li>
         <div data-bind="foreach: Machines">
-          <li class="nav nav-sidebar">
-            <blockquote>
+          <li class="nav nav-sidebar">            
               <p>
                 <div class='text-ellipsis'>
                   <span data-bind="if: (config.status=='offline')" class="text-danger">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                     <span class="sr-only">Error:</span>
                   </span>              
-                  <a href='#' data-bind="text: config.hostname, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
+                  <a href='#' data-bind="text: name, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
                  </div>                
-                <p>
-            </blockquote>
+                <p>            
           </li>
         </div>
       </ul>

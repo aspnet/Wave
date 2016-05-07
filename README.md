@@ -63,6 +63,30 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
+#### Docker 
+
+The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands. 
+
+```
+docker pull dotnetperf/wave
+docker run --name wave1 -p 8001:8000 -e BROKER=[broker] -e USERNAME=[username] -e PASSWORD=[password] -h [hostname] -d dotnetperf/wave
+```
+The image takes 3 environment variables and the hostname which is used to setup the credentials in the agent. 
+Refer the [Dockerfile](scripts/Dockerfile) 
+
+To connect to the running instance use the following command to start an interactive shell. 
+
+```
+docker exec -it wave1 /bin/sh
+```
+
+Once you are done with the agen you can use the following commands to stop the container and delete the image if necessary. 
+
+```
+docker stop wave1 && docker rm wave1
+docker rmi dotnetperf/wave
+```
+
 ## Broker Setup
 
 The following instructions are for a standard [`Mosquitto`](http://mosquitto.org/) MQTT broker. 

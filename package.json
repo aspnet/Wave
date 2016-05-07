@@ -6,6 +6,7 @@
   "dependencies": {
     "express": "^4.13.4",
     "fs-extra": "^0.30.0",
+    "minimist": "^1.2.0",
     "node-red": "^0.13.4",
     "node-red-contrib-execute": "^1.0.7",
     "node-red-contrib-mqtt-dynamic": "^1.0.9",

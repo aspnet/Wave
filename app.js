@@ -27,6 +27,7 @@ var basedir = path.resolve('./flows/');
 var localdir = path.join(basedir, 'logs/');
 log.init(localdir);
 var clientconfig = {
+    "clientid" : config.clientid,
     "hostname": hostname,
     "arch": os.arch(),
     "ostype": os.type(),
@@ -41,7 +42,6 @@ var settings = {
     functionGlobalContext: {
         log: log,
         env: env
-
     },
     verbose: false,
     flowFile: path.join(basedir, 'flows_Dispatcher.json'),
@@ -50,7 +50,7 @@ var settings = {
         broker: config.broker.host,
         broker_username: config.broker.username,
         broker_password: config.broker.password,
-        clientid: hostname,
+        clientid: config.clientid,
         clientconfig: extend(clientconfig, { "status": "online" }),
         clientconfig_offline: extend(clientconfig, { "status": "offline" })
     }

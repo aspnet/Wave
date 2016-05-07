@@ -27,7 +27,7 @@ $client.DownloadFile( $url, $zipfilePath )
 [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfilePath, $target_dir);
 
 pushd $target_dir
-node setup.js $broker_addr $broker_username $broker_password
+node setup.js -h $broker_addr -u $broker_username -P $broker_password
 
 npm install -g forever 
 forever start app.js

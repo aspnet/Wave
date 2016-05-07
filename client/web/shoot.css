@@ -15,3 +15,21 @@ div.placeholder {
 .text-ellipsis:hover{
     white-space: normal;
 }
+
+#outputWindow {
+    background:rgb(19,39,56);
+    color: rgb(247,252,255);
+    font-family: Consolas, 'Courier New';
+}
+
+.terminal{
+  min-width: 700px;
+  margin:5px;
+  padding:5px;
+  border-radius: 3px;	
+  box-shadow: 0 0 30px rgba(0,0,0,0.4);
+}
+.terminal-bar{
+	display: block;
+}
+

@@ -13,12 +13,12 @@
   <script type="text/javascript" src="web/scripts/jquery-2.2.3.min.js" />
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
     crossorigin="anonymous"></script>
-  
-  <script type="text/javascript" src="web/scripts/knockout-3.3.0.js" ></script> 
-  <script type="text/javascript" src="web/mqttws31.js" ></script> 
-  <script type="text/javascript" src="web/agent.js"  ></script>
-  <script type="text/javascript" src="_creds.js" ></script>
-  
+
+  <script type="text/javascript" src="web/scripts/knockout-3.3.0.js"></script>
+  <script type="text/javascript" src="web/mqttws31.js"></script>
+  <script type="text/javascript" src="web/agent.js"></script>
+  <script type="text/javascript" src="_creds.js"></script>
+
   <link rel="stylesheet" href="web/shoot.css">
 
 </head>
@@ -44,16 +44,16 @@
       <ul class="nav nav-sidebar">
         <li class="active"><a href="#">Nodes <span class="sr-only">(current)</span></a></li>
         <div data-bind="foreach: Machines">
-          <li class="nav nav-sidebar">            
-              <p>
-                <div class='text-ellipsis'>
-                  <span data-bind="if: (config.status=='offline')" class="text-danger">
+          <li class="nav nav-sidebar">
+            <p>
+              <div class='text-ellipsis'>
+                <span data-bind="if: (config.status=='offline')" class="text-danger">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span>
-                  </span>              
-                  <a href='#' data-bind="text: name, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
-                 </div>                
-                <p>            
+                <span class="sr-only">Error:</span>
+                </span>
+                <a href='#' data-bind="text: name, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
+              </div>
+              <p>
           </li>
         </div>
       </ul>
@@ -89,8 +89,10 @@
         <div class="col-md-1   main">
         </div>
         <div class="col-md-3   main">
-          <strong>Output</strong>
-          <textarea id="outputWindow" class="form-control" data-bind="value: Output" type="text" rows="25" style="width: 600px"> </textarea>
+          <div class='terminal'>
+            <div class='terminal-bar'>Output</div>
+            <textarea id="outputWindow" class="form-control" data-bind="value: Output" type="text" rows="25"> </textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -101,4 +103,5 @@
   </div>
 </div>
 </body>
+
 </html>

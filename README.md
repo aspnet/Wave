@@ -63,7 +63,9 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
-#### Docker 
+#### Docker
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/dotnetperf/wave.svg?maxAge=2592000?style=plastic)](https://hub.docker.com/r/dotnetperf/wave/)
 
 The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands and the logs command enable you to see if the broker succcessfully connected or not. 
 

@@ -1,6 +1,6 @@
 FROM node:argon
 RUN apt-get update && apt-get install git
-RUN git clone http://github.com/sajayantony/cmdport
+RUN git clone http://github.com/aspnet/wave
 WORKDIR /cmdport
 RUN npm install
 EXPOSE 8000

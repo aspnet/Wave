@@ -65,11 +65,12 @@ sudo update-rc.d -f cmdport remove
 
 #### Docker 
 
-The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands. 
+The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands and the logs command enable you to see if the broker succcessfully connected or not. 
 
 ```
 docker pull dotnetperf/wave
 docker run --name wave1 -p 8001:8000 -e BROKER=[broker] -e USERNAME=[username] -e PASSWORD=[password] -h [hostname] -d dotnetperf/wave
+docker logs wave1
 ```
 The image takes 3 environment variables and the hostname which is used to setup the credentials in the agent. 
 Refer the [Dockerfile](scripts/Dockerfile) 

@@ -1,13 +1,13 @@
 
 function Machine(payload) {
     var self = this;
-    try{
+    try {
         self.config = JSON.parse(payload);
-        self.name  = self.config.hostname;            
-    }catch(e){
+        self.name = self.config.hostname;
+    } catch (e) {
         self.config = {};
-        self.name = 'Unknown';    
-    }            
+        self.name = 'Unknown';
+    }
 };
 
 var ViewModel = function () {
@@ -63,14 +63,14 @@ var ViewModel = function () {
         function onMessageArrived(message) {
             if (message.destinationName.indexOf("config") > -1) {
                 var msg = new Machine(message.payloadString);
-                var match = ko.utils.arrayFirst(self.Machines(), function(item) {
-                     return msg.name === item.name;
+                var match = ko.utils.arrayFirst(self.Machines(), function (item) {
+                    return msg.name === item.name;
                 });
-                if(match){
+                if (match) {
                     self.Machines.replace(match, msg);
                 }
-                else{
-                    self.Machines.push(msg);                    
+                else {
+                    self.Machines.push(msg);
                 }
                 self.onNodeClick(msg);
             }
@@ -117,6 +117,14 @@ var ViewModel = function () {
 };
 
 $(document).ready(function () {
-    ko.applyBindings(new ViewModel());
+    var model = new ViewModel();
+    ko.applyBindings(model);
+    //Set autoscrolling output-window
+    var outputelement = document.getElementById("outputWindow");
+    //$('#outputWindow').scrollTop($('#outputWindow')[0].scrollHeight);
+    
+    model.Output.subscribe(function(value){              
+        outputelement.scrollTop = outputelement.scrollHeight;
+    });    
 });
 

@@ -32,73 +32,60 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-      <a class="navbar-brand" href="#">Shoot</a>
+      <a class="navbar-brand" href="#">Wave</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <div data-bind="visible: authVisible"></div>
+      <form class="navbar-form navbar-right form-inline">
+        <div class="form-group">
+          <input type="text" class="form-control" data-bind="value: broker" placeholder="Broker">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" data-bind="value: username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" data-bind="value: password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default" data-bind="click: Login">Connect</button>
+      </form>
     </div>
   </div>
 </nav>
-
-<br/>
 <div class="container-fluid">
   <div class="row">
-    <div class=" col-md-2 sidebar">
+    <div class="col-md-2 sidebar">
       <ul class="nav nav-sidebar">
-        <li class="active"><a href="#">Nodes <span class="sr-only">(current)</span></a></li>
-        <div data-bind="foreach: Machines">
-          <li class="nav nav-sidebar">
-            <p>
-              <div class='text-ellipsis'>
-                <span data-bind="if: (config.status=='offline')" class="text-danger">
+        <li class="header"><a href="#">Targets <span class="sr-only">(current)</span></a></li>
+      </ul>
+      <ul class="nav nav-sidebar" data-bind="foreach: Machines">
+        <li data-bind="click: $parent.onNodeClick, css: { active: $parent.isNodeChosen($data) }">
+          <a href='#' >
+            <div class='text-ellipsis'>
+              <span data-bind="if: (config.status=='offline')" class="text-danger">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                </span>
-                <a href='#' data-bind="text: name, click: $parent.onNodeClick"> <span class="sr-only">(current)</span></a>
-              </div>
-              <p>
-          </li>
-        </div>
+              <span class="sr-only">Error:</span>
+              </span>
+              <span data-bind="text: name"> </span>
+            </div> <span class="sr-only">(current)</span></a>
+        </li>
       </ul>
     </div>
-
-    <div class="col-md-8 main" vertical-align:top>
-      </br>
-      </br>
-      </br>
-      <div data-bind="visible: authVisible">
-        <form class="form-inline">
-          <div class="form-group">
-            <input type="text" class="form-control" data-bind="value: broker" placeholder="Broker">
-          </div>
-          <div class="form-group">
-            <input type="text" class="form-control" data-bind="value: username" placeholder="Username">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" data-bind="value: password" placeholder="Password">
-          </div>
-          <button type="submit" class="btn btn-default" data-bind="click: Login">Connect</button>
-        </form>
-      </div>
-      <div data-bind="visible: cmdVisible">
-        <div class="col-md-3 main">
-          </br>
-          <h6>Command to Host: </h6><strong><span data-bind="text: CurrentNode"></span></strong> &nbsp;&nbsp;
-          <button class="btn btn-default" data-bind="click: Send">Send</button>
-          </br>
-          </br>
-          <textarea class="form-control" data-bind="value: Command" type="text" rows="10" style="width: 200px;"> </textarea>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <div class="panel panel-default" data-bind="visible: cmdVisible">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+          <h3 class="panel-title"><span data-bind="text: CurrentNode"></span></h3>
         </div>
-        <div class="col-md-1   main">
-        </div>
-        <div class="col-md-3   main">
+        <div class="panel-body">
+          <div class="input-group">
+            <textarea class="form-control  custom-control command" data-bind="value: Command" type="text" rows="5"> </textarea>
+            <span class="input-group-addon btn btn-default" data-bind="click: Send"><a href="#">Send<a></span>
+          </div>
           <div class='terminal'>
-            <div class='terminal-bar'>Output</div>
             <textarea id="outputWindow" class="form-control" data-bind="value: Output" type="text" rows="25"> </textarea>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-10  main">
     </div>
   </div>
 </div>

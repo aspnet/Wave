@@ -113,6 +113,10 @@ var ViewModel = function () {
         self.client.subscribe(machine.name);
         self.client.subscribe(machine.name + "/output");
     };
+    
+    self.isNodeChosen = function(machine){
+        return self.CurrentNode() === machine.name;
+    }
 
 };
 

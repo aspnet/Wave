@@ -88,11 +88,16 @@ function start(inputargs) {
             var setenvPromise = Q.resolve();
             if(nextcmd.setenv) {
                 for (var target in nextcmd.env) {
+                    var newenv = nextcmd.env[target];
                     var envmsg = {
                         command: "setenv",
-                        env: nextcmd.env[target],
-                        logdir: nextcmd.env[target]["logdir"],                        
+                        logdir: nextcmd.env[target]["logdir"],
                     }
+                    if( typeof newenv["$path"] != 'undefined'){
+                        envmsg.path = newenv["$path"];
+                        delete newenv["$path"];
+                    }
+                    envmsg.env = newenv;
                     setenvPromise = sendCommand(nextcmd.env[target][target], envmsg);
                 }
             }

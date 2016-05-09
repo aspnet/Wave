@@ -65,32 +65,27 @@ function send(topic, payload) {
 
 function start(args) {
     var minimist = require('minimist');
-    var utils = require('./libs/utils');
     var fs = require('fs');
     var myargs = minimist(process.argv.slice(2), {
         string: ['testspec', 'testenv','job']
     });
 
-    function startTest(test,jobid){
+    function startTest(test){
         var msg = {
             testspec: test.testspec,
-            env: JSON.parse(fs.readFileSync(test.testenv)),
-            jobid: jobid,
-            testid: utils.guid()
+            env: JSON.parse(fs.readFileSync(test.testenv))
         };
         var args = ["send", "-t", myargs.topic, "-m", JSON.stringify(msg)];
         cli(args);
     }
-
-    var jobid = utils.guid();
     
     if(myargs.job) {
         var jobspec = JSON.parse(fs.readFileSync(myargs.job));
         for(var test in jobspec) {
-            startTest(jobspec[test],jobid);            
+            startTest(jobspec[test]);            
         }       
     }else if (myargs.testenv && myargs.testspec) {
-        startTest(myargs,jobid);
+        startTest(myargs);
     }
     
 }

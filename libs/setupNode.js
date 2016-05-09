@@ -1,20 +1,34 @@
 const envUtil = require('./env')
 
 module.exports.setup = function (msg) {
+    var isSimple = true;
+    var payload = msg.payload;
+
+    // Parse JSON and fetch out the cmd and 
+    // callback topic.
     try {
-        // Parse JSON and fetch out the cmd and 
-        // callback topic.
-        console.log(msg.payload)
-        var payload = JSON.parse(msg.payload);
+        console.log(msg.payload);
+        payload = JSON.parse(msg.payload);
+        isSimple = false; //Successfully parsed JSON and hence is a complex command;
         msg.requestpayload = payload;
         msg.callbacktopic = payload.callbacktopic;
-        var env = envUtil.get(payload.env);
-        msg.env = env;
-        msg.cwd = envUtil.resolve(payload.cwd, env);
-        msg.payload = envUtil.resolve(payload.command, env);
+    } catch (e) {
+        console.log(e)
+    }
+
+    //Setup environment variables and cwd;
+    // For simple commands .env .cwd will be undefined. 
+    try {
+        var envVars = envUtil.get(payload.env);
+        msg.env = envVars;
+        msg.cwd = envUtil.resolve(payload.cwd, envVars);
+
+        //Simple commands have the command in the payload.
+        msg.payload = envUtil.resolve(isSimple ? payload : payload.command, envVars);
 
     } catch (e) {
         console.log(e)
     }
+
     return msg;
 };

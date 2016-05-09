@@ -90,6 +90,11 @@ docker stop wave1 && docker rm wave1
 docker rmi dotnetperf/wave
 ```
 
+If you deploying containers on Ubuntu VM on Hyper-V, then:
+ - run `nm-tool` on the Ubuntu VM and pick any one of the DNS addresses in the output
+ - `sudo vi /etc/default/docker` and add the DNS ip to DOCKER_OPTS parameter.
+ - `sudo service docker restart`
+
 ## Broker Setup
 
 The following instructions are for a standard [`Mosquitto`](http://mosquitto.org/) MQTT broker. 

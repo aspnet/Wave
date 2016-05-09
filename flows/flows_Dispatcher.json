@@ -96,7 +96,6 @@
             [
                 "d93a799f.6813c8",
                 "da4e7177.76ea6",
-                "933b6237.c0614",
                 "a68bc475.cf4e88"
             ]
         ]
@@ -215,7 +214,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetupCallback",
-        "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = payload;\n    msg.callbacktopic = payload.callbacktopic;\n    var envUtil = global.get('env');\n    var env = envUtil.get(payload.env);\n    msg.env = env;\n    msg.cwd = envUtil.resolve(msg.cwd, env);\n    msg.payload = envUtil.resolve(payload.command, env);\n\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
+        "func": "try{\n    // Parse JSON and fetch out the cmd and \n    // callback topic.\n    console.log(msg.payload)\n    var payload = JSON.parse(msg.payload);\n    msg.requestpayload = payload;\n    msg.callbacktopic = payload.callbacktopic;\n    var envUtil = global.get('env');\n    var env = envUtil.get(payload.env);\n    msg.env = env;\n    msg.cwd = envUtil.resolve(payload.cwd, env);\n    msg.payload = envUtil.resolve(payload.command, env);\n\n}catch(e){\n    console.log(e)\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 333.0714111328125,
@@ -327,11 +326,11 @@
         "type": "debug",
         "z": "2f36ab1a.d0c954",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
-        "complete": "payload",
-        "x": 1051,
-        "y": 510.85711669921875,
+        "complete": "cwd",
+        "x": 907,
+        "y": 459.85711669921875,
         "wires": []
     },
     {
@@ -360,7 +359,8 @@
                 "ff324216.8651e"
             ],
             [
-                "51ad98c3.ae5268"
+                "51ad98c3.ae5268",
+                "933b6237.c0614"
             ]
         ]
     },

@@ -1,6 +1,6 @@
 {
     "logdir": "c:\\$(testid)",
-    "path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd",
+    "$path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd;%ProgramFles%\\nodejs",
     "basepath" : "c:\\$(testid)",
     "scriptSource": "https://github.com/aspnet/Musicstore.git", 
     "appDll": "musicstore.dll",

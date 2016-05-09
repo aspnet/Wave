@@ -73,7 +73,7 @@ function applyEnv(cmd, env) {
                 cmd.command = "powershell.exe -File " + cmd.command;
             }
         }
-        else if(!(cmd.command.startsWith("cmd"))) {
+        else if(!(cmd.command.startsWith("cmd")) && !(cmd.command.indexOf(".exe") > -1)) {
             cmd.command = "cmd.exe /c " + cmd.command;
         }
         

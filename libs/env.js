@@ -34,7 +34,7 @@ function get(commandEnv) {
         var envPath = getPath(env);
         if (envPath) {
             if ((process.platform === 'win32')) {
-                env.Path = envPath; // windows path is actually `Path`
+                delete env.Path;
                 env.PATH = envPath; // NODEJS spawn path  is case sensitive and is `PATH`.
             } else {
                 env.PATH = envPath;

@@ -8,6 +8,7 @@ const env = require('./libs/env')
 const log = require('./libs/log')
 const ipUtil = require('./libs/ipUtil');
 const objUtil = require('./libs/objUtil');
+const setupNode = require('./libs/setupNode');
 
 if (!config.broker || !config.broker.host) {
     return;
@@ -48,7 +49,8 @@ var settings = {
     userDir: basedir,
     functionGlobalContext: {
         log: log,
-        env: env
+        env: env, 
+        setup : setupNode.setup
     },
     verbose: false,
     flowFile: path.join(basedir, 'flows_Dispatcher.json'),

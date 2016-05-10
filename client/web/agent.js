@@ -1,4 +1,14 @@
 
+ko.safeObservable = function (initialValue) {
+    var result = ko.observable(initialValue);
+    result.safe = ko.dependentObservable(function () {
+        return result() || {};
+    });
+
+    return result;
+};
+
+
 function Machine(payload) {
     var self = this;
     try {
@@ -27,7 +37,7 @@ var ViewModel = function () {
     };
     self.Command = ko.observable(JSON.stringify(command, null, 4));
 
-    self.CurrentNode = ko.observable();
+    self.CurrentNode = ko.safeObservable();
     //var broker = data.broker;
     function Subscribe() {
         // Create a client instance
@@ -94,9 +104,11 @@ var ViewModel = function () {
 
 
     self.Send = function () {
-
-        var msg = new Paho.MQTT.Message(self.Command());
-        msg.destinationName = self.CurrentNode();
+        var machine = self.CurrentNode();
+        var command = prefixShell(self.Command(), machine.config.os === "win32");
+        console.log("Send - [" + machine.name + "] " + command);
+        var msg = new Paho.MQTT.Message(command);
+        msg.destinationName = self.CurrentNode().name;
         self.client.send(msg);
         self.Output(self.Output() + "\n");
     };
@@ -109,15 +121,44 @@ var ViewModel = function () {
         });
         self.Output("");
         //self.Input("");
-        self.CurrentNode(machine.name);
+        self.CurrentNode(machine);
         self.client.subscribe(machine.name);
         self.client.subscribe(machine.name + "/output");
     };
-    
-    self.isNodeChosen = function(machine){
-        return self.CurrentNode() === machine.name;
+
+    self.isNodeChosen = function (machine) {
+        return self.CurrentNode() === machine;
     }
 
+    /*
+    Handle simple commands and prefix shell to make testing easier. 
+    */
+    function prefixShell(command, isWin32) {
+
+        var isSimple = true;
+        var cmd = command;
+
+        try {
+            cmd = JSON.parse(command);
+            isSimple = false;
+        } catch (e) { }
+
+        if (isSimple) {
+            // This means its a string command;                      
+            var arg = command.match(/(?:[^\s"]+|"[^"]*")+/g);
+            var cmd = arg.shift();
+
+            if (isWin32) {
+                var hasShell = cmd.match(/^cmd/i) || cmd.match(/^powershell/i);
+                var isExe = cmd.match(/\.exe$/i);
+                if (!hasShell && !isExe) {
+                    return "cmd.exe /c " + command;
+                }
+            }
+        }
+
+        return command;
+    };
 };
 
 $(document).ready(function () {
@@ -126,9 +167,9 @@ $(document).ready(function () {
     //Set autoscrolling output-window
     var outputelement = document.getElementById("outputWindow");
     //$('#outputWindow').scrollTop($('#outputWindow')[0].scrollHeight);
-    
-    model.Output.subscribe(function(value){              
+
+    model.Output.subscribe(function (value) {
         outputelement.scrollTop = outputelement.scrollHeight;
-    });    
+    });
 });
 

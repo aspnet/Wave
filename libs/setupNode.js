@@ -21,13 +21,16 @@ module.exports.setup = function (msg) {
     try {
         var envVars = envUtil.get(payload.env);
         msg.env = envVars;
-        msg.cwd = envUtil.resolve(payload.cwd, envVars);
+        
+        //Set the current working directory.
+        var directory = envUtil.getCwd(directory);
+        msg.cwd = envUtil.resolve(directory, envVars);
 
         //Simple commands have the command in the payload.
         msg.payload = envUtil.resolve(isSimple ? payload : payload.command, envVars);
 
     } catch (e) {
-        console.log(e)
+        console.log("Exception during environment setup " + e)
     }
 
     return msg;

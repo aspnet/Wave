@@ -3,29 +3,36 @@ const path = require('path');
 
 function saveConfig(key, value) {
     var config = getConfig() || {};
-    config[key] = value;
-    if (!value) {
+    
+    // If the valid defined value has been passed then 
+    // update the value in the config object.
+    if(typeof(value) !== 'undefined'){
+        config[key] = value;        
+    }
+        
+    // Clear the keys only if the value is null
+    if (value == "") {
         delete config[key];
     }
+    
     var configStr = JSON.stringify(config, null, '\t');
     fs.writeFileSync(_configFilename, configStr);
     console.log("Environment Configuration  written to " + _configFilename);
-    _configValues = getConfig();
+    _configValues = config;
 }
 
 function getConfig() {
-    if (_configValues) {
-        return _configValues;
+    if (!_configValues) {
+        try {
+            var fstats = fs.statSync(_configFilename);
+            if (fstats && fstats.isFile()) {
+                var obj = JSON.parse(fs.readFileSync(_configFilename, 'utf8'));
+                _configValues = obj;
+            }
+        } catch (e) { }
     }
-
-    try {
-        var fstats = fs.statSync(_configFilename);
-        if (fstats && fstats.isFile()) {
-            var obj = JSON.parse(fs.readFileSync(_configFilename, 'utf8'));
-            configValue = obj;
-            return configValue;
-        }
-    } catch (e) { }
+    
+    return _configValues;
 }
 
 function get(commandEnv) {
@@ -59,7 +66,7 @@ function resolveDependentVars(env) {
 function resolveVariabale(input, env) {
     if (!input)
         return;
-        
+
     if (process.platform === 'win32') {
         return input.replace(/%([^%]+)%/g, function (_, n) {
             return env[n] || ("%" + n + "%");
@@ -68,9 +75,25 @@ function resolveVariabale(input, env) {
     return input;
 }
 
-function set(env, path) {
+function set(env, path, cwd) {
     saveConfig("env", env);
     saveConfig('extraPaths', path);
+    saveConfig('cwd', cwd);
+}
+
+function getCwd(directory) {
+    var configCwd = (getConfig() || {})["cwd"];
+    var cwd = directory;
+    if (cwd) {
+        if ((path.isAbsolute(cwd) == false) && (configCwd)) {
+            cwd = path.join(configCwd, cwd);
+        }
+    } else {
+        // No overriding path and hence use the configured CWD.
+        cwd = configCwd;
+    }
+
+    return cwd;
 }
 
 function getEnv(commandEnv) {
@@ -114,9 +137,9 @@ function setFilename(filename) {
     _configFilename = filename;
 }
 
-
 module.exports.set = set;
 module.exports.get = get;
+module.exports.getCwd = getCwd;
 module.exports.resolve = resolveVariabale
 module.exports.setFilename = setFilename
 

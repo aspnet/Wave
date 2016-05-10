@@ -55,11 +55,16 @@
   <div class="row">
     <div class="col-md-2 sidebar">
       <ul class="nav nav-sidebar">
-        <li class="header"><a href="#">Targets <span class="sr-only">(current)</span></a></li>
+        <li class="header" data-bind="visible: cmdVisible">
+          <a href="#">Targets<span class="sr-only">(current)</span>
+            <span class="pull-right glyphicon glyphicon-flash" aria-hidden="true" data-bind="visible: connected"></span>
+            <span class="pull-right glyphicon glyphicon-alert" aria-hidden="true" data-bind="visible: connected() == false"></span>
+          </a>
+        </li>
       </ul>
       <ul class="nav nav-sidebar" data-bind="foreach: Machines">
         <li data-bind="click: $parent.onNodeClick, css: { active: $parent.isNodeChosen($data) }">
-          <a href='#' >
+          <a href='#'>
             <div class='text-ellipsis'>
               <span data-bind="if: (config.status=='offline')" class="text-danger">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>

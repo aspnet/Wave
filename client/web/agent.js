@@ -29,6 +29,7 @@ var ViewModel = function () {
     self.broker = ko.observable();
     self.username = ko.observable();
     self.password = ko.observable();
+    self.connected = ko.observable(false);
     self.broker((creds && creds.broker) ? creds.broker.host : "broker");
     self.username((creds && creds.broker) ? creds.broker.username : "admin");
     self.password((creds && creds.broker) ? creds.broker.password : "");
@@ -48,11 +49,14 @@ var ViewModel = function () {
         client.onMessageArrived = onMessageArrived;
 
         // connect the client
-        client.connect({ onSuccess: onConnect, userName: self.username(), password: self.password() });
-
+        function connect() {
+            client.connect({ onSuccess: onConnect, userName: self.username(), password: self.password() });
+        }
 
         // called when the client connects
         function onConnect() {
+            self.connected(true);
+            
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
             client.subscribe("client/+/config");
@@ -67,7 +71,10 @@ var ViewModel = function () {
             if (responseObject.errorCode !== 0) {
                 console.log("onConnectionLost:" + responseObject.errorMessage);
             }
+            self.connected(false);
         }
+
+        connect();
 
         // called when a message arrives
         function onMessageArrived(message) {

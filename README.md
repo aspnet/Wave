@@ -45,14 +45,14 @@ msiexec /i https://nodejs.org/dist/v5.11.0/node-v5.11.0-x64.msi /passive
 ```
 Setup the agent with the required credentials. 
 ```ps
-@powershell -NoProfile -ExecutionPolicy unrestricted -Command "&{$target='c:\cmdport\';$broker='test';$username='test';$password='test';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/SajayAntony/cmdport/master/scripts/Install.ps1'))}" 
+@powershell -NoProfile -ExecutionPolicy unrestricted -Command "&{$target='c:\cmdport\';$broker='test';$username='test';$password='test';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Wave/master/scripts/Install.ps1'))}" 
 ```
 
 #### Ubuntu 14.04
  
  Git clone the repo and run the install script as follows. 
 ```
-git clone http://github.com/sajayantony/cmdport
+git clone http://github.com/aspnet/Wave
 sudo ./cmdport/scripts/install.sh testbroker testuser testpassword
 ```
     

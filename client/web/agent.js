@@ -56,7 +56,7 @@ var ViewModel = function () {
         // called when the client connects
         function onConnect() {
             self.connected(true);
-            
+
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
             client.subscribe("client/+/config");
@@ -112,7 +112,7 @@ var ViewModel = function () {
 
     self.Send = function () {
         var machine = self.CurrentNode();
-        var command = prefixShell(self.Command(), machine.config.os === "win32");
+        var command = preProcessCommand(self.Command(), machine.config.os === "win32");
         console.log("Send - [" + machine.name + "] " + command);
         var msg = new Paho.MQTT.Message(command);
         msg.destinationName = self.CurrentNode().name;
@@ -140,7 +140,7 @@ var ViewModel = function () {
     /*
     Handle simple commands and prefix shell to make testing easier. 
     */
-    function prefixShell(command, isWin32) {
+    function preProcessCommand(command, isWin32) {
 
         var isSimple = true;
         var cmd = command;
@@ -155,17 +155,30 @@ var ViewModel = function () {
             var arg = command.match(/(?:[^\s"]+|"[^"]*")+/g);
             var cmd = arg.shift();
 
-            if (isWin32) {
+            if (isChangeDirectory(command)) {
+                var cdCommand = {
+                    command: "setenv",
+                    cwd: arg[0]
+                }
+
+                command = JSON.stringify(cdCommand);
+
+            } else if (isWin32) {
                 var hasShell = cmd.match(/^cmd/i) || cmd.match(/^powershell/i);
                 var isExe = cmd.match(/\.exe$/i);
                 if (!hasShell && !isExe) {
-                    return "cmd.exe /c " + command;
+                    command = "cmd.exe /c " + command;
                 }
             }
         }
 
         return command;
     };
+
+    function isChangeDirectory(cmd) {
+        return (cmd.match(/cd/i));
+    }
+
 };
 
 $(document).ready(function () {

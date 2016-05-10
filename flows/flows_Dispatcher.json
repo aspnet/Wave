@@ -328,8 +328,8 @@
         "name": "",
         "active": false,
         "console": "false",
-        "complete": "cwd",
-        "x": 907,
+        "complete": "payload",
+        "x": 917,
         "y": 459.85711669921875,
         "wires": []
     },
@@ -356,11 +356,11 @@
         "y": 282.14288330078125,
         "wires": [
             [
-                "ff324216.8651e"
+                "ff324216.8651e",
+                "933b6237.c0614"
             ],
             [
-                "51ad98c3.ae5268",
-                "933b6237.c0614"
+                "51ad98c3.ae5268"
             ]
         ]
     },
@@ -369,7 +369,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetEnv",
-        "func": "var env = global.get('env');\nvar req = msg.requestpayload;\nenv.set(req.env, req.path);\n\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(!created){\n        msg.payload = \"ERR_NOLOGDIR\";\n        return msg;\n    }\n}\nmsg.payload = 'hostname'\nreturn msg;",
+        "func": "msg.payload = 'hostname';\n\nvar env = global.get('env');\nvar req = msg.requestpayload;\nvar success = env.set(req.env, req.path, req.cwd);\nif(!success){\n    msg.payload = \"ERR_INCORRECT_ENV\"\n    return msg;\n}\n\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(!created){\n        msg.payload = \"ERR_NOLOGDIR\";\n    }\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 684.28564453125,
@@ -391,8 +391,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 91.77777862548828,
-        "y": 580.6666259765625,
+        "x": 90.77777862548828,
+        "y": 587.6666259765625,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -485,6 +485,25 @@
         "once": false,
         "x": 108,
         "y": 771,
+        "wires": [
+            [
+                "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "49259639.4b70d8",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "cwd",
+        "topic": "",
+        "payload": "{\"command\": \"setenv\",\"cwd\": \"/\" }",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 85,
+        "y": 553,
         "wires": [
             [
                 "5033105d.4c52c"

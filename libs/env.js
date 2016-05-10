@@ -1,23 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 
-function saveConfig(key, value) {
+function udpateConfig(key, value) {
     var config = getConfig() || {};
-    
+
     // If the valid defined value has been passed then 
     // update the value in the config object.
-    if(typeof(value) !== 'undefined'){
-        config[key] = value;        
+    if (typeof (value) !== 'undefined') {
+        config[key] = value;
     }
-        
+
     // Clear the keys only if the value is null
     if (value == "") {
         delete config[key];
     }
-    
-    var configStr = JSON.stringify(config, null, '\t');
-    fs.writeFileSync(_configFilename, configStr);
-    console.log("Environment Configuration  written to " + _configFilename);
+
     _configValues = config;
 }
 
@@ -31,7 +28,7 @@ function getConfig() {
             }
         } catch (e) { }
     }
-    
+
     return _configValues;
 }
 
@@ -76,9 +73,19 @@ function resolveVariabale(input, env) {
 }
 
 function set(env, path, cwd) {
-    saveConfig("env", env);
-    saveConfig('extraPaths', path);
-    saveConfig('cwd', cwd);
+    try {
+        var cwd = getCwd(cwd);
+
+        udpateConfig("env", env);
+        udpateConfig('extraPaths', path);
+        udpateConfig('cwd', cwd);
+
+        var configStr = JSON.stringify(_configValues, null, '\t');
+        fs.writeFileSync(_configFilename, configStr);
+        console.log("Environment Configuration  written to " + _configFilename);
+        return true;
+    } catch (e) { }
+    return false;
 }
 
 function getCwd(directory) {
@@ -91,6 +98,15 @@ function getCwd(directory) {
     } else {
         // No overriding path and hence use the configured CWD.
         cwd = configCwd;
+    }
+
+    if (cwd) {
+        // throw because you can't set a cwd that would 
+        // mess up the agent.
+        var fstats = fs.statSync(cwd);
+        if (!fstats || !fstats.isDirectory()) {
+            throw Error("Not a valid directory")
+        }
     }
 
     return cwd;

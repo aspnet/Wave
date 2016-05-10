@@ -89,6 +89,11 @@ function set(env, path, cwd) {
 }
 
 function getCwd(directory) {
+    //Check if we are trying to unset the directory.    
+    if (directory == "") {
+        return directory;
+    }
+    
     var configCwd = (getConfig() || {})["cwd"];
     var cwd = directory;
     if (cwd) {
@@ -107,6 +112,8 @@ function getCwd(directory) {
         if (!fstats || !fstats.isDirectory()) {
             throw Error("Not a valid directory")
         }
+        
+        cwd = path.resolve(cwd);
     }
 
     return cwd;

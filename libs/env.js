@@ -84,7 +84,10 @@ function set(env, path, cwd) {
         fs.writeFileSync(_configFilename, configStr);
         console.log("Environment Configuration  written to " + _configFilename);
         return true;
-    } catch (e) { }
+
+    } catch (e) {
+        console.log(e);
+    }
     return false;
 }
 
@@ -93,7 +96,7 @@ function getCwd(directory) {
     if (directory == "") {
         return directory;
     }
-    
+
     var configCwd = (getConfig() || {})["cwd"];
     var cwd = directory;
     if (cwd) {
@@ -112,7 +115,7 @@ function getCwd(directory) {
         if (!fstats || !fstats.isDirectory()) {
             throw Error("Not a valid directory")
         }
-        
+
         cwd = path.resolve(cwd);
     }
 

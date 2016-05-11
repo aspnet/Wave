@@ -21,10 +21,16 @@ module.exports.setup = function (msg) {
     try {
         var envVars = envUtil.get(payload.env);
         msg.env = envVars;
-        
-        //Set the current working directory.
-        var directory = envUtil.getCwd(payload.cwd);
-        msg.cwd = envUtil.resolve(directory, envVars);
+
+        // Set the current working directory.
+        // Configuration commands use the cwd to store the value
+        // So do not set CWD if the commadn is setenv.
+        // TODO: Move all config values into a special property.
+        var shouldSetCwd = isSimple || !payload.command.match(/^setenv/i)
+        if (shouldSetCwd) {
+            var directory = envUtil.getCwd(payload.cwd);
+            msg.cwd = envUtil.resolve(directory, envVars);
+        }
 
         //Simple commands have the command in the payload.
         msg.payload = envUtil.resolve(isSimple ? payload : payload.command, envVars);

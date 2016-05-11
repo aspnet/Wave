@@ -1,0 +1,6 @@
+{
+    "HelloWorldMvc" : {
+        "testspec" : "./test/run-helloworldmvc.md",
+        "testenv": "./test/run-helloworldmvc-env.json"
+    }
+}

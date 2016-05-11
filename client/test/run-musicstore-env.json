@@ -5,6 +5,7 @@
     "scriptSource": "https://github.com/aspnet/Musicstore.git", 
     "appDll": "musicstore.dll",
     "buildPath": "",
+    "UseDatabase": "false",
     "$targets": {
         "server": {
             "name": "wincell1-win1"

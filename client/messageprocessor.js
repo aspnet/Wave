@@ -37,6 +37,10 @@ function flattenEnv(env) {
 
 function resolveEnv(env) {
 
+    for (var target in env["$targets"]) {
+        env[target] = env["$targets"][target]["name"];    
+    }
+    
     var resolvedEnv = {};
     for (var target in env["$targets"]) {
         for (var property in env) {
@@ -45,7 +49,7 @@ function resolveEnv(env) {
                 env["$targets"][target][property] = env[property];
             }
         }
-        env["$targets"][target][target] = env["$targets"][target]["name"];
+        //env["$targets"][target][target] = env["$targets"][target]["name"];
         resolvedEnv[target] = flattenEnv(env["$targets"][target]);
     }
     return resolvedEnv;
@@ -68,7 +72,13 @@ function process(in_msg, callbacktopic) {
 
     var envid = "";
     
-    if (msg.testspec) {
+
+    if (msg.exitcode && msg.exitcode != 0) {
+        console.log('[EndTest       ] ');
+        console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
+        return null;
+    }
+    else if (msg.testspec) {
         // This is the flow for the test kickoff
         if(msg.step == undefined) {
             console.log(colors.blue("[StartTest     ] ") + msg.testspec);
@@ -95,9 +105,22 @@ function process(in_msg, callbacktopic) {
         environment[envid+"/testspec"] = msg.testspec;
     }
     else if (msg.testid && msg.jobid) {
+        if (msg.async) {
+            if (msg.exitcode && msg.exitcode != 0) {
+                console.log('[async command failed] ' + msg);
+                return null;
+            }
+            if (!msg.continue) {
+                return null;
+            }
+        }
             console.log(colors.blue("[ResumeTest    ]" + msg.jobid +"/" +msg.testid));
-            envid = getEnvId(callbacktopic, msg.jobid,msg.testid);
+            envid = getEnvId(callbacktopic, msg.jobid,msg.testid);            
             msg.testspec = environment[envid+"/testspec"];
+            if(typeof msg.testspec == 'undefined') {
+                console.log(colors.blue("[ResumeTestFailed] Environment doesn't exist for " + msg.jobid +"/" +msg.testid));
+                return;
+            }
     }
     else {
         console.log("Invalid message received by controller: (jobid and testid are mandatory): " + JSON.stringify(msg))
@@ -105,10 +128,6 @@ function process(in_msg, callbacktopic) {
     }
     
 
-    if (msg.exitcode && msg.exitcode != 0) {
-        console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
-        return null;
-    }
 
     var nextStep = getnextstep(msg.step);
 
@@ -125,6 +144,7 @@ function process(in_msg, callbacktopic) {
                     step: nextStep,
                     jobid: msg.jobid,
                     testid: msg.testid,
+                    async: cmd.async,
                     exitcode: undefined
                 },
                 target: cmd.target

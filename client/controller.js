@@ -63,7 +63,7 @@ function start(inputargs) {
         handler: function (topic, msg) {
             log('['+topic+'] ' + msg);
             var msg = JSON.parse(msg);
-
+                
             //Execute dummy message
             if (myargs.test) {
                 // We know that we need to execute this as it has an undefined exitcode.
@@ -78,7 +78,6 @@ function start(inputargs) {
     
             var nextcmd = msgProcessor.process(msg, args.topic);
             if (nextcmd == null) {
-                log('[EndTest       ] ');
                 //client.end();
                 // setTimeout(function() {
                 //     process.exit();
@@ -102,6 +101,9 @@ function start(inputargs) {
                 }
             }
             var clientTopic = nextcmd.target;
+                if(nextcmd.msg.async) {
+                    clientTopic = clientTopic + "/async";                        
+                }
 
             //For the test we send it back to the controller.
             if (myargs.test) {
@@ -110,6 +112,11 @@ function start(inputargs) {
             
             setenvPromise.then (function() {
                 sendCommand(clientTopic, nextcmd.msg);
+            }).then(function(){
+                if(nextcmd.msg.async){
+                    nextcmd.msg.continue = true;
+                    sendCommand(args.topic, nextcmd.msg);
+                }
             });
         }
     };
@@ -149,7 +156,11 @@ function start(inputargs) {
 
 function cmdportSend(topic, msg){
             var deferred = Q.defer();
-        log('[Send          ]' +   topic + ': ' + JSON.stringify(msg));        
+            var header = "Send"; 
+            if(msg.async) {
+                header = header + " async";
+            }
+        log('['+header+'          ]' +   topic + ': ' + JSON.stringify(msg));        
             cmdport.send(topic, msg);
         deferred.resolve();
         return deferred.promise;                

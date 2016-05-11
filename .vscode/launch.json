@@ -99,7 +99,7 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/client/controller.js",
 			"stopOnEntry": false,
-			"args": [ "--job", "test/test-job-musicstore.json", "--topic", "cgrp/aspnet","--verbose"],
+			"args": [ "--job", "test/run-job-musicstore.json", "--topic", "cgrp/aspnet","--verbose"],
 			"cwd": "${workspaceRoot}/client",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,

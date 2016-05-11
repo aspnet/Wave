@@ -49,16 +49,21 @@ function getcommandText(contents, index) {
                     };
                     
                     // cwd is of the format <config cwd="$(basepath)"/> 
-                    var cwd = parts[1].match(/cwd=\"(.*?)\"\/>/m);                    
+                    var cwd = parts[1].match(/cwd=\"(.*?)\"/m);                    
                     if(cwd && cwd.length > 1) {
                         command.cwd = cwd[1];
                     }
-                    //console.log(command);
+                    command.async = false;                    
+                    var async = parts[1].match(/async=\"(.*?)\"/m);
+                    if(async && async.length >1) {
+                        command.async = (async[1] == "true") ? true:false;
+                    } 
                     return command;
                 }
             }
         }
     }
+    return "";
 };
 
 function applyEnv(cmd, env) {
@@ -103,7 +108,7 @@ function _replaceEnv(input, env) {
             return env[$1] || match;
         });
 
-    return null;
+    return input;
 }
 
 function cli() {

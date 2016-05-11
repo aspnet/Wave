@@ -14,6 +14,12 @@ function Machine(payload) {
     try {
         self.config = JSON.parse(payload);
         self.name = self.config.hostname;
+        self.output = ko.observable("");
+
+        var outputelement = document.getElementById("outputWindow");
+        self.output.subscribe(function (value) {
+         outputelement.scrollTop = outputelement.scrollHeight;
+     });
     } catch (e) {
         self.config = {};
         self.name = 'Unknown';
@@ -23,8 +29,9 @@ function Machine(payload) {
 var ViewModel = function () {
     var self = this;
     var creds = _creds;
+    
     self.Input = ko.observable();
-    self.Output = ko.observable();
+    self.CurrentNode = ko.safeObservable();
     self.Machines = ko.observableArray();
     self.broker = ko.observable();
     self.username = ko.observable();
@@ -38,7 +45,6 @@ var ViewModel = function () {
     };
     self.Command = ko.observable(JSON.stringify(command, null, 4));
 
-    self.CurrentNode = ko.safeObservable();
     //var broker = data.broker;
     function Subscribe() {
         // Create a client instance
@@ -89,11 +95,13 @@ var ViewModel = function () {
                 else {
                     self.Machines.push(msg);
                 }
-                self.onNodeClick(msg);
             }
-
-            if (message.destinationName.indexOf("output") > -1) {
-                self.Output(self.Output() + message.payloadString);
+            var outIndex = message.destinationName.indexOf("output")
+            if ( outIndex > -1) {
+                var match = ko.utils.arrayFirst(self.Machines(), function (item) {
+                    return message.destinationName.substring(0,outIndex-1) === item.name;
+                });
+                match.output(match.output() + message.payloadString);
             }
             console.log("onMessageArrived: (" + message.destinationName + ")" + message.payloadString);
         }
@@ -117,7 +125,7 @@ var ViewModel = function () {
         var msg = new Paho.MQTT.Message(command);
         msg.destinationName = self.CurrentNode().name;
         self.client.send(msg);
-        self.Output(self.Output() + "\n");
+        machine.output(machine.output() + "\n");
     };
 
     var currentSubscriptions = [];
@@ -125,8 +133,7 @@ var ViewModel = function () {
 
         currentSubscriptions.forEach(function (sub) {
             self.client.unsubscribe(sub);
-        });
-        self.Output("");
+        });        
         //self.Input("");
         self.CurrentNode(machine);
         self.client.subscribe(machine.name);
@@ -174,22 +181,15 @@ var ViewModel = function () {
 
         return command;
     };
-
     function isChangeDirectory(cmd) {
         return (cmd.match(/cd/i));
     }
+    self.CurrentNode(self.Machines()[0]);
 
 };
 
 $(document).ready(function () {
     var model = new ViewModel();
     ko.applyBindings(model);
-    //Set autoscrolling output-window
-    var outputelement = document.getElementById("outputWindow");
-    //$('#outputWindow').scrollTop($('#outputWindow')[0].scrollHeight);
-
-    model.Output.subscribe(function (value) {
-        outputelement.scrollTop = outputelement.scrollHeight;
-    });
 });
 

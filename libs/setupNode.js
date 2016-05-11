@@ -23,7 +23,7 @@ module.exports.setup = function (msg) {
         msg.env = envVars;
         
         //Set the current working directory.
-        var directory = envUtil.getCwd(directory);
+        var directory = envUtil.getCwd(payload.cwd);
         msg.cwd = envUtil.resolve(directory, envVars);
 
         //Simple commands have the command in the payload.

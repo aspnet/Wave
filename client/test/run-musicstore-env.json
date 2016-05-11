@@ -11,10 +11,9 @@
             "$path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd;%ProgramFles%\\nodejs"
         },
         "client": {
-            "name": "testcell-Linux1",
-            "basepath": "$HOME",
-            "logdir": "$HOME/$(testid)",
-            "$path": "~/.dotnet"
+            "name": "testcell-linux1",
+            "basepath": "/home/asplab",
+            "logdir": "/home/asplab/$(testid)"
         }
     }
 }

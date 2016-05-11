@@ -78,9 +78,6 @@ function applyEnv(cmd, env) {
                 cmd.command = "powershell.exe -File " + cmd.command;
             }
         }
-        else if(!(cmd.command.startsWith("cmd")) && !(cmd.command.indexOf(".exe") > -1)) {
-            cmd.command = "cmd.exe /c " + cmd.command;
-        }
         
         var ps1 = cmd.command.match(/(\w+?)\.ps1/);
         if(ps1 && ps1.length > 1) {

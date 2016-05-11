@@ -1,17 +1,20 @@
 {
-    "logdir": "c:\\$(testid)",
-    "$path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd;%ProgramFles%\\nodejs",
-    "basepath" : "c:\\$(testid)",
     "scriptSource": "https://github.com/aspnet/Musicstore.git", 
     "appDll": "musicstore.dll",
     "buildPath": "",
     "UseDatabase": "false",
     "$targets": {
         "server": {
-            "name": "wincell1-win1"
+            "name": "testcell-win1",
+            "basepath" : "c:\\$(testid)",
+            "logdir": "c:\\$(testid)",
+            "$path" : "c:\\users\\asplab\\appdata\\local\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd;%ProgramFles%\\nodejs"
         },
         "client": {
-            "name": "wincell1-win2"
+            "name": "testcell-Linux1",
+            "basepath": "$HOME",
+            "logdir": "$HOME/$(testid)",
+            "$path": "~/.dotnet"
         }
     }
 }

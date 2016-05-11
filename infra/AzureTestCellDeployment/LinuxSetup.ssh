@@ -1,0 +1,7 @@
+#cd ~
+#sudo mkdir /mnt/logshare
+#sudo mount -t cifs //fastfs.file.core.windows.net/testruns /mnt/logshare -o vers=3.0,username=<shareUserName>,password=<shareKey>,dir_mode=0777,file_mode=0777
+
+sudo apt-get -y install git
+git clone https://github.com/SajayAntony/cmdport.git
+sudo ./cmdport/scripts/install.sh <mqttBroker> <mqttUserName> <mqttPassword>

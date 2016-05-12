@@ -1,41 +1,48 @@
-# Command Portal
+# Overview
 
-A cross platform remote command executor. 
+Wave provides a tool-set for cross platform remote command execution. 
 
 * Based on nodejs for platform abstraction 
 * Uses MQTT broker for communication.
 * Mark down based execution engine
-* CLI for sending commands and viewing realtime outputs from targets.
+* Controller/CLI for sending commands and viewing real time outputs from targets.
 
-## Overview
+## Controller & Command Execution
 
-![Alt text](http://sajayantony.github.io/cmdport/images/diagram.svg)
-
-|Topic|Description|
-|----|-----------|
-|`hostname`| Subscribed by the host |
-|`hostname/async`| Subscribed by the host |
-|`hostname/output`| User command output stream | 
-| `hostname/status` | Retained messsage of last executed command | 
-| `client/hostname/config` | Birth message which is retained and includes config details like IP |  
-
-## Client CLI
-For details of the command line client goto [`./client`](/client)
-
-## Controller
-
-The controller is a simple orchestrator that coordinates and sequences multiple commands. The controller subscribes on `job/controllerid` topic and uses commands from a markdown table as follows. 
+The controller is an orchestrator that coordinates and sequences commands. The controller subscribes on `job/controllerid` topic and uses commands from a markdown table as follows. The controller is based on callbacks from the target agent as a mechanism of flow control. Commands are defined in markdown table with the following layout -  
 
 | Command     | Host      |Description|
 |-------------|-----------|-----------|
-| `first.bat` | $(server) |server command| 
-| `.\second.bat $(server) $(serverurl)` | $(client) | Client command |
+| `./startServer.sh` | $(server) |server command| 
+| `.\loadtest.cmd $(server) $(serverurl)` | $(client) | Client command |
 
 * [`Environment variables`](/../../issues/9) may be persisted across commands in the agent which will be available in a spawned process.
-* `logdir` can be changed as a part of the [environment command](/client#setting-environment-variables). 
+* `logdir` and  `cwd` can be changed as a part of the [environment command](/client#setting-environment-variables). 
 
+## Client CLI/Web Client
 
-## Agent Configuration
+The commands can be directly sent the target using the CLI. There is also a web client which gives a remote shell like experience. 
+For details of the command line client goto [`./client`](/client)
+
+## Agent & Controller Overview
+
+The agent communication is handled through a set of topics which it listens to and outputs messages to. The controller or CLI communicates to the well-know topic as the contracts defined below. 
+
+|Topic|Description|
+|----|-----------|
+|`hostid`| Subscribed by the host for synchronous command execution |
+|`hostid/async`| Subscribed by the host and commands are executed asynchronously |
+|`hostid/output`| Command output stream | 
+|`hostid/status` | Last command executed  | 
+|`client/hostid/config` | Birth and will message which is retained and includes config details like IP and status  |  
+
+* Hostid defaults to `hostname` unless we override the value. 
+
+The diagram below provides an overview of the communication mechanism between the agents and CLI/Controller. 
+
+![Alt text](https://aspnet.github.io/Wave/images/waveflow.png)
+
+## Agent Setup
 
 #### Windows 
 
@@ -83,7 +90,7 @@ To connect to the running instance use the following command to start an interac
 docker exec -it wave1 /bin/sh
 ```
 
-Once you are done with the agen you can use the following commands to stop the container and delete the image if necessary. 
+Once you are done with the agent you can use the following commands to stop the container and delete the image if necessary. 
 
 ```
 docker stop wave1 && docker rm wave1
@@ -114,11 +121,15 @@ The following instructions are for a standard [`Mosquitto`](http://mosquitto.org
     sudo nano /etc/mosquitto/mosquitto.conf
     ```
 
-3. Add the following 
+3. Add the following to disable anonymous access and enable websockets.  
 
     ```
     password_file /etc/mosquitto/pwfile
     allow_anonymous false
+
+    port 1883
+    listener 1884
+    protocol websockets
     ```
 
 4.  Restart the service 
@@ -131,3 +142,4 @@ The following instructions are for a standard [`Mosquitto`](http://mosquitto.org
     ```
     VM >> Settings >> Network Interfaces >> Network Interface >> Settings >> Network Security Group >> Settings >> Inbound Rules 
     ```
+    

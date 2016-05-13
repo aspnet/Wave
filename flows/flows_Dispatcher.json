@@ -424,7 +424,7 @@
         "z": "2f36ab1a.d0c954",
         "name": "setenv logdir",
         "topic": "",
-        "payload": "{\"command\" : \"setenv\" , \"logdir\" :\"./testlog3/\" , \"cwd\"  : \"./testlog3/\" }",
+        "payload": "{\"command\" : \"setenv\" , \"options\" : {  \"logdir\" :\"./testlog3/\" , \"cwd\"  : \"./testlog3/\" }}",
         "payloadType": "str",
         "repeat": "",
         "crontab": "",

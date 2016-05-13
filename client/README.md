@@ -49,15 +49,18 @@ When launching a process are composed using the following precedence
 parent process variables <<  presistent variables << command environment vars
 ```
 
-The following setenv command can be used to persist variables and configure the logdir as follows. 
+The following setenv command can be used to persist variables and configure the `logdir` and a base `CWD` as follows. 
 
 ```
 {
 	"command": "setenv",
-	"env": {
-		 "Test": "TestValue"
-		},	 
-	"logdir": "X:/logoutputpath" 
+	"options" " {
+		"env": {
+			 "Test": "TestValue"
+			},	 
+		"logdir": "X:/logoutputpath",
+		"cwd" : "/mnt/logs"
+	} 
 }
 ```
 

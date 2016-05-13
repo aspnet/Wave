@@ -63,7 +63,7 @@ git clone http://github.com/aspnet/Wave
 sudo ./cmdport/scripts/install.sh testbroker testuser testpassword
 ```
     
-This sets up the flow and connects to the broker and makes the machine ready for remote commands. Refer [`install.sh`](/scripts/install.sh) for details.    
+This sets up the flow and connects to the broker and makes the machine ready for remote commands. Refer to [`install.sh`](/scripts/install.sh) for details.    
 The following commands should be used to setup or remove the agent as needed. 
 ```
 sudo update-rc.d cmdport defaults 
@@ -74,7 +74,7 @@ sudo update-rc.d -f cmdport remove
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/dotnetperf/wave.svg?maxAge=2592000?style=plastic)](https://hub.docker.com/r/dotnetperf/wave/)
 
-The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands and the logs command enable you to see if the broker succcessfully connected or not. 
+The docker image is based of the `node:argon` image and contains the agent that can be started using the following commands and the logs command enables you to see if the broker succcessfully connected or not. 
 
 ```
 docker pull dotnetperf/wave
@@ -82,7 +82,7 @@ docker run --name wave1 -p 8001:8000 -e BROKER=[broker] -e USERNAME=[username] -
 docker logs wave1
 ```
 The image takes 3 environment variables and the hostname which is used to setup the credentials in the agent. 
-Refer the [Dockerfile](scripts/Dockerfile) 
+Refer to the [Dockerfile](scripts/Dockerfile) 
 
 To connect to the running instance use the following command to start an interactive shell. 
 
@@ -90,14 +90,14 @@ To connect to the running instance use the following command to start an interac
 docker exec -it wave1 /bin/sh
 ```
 
-Once you are done with the agent you can use the following commands to stop the container and delete the image if necessary. 
+Once you are done with the agent, you can use the following commands to stop the container and delete the image if necessary. 
 
 ```
 docker stop wave1 && docker rm wave1
 docker rmi dotnetperf/wave
 ```
 
-If you deploying containers on Ubuntu VM on Hyper-V, then:
+If you are deploying containers on Ubuntu VM on Hyper-V, then:
  - run `nm-tool` on the Ubuntu VM and pick any one of the DNS addresses in the output
  - `sudo vi /etc/default/docker` and add the DNS ip to DOCKER_OPTS parameter.
  - `sudo service docker restart`

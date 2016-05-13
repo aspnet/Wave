@@ -369,7 +369,7 @@
         "type": "function",
         "z": "2f36ab1a.d0c954",
         "name": "SetEnv",
-        "func": "msg.payload = 'hostname';\nvar req = msg.requestpayload;\n\nif(req.logdir){\n    var logutil = global.get('log');\n    var created = logutil.setlogdir(req.logdir)\n    if(created === false){\n        msg.payload = \"ERR_NOLOGDIR\";\n    }\n}\n\nvar env = global.get('env');\nvar success = env.set(req.env, req.path, req.cwd);\nif(success === false){\n    msg.payload = \"ERR_INCORRECT_ENV\"\n    return msg;\n}\n\nreturn msg;",
+        "func": "var setenv = global.get(\"setenv\");\nreturn setenv.set(msg);",
         "outputs": 1,
         "noerr": 0,
         "x": 684.28564453125,

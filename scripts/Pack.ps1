@@ -19,9 +19,9 @@ npmdedupe(Join-Path $sourceDir "client")
 
 If(Test-path $zipfile) {Remove-item $zipfile}
 
-$versionFile = Join-Path $artifactsDir "version.txt"
+$versionFile = Join-Path $artifactsDir "version.json"
 new-item -force -path $versionFile -value "" -type file
-git log -n1 --format="%h" | Out-File -FilePath $versionFile -Encoding ascii 
+git log -n1 --format='{"sha" : "%h"}' | Out-File -FilePath $versionFile -Encoding ascii 
 
 #Zip files. 
 Write-Host Packing [$sourceDir] into [$zipfile]

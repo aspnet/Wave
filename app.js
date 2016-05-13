@@ -40,7 +40,8 @@ var clientconfig = {
     "ostype": os.type(),
     "os": os.platform(),
     "ips": ipUtil.getIPs(),
-    "timestamp": new Date()
+    "timestamp": new Date(), 
+    "version" : config.version
 };
 
 var settings = {

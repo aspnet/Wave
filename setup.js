@@ -36,7 +36,7 @@ function cli(args) {
     var objstr = JSON.stringify(config, null, '\t');
     var configStr = util.format("var _creds = %s; \r\nmodule.exports = _creds; \r\n", objstr)
     var fs = require('fs');
-    var filename = path.resolve(__dirname, "./_creds.js");
+    var filename = path.resolve(__dirname, "./client/_creds.js");
     fs.writeFile(filename, configStr, function (err) {
         if (err) {
             return console.log(err);

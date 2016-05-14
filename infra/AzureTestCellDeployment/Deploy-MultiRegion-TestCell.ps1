@@ -138,6 +138,7 @@ function DoLinuxDeployment()
 
 		Write-Host "Doing linux config using temporary file: " $tempScriptName
 		cmd /c echo "Y`r" |  plink.exe  $linuxIP  -ssh -l "asplab" -pw $AdminPassword -m $tempScriptName 
+
 		Remove-Item $tempScriptName 
     }
 
@@ -210,7 +211,12 @@ function GetLocationNameArray
 
 
 
-Select-AzureRmSubscription -SubscriptionID $SubscriptionId
+$currentSubscription = (Get-AzureRmContext).Subscription
+if ($currentSubscription.SubscriptionId -ne $SubscriptionId)
+{
+	Write-Host "Setting current subscription"
+    Select-AzureRmSubscription -SubscriptionID $SubscriptionId
+}
 
 # validate passed in locations
 $azureLocations = ((Get-AzureRmResourceProvider -ProviderNamespace Microsoft.Compute).ResourceTypes | Where-Object ResourceTypeName -eq virtualMachines).Locations

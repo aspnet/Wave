@@ -23,7 +23,22 @@ if ($ResourceGroupName.Length -gt 10)
 $TemplateFile = "Windows-Windows_CellDeployment.json"
 $TemplateFile = [System.IO.Path]::Combine($PSScriptRoot, $TemplateFile)
 
-Select-AzureRmSubscription -SubscriptionID $SubscriptionId
+$currentSubscription = (Get-AzureRmContext).Subscription
+if ($currentSubscription.SubscriptionId -ne $SubscriptionId)
+{
+	Write-Host "Setting current subscription"
+    Select-AzureRmSubscription -SubscriptionID $SubscriptionId
+}
+
+# validate location
+$azureLocations = ((Get-AzureRmResourceProvider -ProviderNamespace Microsoft.Compute).ResourceTypes | Where-Object ResourceTypeName -eq virtualMachines).Locations
+if (-not $azureLocations.Contains($ResourceGroupLocation) )
+{
+    Write-Host "Error: Invalid location specified.  The location '" $ResourceGroupLocation "' does not exist or does not support VMs"
+    Write-Host "Valid locations are:"
+    $azureLocations
+    return
+}
 
 # Create or update the resource group using the specified template file and template parameters file
 Write-Host "Creating Resource Group"

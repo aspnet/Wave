@@ -165,7 +165,9 @@ var ViewModel = function () {
             if (isChangeDirectory(command)) {
                 var cdCommand = {
                     command: "setenv",
-                    cwd: arg[0] || ""
+                    options : {
+                        cwd: arg[0] || ""    
+                    }                    
                 }
 
                 command = JSON.stringify(cdCommand);

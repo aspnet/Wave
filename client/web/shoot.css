@@ -126,10 +126,14 @@ textarea.command{
     background:rgb(19,39,56);
     /*color: rgb(247,252,255);*/
     color: #fff;
-    font-family: "Consolas", "Courier New";    
+    font-family: "Consolas", "Courier New";
+    height:75%;           
 }
 
 .terminal{
-  padding-top:10px;
+  padding-bottom:10px;
 }
 
+.fill{
+ height:100%;
+}

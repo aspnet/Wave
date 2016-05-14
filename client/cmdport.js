@@ -67,13 +67,13 @@ function start(args) {
     var minimist = require('minimist');
     var fs = require('fs');
     var myargs = minimist(process.argv.slice(2), {
-        string: ['testspec', 'testenv','job']
+        string: ['spec', 'env','job']
     });
 
     function startTest(test){
         var msg = {
-            testspec: test.testspec,
-            env: JSON.parse(fs.readFileSync(test.testenv))
+            spec: test.spec,
+            env: JSON.parse(fs.readFileSync(test.env))
         };
         var args = ["send", "-t", myargs.topic, "-m", JSON.stringify(msg)];
         cli(args);
@@ -84,7 +84,7 @@ function start(args) {
         for(var test in jobspec) {
             startTest(jobspec[test]);            
         }       
-    }else if (myargs.testenv && myargs.testspec) {
+    }else if (myargs.env && myargs.spec) {
         startTest(myargs);
     }
     

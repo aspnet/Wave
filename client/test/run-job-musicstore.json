@@ -1,6 +1,6 @@
 {
     "HelloWorldMvc" : {
-        "testspec" : "./test/run-musicstore.md",
-        "testenv": "./test/run-musicstore-env.json"
+        "spec" : "./test/run-musicstore.md",
+        "env": "./test/run-musicstore-env.json"
     }
 }

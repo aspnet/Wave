@@ -78,13 +78,13 @@ function process(in_msg, callbacktopic) {
         console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
         return null;
     }
-    else if (msg.testspec) {
+    else if (msg.spec) {
         // This is the flow for the test kickoff
         if(msg.step == undefined) {
-            console.log(colors.blue("[StartTest     ] ") + msg.testspec);
+            console.log(colors.blue("[StartTest     ] ") + msg.spec);
         }
         else {
-            console.log(colors.blue("Invalid message received by controller: (step is defined along with testspec) " + msg));
+            console.log(colors.blue("Invalid message received by controller: (step is defined along with spec) " + msg));
             return null;
         }
         
@@ -102,7 +102,7 @@ function process(in_msg, callbacktopic) {
         msg.env["jobid"] = msg.jobid;
         envid = getEnvId(callbacktopic, msg.jobid,msg.testid);
         environment[envid] = resolveEnv(msg.env);
-        environment[envid+"/testspec"] = msg.testspec;
+        environment[envid+"/spec"] = msg.spec;
     }
     else if (msg.testid && msg.jobid) {
         if (msg.async) {
@@ -116,8 +116,8 @@ function process(in_msg, callbacktopic) {
         }
             console.log(colors.blue("[ResumeTest    ]" + msg.jobid +"/" +msg.testid));
             envid = getEnvId(callbacktopic, msg.jobid,msg.testid);            
-            msg.testspec = environment[envid+"/testspec"];
-            if(typeof msg.testspec == 'undefined') {
+            msg.spec = environment[envid+"/spec"];
+            if(typeof msg.spec == 'undefined') {
                 console.log(colors.blue("[ResumeTestFailed] Environment doesn't exist for " + msg.jobid +"/" +msg.testid));
                 return;
             }
@@ -132,7 +132,7 @@ function process(in_msg, callbacktopic) {
     var nextStep = getnextstep(msg.step);
 
     //Get next command
-    var cmd = mdparser.getcommand(msg.testspec, nextStep, environment[envid]);
+    var cmd = mdparser.getcommand(msg.spec, nextStep, environment[envid]);
     if (cmd) {
         var result =
             {

@@ -23,7 +23,7 @@ function start(inputargs) {
     inputargs = updateQosClientId(inputargs);
     var args = args_util.process(inputargs);
     var myargs = minimist(inputargs, {
-        string: ['--test', '--verbose', '--start', 'testspec', 'testenv', 'job']
+        string: ['--test', '--verbose', '--start', 'spec', 'env', 'job']
     });
 
     if (!args.topic) {
@@ -229,7 +229,7 @@ function cmdportSend(topic, msg){
             });
     }
     
-    if(myargs.job || (myargs.testenv && myargs.testspec) ) {
+    if(myargs.job || (myargs.env && myargs.spec) ) {
         cmdport.start(myargs);
     }
 }

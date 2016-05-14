@@ -1,4 +1,7 @@
 {
-     "server": "$(localhost)",    
-     "machines" :"$(localhost)"
+    "$targets": {
+        "server": {
+            "name" : "$(localhost)"
+        }
+    }
 }

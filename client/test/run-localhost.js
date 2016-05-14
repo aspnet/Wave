@@ -5,14 +5,14 @@ var os = require('os');
 var path = require('path');
 var cmdport = require('../cmdport');
 var controller = require('../controller');
-var env = require('./test-localhost-env.json')
+var env = require('./run-localhost-env.json')
 
 // Add localhost variable.
 env.localhost = os.hostname().toLowerCase();
  
 var controllertopic = ('job/' + os.hostname()).toLowerCase();
 var payload = { 
-        testspec : path.resolve(__dirname, './test-localhost.md'), 
+        testspec : path.resolve(__dirname, './run-localhost.md'), 
         env: env
     };
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+var path = require('path');
+
 try {
     // a path we KNOW might not exists since it might not be configured.
     var credentials = require('./_creds')
@@ -14,17 +16,18 @@ var broker = credentials.broker;
 
 function cli(inputargs) {
 
+    var modulesDir = path.resolve(path.join(__dirname, '../node_modules/'));
     var commist = require('commist')()
-        , helpMe = require('help-me')({ dir: './node_modules/mqtt/doc' });
+        , helpMe = require('help-me')({ dir: path.join(modulesDir, 'mqtt/doc') });
 
-    commist.register('publish', require('./node_modules/mqtt/bin/pub'));
-    commist.register('send', require('./node_modules/mqtt/bin/pub'));
-    commist.register('subscribe', require('./node_modules/mqtt/bin/sub'));
+    commist.register('publish', require(path.join(modulesDir, 'mqtt/bin/pub')));
+    commist.register('send', require(path.join(modulesDir, 'mqtt/bin/pub')));
+    commist.register('subscribe', require(path.join(modulesDir, 'mqtt/bin/sub')));
     commist.register('clean', require('./clean'));
     commist.register('start', start);
 
-    commist.register('version', function() {
-        console.log('MQTT.js version:', require('./node_modules/mqtt/package.json').version);
+    commist.register('version', function () {
+        console.log('MQTT.js version:', require(path.join(modulesDir, 'mqtt/package.json')).version);
     });
 
     commist.register('help', helpMe.toStdout);
@@ -60,17 +63,17 @@ function send(topic, payload) {
         payload = JSON.stringify(payload);
     }
     var args = ["send", "-t", topic, "-m", payload];
-        cli(args);
+    cli(args);
 }
 
 function start(args) {
     var minimist = require('minimist');
     var fs = require('fs');
     var myargs = minimist(process.argv.slice(2), {
-        string: ['testspec', 'testenv','job']
+        string: ['testspec', 'testenv', 'job']
     });
 
-    function startTest(test){
+    function startTest(test) {
         var msg = {
             testspec: test.testspec,
             env: JSON.parse(fs.readFileSync(test.testenv))
@@ -78,16 +81,16 @@ function start(args) {
         var args = ["send", "-t", myargs.topic, "-m", JSON.stringify(msg)];
         cli(args);
     }
-    
-    if(myargs.job) {
+
+    if (myargs.job) {
         var jobspec = JSON.parse(fs.readFileSync(myargs.job));
-        for(var test in jobspec) {
-            startTest(jobspec[test]);            
-        }       
-    }else if (myargs.testenv && myargs.testspec) {
+        for (var test in jobspec) {
+            startTest(jobspec[test]);
+        }
+    } else if (myargs.testenv && myargs.testspec) {
         startTest(myargs);
     }
-    
+
 }
 
 module.exports.cli = cli;

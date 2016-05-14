@@ -40,7 +40,7 @@
 			"program": "${workspaceRoot}/client/cmdport.js",
 			"stopOnEntry": false,
 			"args": [],
-			"cwd": "${workspaceRoot}/client",
+			"cwd": "${workspaceRoot}",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,
 			"runtimeArgs": [
@@ -57,7 +57,7 @@
 			"name": "Launch-localhost-e2e",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/client/test/test-localhost.js",
+			"program": "${workspaceRoot}/client/test/run-localhost.js",
 			"stopOnEntry": false,
 			"args": [],
 			"cwd": "${workspaceRoot}/client",

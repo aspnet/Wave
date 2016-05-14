@@ -3,7 +3,6 @@
 
 var fs = require('fs');
 var util = require('util');
-var process = require('process');
 
 function getcommand(filename, index, env) {
     var contents = getContents(filename);

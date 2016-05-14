@@ -5,7 +5,7 @@ The credentials file can be generated using setup.js as follows. **Make sure you
 
 ```
 npm install
-./setup.js broker username password
+../setup.js -h broker -u username -P password
 ```
 
 # Command Execution

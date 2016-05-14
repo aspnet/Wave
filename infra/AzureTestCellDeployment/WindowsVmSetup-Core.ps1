@@ -7,6 +7,9 @@ Param(
     [string] [Parameter(Mandatory=$true)] $MqttPassword
 )
 
+# Turn off firewall. Azure security group settings control external access. Intra Test Cell connections should be available
+& netsh advfirewall set allprofiles state off
+
 mkdir  c:\StartupConfig
 mkdir  c:\WinConfig
 
@@ -33,8 +36,6 @@ $autoLogonRegContent = $autoLogonRegContent -replace "<adminUser>", $AdminUser
 $autoLogonRegContent = $autoLogonRegContent -replace "<adminPassword>", $AdminPassword
 $autoLogonRegContent | Set-Content c:\StartupConfig\EnableAutoLogon.reg
 $result = cmd /c regedit.exe /S c:\StartupConfig\EnableAutoLogon.reg 2`>`&1  
-$result = "Autologon config complete  " + $result 
-Write-Output $result 
 
 #configure logon startup script
 <#
@@ -45,8 +46,8 @@ powershell "& {c:\WinConfig\CmdPortInstall.ps1 -target_dir 'c:\cmdport'  -broker
 "@
 #>
 $startUpBatchFileContent = @"
-powershell.exe -command "& {[System.IO.Directory]::Delete('c:\cmdport',1) }" 2>&1 > C:\StartupConfig\CmdPortDelete.log
-powershell.exe -NoProfile -ExecutionPolicy unrestricted -Command "&{`$target='c:\cmdport\';`$broker='$MqttBroker';`$username='$MqttUser';`$password='$MqttPassword';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/SajayAntony/cmdport/master/scripts/Install.ps1'))}"  2>&1 > c:\StartupConfig\CmdPortInstall.log
+powershell.exe -command "& {[System.IO.Directory]::Delete('c:\Wave',1) }" 2>&1 > C:\StartupConfig\WaveDelete.log
+powershell.exe -NoProfile -ExecutionPolicy unrestricted -Command "&{`$target='c:\Wave\';`$broker='$MqttBroker';`$username='$MqttUser';`$password='$MqttPassword';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Wave/master/scripts/Install.ps1'))}"  2>&1 > c:\StartupConfig\WaveInstall.log
 "@
 
 $startUpBatchFileContent | Set-Content c:\StartupConfig\Startup.bat

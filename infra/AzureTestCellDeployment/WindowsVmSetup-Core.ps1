@@ -10,7 +10,6 @@ Param(
 # Turn off firewall. Azure security group settings control external access. Intra Test Cell connections should be available
 & netsh advfirewall set allprofiles state off
 
-mkdir  c:\StartupConfig
 mkdir  c:\WinConfig
 
 #install Git
@@ -23,28 +22,12 @@ Invoke-WebRequest -Uri "https://nodejs.org/dist/v4.4.3/node-v4.4.3-x64.msi" -Out
 & msiexec /i c:\WinConfig\node-v4.4.3-x64.msi /quiet | Out-Null  -Verbose
 $env:Path += ";C:\Program Files\nodejs;c:\Users\" + $AdminUser + "\AppData\Roaming\npm"
 
-#configure autologon 
-$autoLogonRegContent = @"
-Windows Registry Editor Version 5.00
+#configure autologon
+..\scripts\autoLogon.ps1 -AdminUser $AdminUser -AdminPassword $AdminPassword
 
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon]
-"DefaultUserName"="<adminUser>"
-"DefaultPassword"="<adminPassword>"
-"AutoAdminLogon"="1" 
-"@
-$autoLogonRegContent = $autoLogonRegContent -replace "<adminUser>", $AdminUser
-$autoLogonRegContent = $autoLogonRegContent -replace "<adminPassword>", $AdminPassword
-$autoLogonRegContent | Set-Content c:\StartupConfig\EnableAutoLogon.reg
-$result = cmd /c regedit.exe /S c:\StartupConfig\EnableAutoLogon.reg 2`>`&1  
+mkdir  c:\StartupConfig -Force
 
 #configure logon startup script
-<#
-$startUpBatchFileContent = @"
-powershell.exe -command "& {[System.IO.Directory]::Delete('c:\cmdport',1) }" 2>&1 > C:\StartupConfig\CmdPortDelete.log
-powershell.exe -command "& {(new-object net.webclient).DownloadString('https://raw.githubusercontent.com/SajayAntony/cmdport/master/scripts/Install.ps1') | Set-Content c:\WinConfig\CmdPortInstall.ps1 }" 2>&1 > c:\StartupConfig\CmdPortDownload.log
-powershell "& {c:\WinConfig\CmdPortInstall.ps1 -target_dir 'c:\cmdport'  -broker_addr  $MqttBroker  -broker_username  $MqttUser -broker_password $MqttPassword }" 2>&1 > c:\StartupConfig\CmdPortInstall.log
-"@
-#>
 $startUpBatchFileContent = @"
 powershell.exe -command "& {[System.IO.Directory]::Delete('c:\Wave',1) }" 2>&1 > C:\StartupConfig\WaveDelete.log
 powershell.exe -NoProfile -ExecutionPolicy unrestricted -Command "&{`$target='c:\Wave\';`$broker='$MqttBroker';`$username='$MqttUser';`$password='$MqttPassword';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Wave/master/scripts/Install.ps1'))}"  2>&1 > c:\StartupConfig\WaveInstall.log

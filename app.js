@@ -6,6 +6,7 @@ const os = require('os')
 const config = require('./config');
 const env = require('./libs/env')
 const log = require('./libs/log')
+const recover = require('./libs/recover')
 const ipUtil = require('./libs/ipUtil');
 const objUtil = require('./libs/objUtil');
 const setupNode = require('./libs/setupNode');
@@ -53,7 +54,8 @@ var settings = {
         log: log,
         env: env, 
         setup : setupNode.setup,
-        setenv : setenvNode
+        setenv : setenvNode,
+        recover : recover
     },
     verbose: false,
     flowFile: path.join(basedir, 'flows_Dispatcher.json'),

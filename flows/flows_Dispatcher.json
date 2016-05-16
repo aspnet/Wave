@@ -54,8 +54,8 @@
         "topic": "{mqtt_dynamic.clientid}",
         "broker": "73cb19d6.de22d8",
         "async": "",
-        "x": 74,
-        "y": 109,
+        "x": 301,
+        "y": 105,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -73,8 +73,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 119.28571319580078,
-        "y": 394.2857360839844,
+        "x": 120.28570556640625,
+        "y": 32.285736083984375,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -90,13 +90,11 @@
         "append": "",
         "useSpawn": true,
         "name": "Exec payload",
-        "x": 882.7142333984375,
-        "y": 285.6199645996094,
+        "x": 595.7142333984375,
+        "y": 410.6199645996094,
         "wires": [
             [
-                "d93a799f.6813c8",
-                "da4e7177.76ea6",
-                "a68bc475.cf4e88"
+                "d93a799f.6813c8"
             ]
         ]
     },
@@ -105,8 +103,8 @@
         "type": "mqtt-dynamic complete",
         "z": "2f36ab1a.d0c954",
         "name": "Complete",
-        "x": 1307.285758972168,
-        "y": 88.42863273620605,
+        "x": 852.2857666015625,
+        "y": 736.4286499023438,
         "wires": [
             [
                 "cd1da007.7b54d"
@@ -122,8 +120,8 @@
         "qos": "0",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 456.5713882446289,
-        "y": 89.57146549224854,
+        "x": 507.5714111328125,
+        "y": 192.57147216796875,
         "wires": []
     },
     {
@@ -134,8 +132,8 @@
         "topic": "{mqtt_dynamic.clientid}/async",
         "broker": "b788e70f.487718",
         "async": "true",
-        "x": 70.71428298950195,
-        "y": 236.57145500183105,
+        "x": 350.71429443359375,
+        "y": 42.57147216796875,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -151,8 +149,8 @@
         "qos": "0",
         "retain": "",
         "broker": "b788e70f.487718",
-        "x": 1220.571388244629,
-        "y": 274.4285697937012,
+        "x": 1069.5714111328125,
+        "y": 267.4285583496094,
         "wires": []
     },
     {
@@ -165,15 +163,22 @@
         "rules": [
             {
                 "t": "nnull"
+            },
+            {
+                "t": "else"
             }
         ],
         "checkall": "true",
-        "outputs": 1,
-        "x": 1096.8571701049805,
-        "y": 88.5715160369873,
+        "outputs": 2,
+        "x": 762.857177734375,
+        "y": 410.57151794433594,
         "wires": [
             [
-                "9a393a6d.89fd58"
+                "5a043379.fe78ac"
+            ],
+            [
+                "da4e7177.76ea6",
+                "a68bc475.cf4e88"
             ]
         ]
     },
@@ -186,8 +191,8 @@
         "appendNewline": false,
         "createDir": true,
         "overwriteFile": "false",
-        "x": 1404.5714111328125,
-        "y": 361.4285583496094,
+        "x": 1316.5714111328125,
+        "y": 364.4285583496094,
         "wires": []
     },
     {
@@ -201,8 +206,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 111.42857360839844,
-        "y": 460.2857360839844,
+        "x": 121.42857360839844,
+        "y": 65.2857666015625,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -240,8 +245,8 @@
         ],
         "checkall": "true",
         "outputs": 1,
-        "x": 1114.0715255737305,
-        "y": 185.42860221862793,
+        "x": 988.071533203125,
+        "y": 736.4285888671875,
         "wires": [
             [
                 "b0e9b472.cdcf48"
@@ -257,8 +262,8 @@
         "qos": "1",
         "retain": "",
         "broker": "73cb19d6.de22d8",
-        "x": 1513.214225769043,
-        "y": 187.42860221862793,
+        "x": 1319.2142333984375,
+        "y": 736.4285888671875,
         "wires": []
     },
     {
@@ -294,8 +299,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 1306.1428146362305,
-        "y": 186.14289665222168,
+        "x": 1146.142822265625,
+        "y": 736.1428833007812,
         "wires": [
             [
                 "da10be31.a4f09"
@@ -313,8 +318,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 91,
-        "y": 518,
+        "x": 153,
+        "y": 98,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -329,8 +334,8 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 917,
-        "y": 459.85711669921875,
+        "x": 694,
+        "y": 175.85711669921875,
         "wires": []
     },
     {
@@ -360,7 +365,7 @@
                 "933b6237.c0614"
             ],
             [
-                "51ad98c3.ae5268"
+                "810e9be9.332b6"
             ]
         ]
     },
@@ -372,8 +377,8 @@
         "func": "var setenv = global.get(\"setenv\");\nreturn setenv.set(msg);",
         "outputs": 1,
         "noerr": 0,
-        "x": 684.28564453125,
-        "y": 126.85712814331055,
+        "x": 718.28564453125,
+        "y": 275.85711669921875,
         "wires": [
             [
                 "51ad98c3.ae5268"
@@ -391,8 +396,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 90.77777862548828,
-        "y": 587.6666259765625,
+        "x": 156.77777099609375,
+        "y": 164.6666259765625,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -410,8 +415,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 117.5,
-        "y": 678,
+        "x": 138.5,
+        "y": 230,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -429,8 +434,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 116.5,
-        "y": 724,
+        "x": 140.5,
+        "y": 264,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -445,8 +450,8 @@
         "func": "var logutil = global.get('log');\nvar pid = msg.pid || 0;\nvar logfile = null;\n\nif(msg.requestpayload && \n   msg.requestpayload.logfile){\n       logfile = msg.requestpayload.logfile;\n   }\nmsg.filename = logutil.resolveFilename(pid,logfile);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1183.5,
-        "y": 362,
+        "x": 1189.5,
+        "y": 364,
         "wires": [
             [
                 "8c0930f5.febc8"
@@ -464,8 +469,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 96,
-        "y": 630,
+        "x": 159,
+        "y": 198,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -483,8 +488,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 108,
-        "y": 771,
+        "x": 152,
+        "y": 297,
         "wires": [
             [
                 "5033105d.4c52c"
@@ -502,11 +507,96 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 85,
-        "y": 553,
+        "x": 155,
+        "y": 130,
         "wires": [
             [
                 "5033105d.4c52c"
+            ]
+        ]
+    },
+    {
+        "id": "810e9be9.332b6",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "Backup Msg",
+        "func": "var recover = global.get(\"recover\");\nreturn recover.backup(msg);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 407,
+        "y": 410.5,
+        "wires": [
+            [
+                "51ad98c3.ae5268"
+            ]
+        ]
+    },
+    {
+        "id": "5a043379.fe78ac",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "Handle Interrupt",
+        "func": "var recover = global.get(\"recover\");\nreturn recover.interrupt(msg);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 841,
+        "y": 491.5,
+        "wires": [
+            [
+                "e4fb3470.fdc528"
+            ]
+        ]
+    },
+    {
+        "id": "e4fb3470.fdc528",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "Cleanup recovery",
+        "func": "var recover = global.get(\"recover\");\nreturn recover.cleanup(msg);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1033,
+        "y": 539.5,
+        "wires": [
+            [
+                "da4e7177.76ea6",
+                "a68bc475.cf4e88",
+                "9a393a6d.89fd58"
+            ]
+        ]
+    },
+    {
+        "id": "46d06b7d.8813bc",
+        "type": "inject",
+        "z": "2f36ab1a.d0c954",
+        "name": "Recover on Startup",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 514,
+        "y": 585.5,
+        "wires": [
+            [
+                "9bae87a9.d1ae7"
+            ]
+        ]
+    },
+    {
+        "id": "9bae87a9.d1ae7",
+        "type": "function",
+        "z": "2f36ab1a.d0c954",
+        "name": "Recover Msg",
+        "func": "var recover = global.get(\"recover\");\nreturn recover.recover(msg);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 700,
+        "y": 585.5,
+        "wires": [
+            [
+                "e4fb3470.fdc528"
             ]
         ]
     }

@@ -70,6 +70,13 @@ sudo update-rc.d cmdport defaults
 sudo update-rc.d -f cmdport remove
 ```
 
+Optional:
+
+To allow shutdown scenario to work, add the following line to the `sudoer` file to avoid interactive prompt. Note that we do not currently support `poweroff` and `reboot` commands.
+```
+user_name ALL=(ALL) NOPASSWD: /sbin/shutdown
+```
+
 #### Docker
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/dotnetperf/wave.svg?maxAge=2592000?style=plastic)](https://hub.docker.com/r/dotnetperf/wave/)

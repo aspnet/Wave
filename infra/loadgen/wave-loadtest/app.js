@@ -7,19 +7,27 @@ var url = require('url');
                 
 common.setup();
 
-function statusCallback(latency, result, error) {
-    //console.log('Current latency %j, result %j', latency, error ? JSON.stringify(error) + (result||"").toString() : result);
-    //console.log('----');
-    //console.log('Request elapsed milliseconds: ', error ? error.requestElapsed : result.requestElapsed);
-    //console.log('Request index: ', error ? error.requestIndex : result.requestIndex);
-    //console.log('Request loadtest() instance index: ', error ? error.instanceIndex : result.instanceIndex);
+var timedFunc = (function () {
+    var lastCall = 0;
+    return function (latency, result, error) {        
+        if (new Date() - lastCall < 1000)
+            return false;
+        lastCall = new Date();
+        outputLatency(latency,result, error);
+    }
+})();
+
+function outputLatency(latency, result, error) {        
     console.log("%j", latency);
 }
 
 var options = {
     url: 'http://localhost:8000',
     maxRequests: 1000,
-    statusCallback: statusCallback
+    rps : 100,
+    concurrency : 10,
+    keepalive : true,
+    statusCallback: timedFunc
 };
 
 function startLoadTest() {

@@ -172,6 +172,26 @@
 			"externalConsole": false,
 			"sourceMaps": false,
 			"outDir": null
+		},
+		{
+			"name": "Launch-loadtest",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/infra/loadgen/wave-loadtest/app.js",
+			"stopOnEntry": false,
+			"args": [""],
+			"cwd": "${workspaceRoot}/infra/loadgen/wave-loadtest/",
+			"preLaunchTask": null,
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
 		}
 		
 	]

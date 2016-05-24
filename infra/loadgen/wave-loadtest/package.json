@@ -11,5 +11,8 @@
   "dependencies": {
     "loadtest": "^1.4.0",
     "minimist": "^1.2.0"
+  },
+  "scripts": {
+    "test": "node test.js"
   }
 }

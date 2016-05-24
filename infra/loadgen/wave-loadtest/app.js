@@ -1,47 +1,10 @@
 #!/usr/bin/env node
 
-var loadtest = require('loadtest');
-var common = require('./libs/common');
+var loadgen = require('./lib/loadgen');
 var minimist = require('minimist');
 var url = require('url');
-                
-common.setup();
 
-var timedFunc = (function () {
-    var lastCall = 0;
-    return function (latency, result, error) {        
-        if (new Date() - lastCall < 1000)
-            return false;
-        lastCall = new Date();
-        outputLatency(latency,result, error);
-    }
-})();
-
-function outputLatency(latency, result, error) {        
-    console.log("%j", latency);
-}
-
-var options = {
-    url: 'http://localhost:8000',
-    maxRequests: 1000,
-    rps : 100,
-    concurrency : 10,
-    keepalive : true,
-    statusCallback: timedFunc
-};
-
-function startLoadTest() {
-    loadtest.loadTest(options, function (error) {
-        if (error) {
-            return console.error('Got an error: %s', error);
-        }
-        if(process.env.NODE_ENV){
-            console.log('Tests run successfully');    
-        }        
-        common.shutdown();
-    });
-}
-
+//TODO : Specify concurrency and rps. 
 function start(inputargs) {
     var args = minimist(inputargs);
 
@@ -50,11 +13,13 @@ function start(inputargs) {
         if (!result.hostname) {
             throw Error("Invalid URL");
         }
-        
-        options.url = args["_"][0];
-        
-        startLoadTest();
-        
+
+        var options = {
+            url: args["_"][0]
+        }
+
+        loadgen.startLoadtest(options);
+
     } catch (e) {
         console.error(e);
         process.exit(1);
@@ -64,4 +29,3 @@ function start(inputargs) {
 if (require.main === module) {
     start(process.argv.slice(2))
 }
-

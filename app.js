@@ -60,6 +60,7 @@ var settings = {
     mqtt_dynamic:
     {
         broker: config.broker.host,
+        broker_port: (config.broker.port ? config.broker.port : 1883),
         broker_username: config.broker.username,
         broker_password: config.broker.password,
         clientid: config.clientid,

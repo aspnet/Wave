@@ -3,6 +3,7 @@
      [ValidateScript({[System.IO.Path]::IsPathRooted($_)})]
      [string]$target_dir = $target,
      [string]$broker_addr = $broker,
+     [string]$broker_port = $port,
      [string]$broker_username = $username,
      [string]$broker_password = $password
 )
@@ -27,7 +28,7 @@ $client.DownloadFile( $url, $zipfilePath )
 [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfilePath, $target_dir);
 
 pushd $target_dir
-node setup.js -h $broker_addr -u $broker_username -P $broker_password
+node setup.js -h $broker_addr -p $broker_port $ -u $broker_username -P $broker_password
 
 npm install -g forever 
 forever start app.js

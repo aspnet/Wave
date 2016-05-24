@@ -10,23 +10,26 @@ function cli(args) {
         string: ['hostname', 'username', 'password'],
         alias: {
             hostname: ['h', 'host'],
+            port: 'p',
             clientid: 'id',
             username: 'u',
             password: 'P',
         },
         default: {
-            clientid: os.hostname().toLowerCase()
+            clientid: os.hostname().toLowerCase(),
+            port: 1883
         }
     });
 
     if (!args.host || !args.username || !args.password) {
-        console.log("Usage : \r" + "setup -h {broker} -u {username} -P {password} [-id clientid] ")
+        console.log("Usage : \r" + "setup -h {broker} [-p {port}] -u {username} -P {password} [-id clientid] ")
         return;
     }
 
     var config = {};
     config.broker = {
         host: args.host,
+        port: args.port,
         username: args.username,
         password: args.password,
     };

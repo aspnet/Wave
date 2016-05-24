@@ -78,7 +78,7 @@ The docker image is based of the `node:argon` image and contains the agent that 
 
 ```
 docker pull dotnetperf/wave
-docker run --name wave1 -p 8001:8000 -e BROKER=[broker] -e USERNAME=[username] -e PASSWORD=[password] -h [hostname] -d dotnetperf/wave
+docker run --name wave1 -p 8001:8000 -e BROKER=[broker] -e PORT=[port] -e USERNAME=[username] -e PASSWORD=[password] -h [hostname] -d dotnetperf/wave
 docker logs wave1
 ```
 The image takes 3 environment variables and the hostname which is used to setup the credentials in the agent. 

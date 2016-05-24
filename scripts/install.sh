@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ]; then
-    echo "Usage: ./install.sh {broker} {username} {password}"
+if [ "$#" -ne 4 ]; then
+    echo "Usage: ./install.sh {broker} {port} {username} {password}"
     exit 1
 fi
 
@@ -31,7 +31,7 @@ echo "USER HOME = $HOME"
 echo ==========================================
 
 #Setup the credentials
-./setup.js -h $1 -u $2 -P $3
+./setup.js -h $1 -p $2 -u $3 -P $4
 
 #SETUP home and install path variables in the init.d script
 sed  -e "s#{installpath}#$INSTALL_PATH#g" -e "s#{home}#$HOME#g" ./scripts/cmdport > _cmdport

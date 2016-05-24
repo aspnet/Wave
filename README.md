@@ -60,7 +60,7 @@ Setup the agent with the required credentials.
  Git clone the repo and run the install script as follows. 
 ```
 git clone http://github.com/aspnet/Wave
-sudo ./cmdport/scripts/install.sh testbroker testuser testpassword
+sudo ./Wave/scripts/install.sh testbroker testuser testpassword
 ```
     
 This sets up the flow and connects to the broker and makes the machine ready for remote commands. Refer to [`install.sh`](/scripts/install.sh) for details.    

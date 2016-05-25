@@ -75,6 +75,9 @@ Remove-PSSession $remotePsSession1
 Restart-AzureRmVM -ResourceGroupName $ResourceGroupName -Name "Win1" 
 Write-Host "Kicked off reboot of Windows VM"
 
+
+
+
 #deploy agent on Linux VM
 Write-Host "Starting Setup For Linux VM"
 $linuxIpResource = Get-AzureRmResource -ResourceGroupName $ResourceGroupName -ResourceName "LinuxPublicIP" -ExpandProperties
@@ -84,6 +87,7 @@ Write-Host "Linux VM IP:  "$linuxIP
 $sshScriptContent = Get-Content "LinuxSetup.ssh"
 $tempScriptName = [System.IO.Path]::GetTempFileName() + ".ssh"
 $sshScriptContent = $sshScriptContent -replace "<mqttBroker>", $MqttBroker
+$sshScriptContent = $sshScriptContent -replace "<mqttPort>", "1883"
 $sshScriptContent = $sshScriptContent -replace "<mqttUserName>", $MqttUser
 $sshScriptContent = $sshScriptContent -replace "<mqttPassword>", $MqttPassword
 Set-Content $tempScriptName -Value $sshScriptContent

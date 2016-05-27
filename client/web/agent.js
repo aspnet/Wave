@@ -18,8 +18,8 @@ function Machine(payload) {
 
         var outputelement = document.getElementById("outputWindow");
         self.output.subscribe(function (value) {
-         outputelement.scrollTop = outputelement.scrollHeight;
-     });
+            outputelement.scrollTop = outputelement.scrollHeight;
+        });
     } catch (e) {
         self.config = {};
         self.name = 'Unknown';
@@ -29,7 +29,7 @@ function Machine(payload) {
 var ViewModel = function () {
     var self = this;
     var creds = _creds;
-    
+
     self.Input = ko.observable();
     self.CurrentNode = ko.safeObservable();
     self.Machines = ko.observableArray();
@@ -48,7 +48,7 @@ var ViewModel = function () {
     //var broker = data.broker;
     function Subscribe() {
         // Create a client instance
-        client = new Paho.MQTT.Client(self.broker(), 1884, "clientId");
+        client = new Paho.MQTT.Client(self.broker(), 443, guid());
 
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -56,7 +56,11 @@ var ViewModel = function () {
 
         // connect the client
         function connect() {
-            client.connect({ onSuccess: onConnect, userName: self.username(), password: self.password() });
+            client.connect({ onSuccess: onConnect, onFailure: onFailure, userName: self.username(), password: self.password(), useSSL: true });
+        }
+
+        function onFailure(err) {
+            console.log(err);
         }
 
         // called when the client connects
@@ -84,12 +88,16 @@ var ViewModel = function () {
 
         // called when a message arrives
         function onMessageArrived(message) {
-            if (message.destinationName.indexOf("config") > -1) {
+            var configIndex = message.destinationName.indexOf("/config")
+            if (configIndex > -1) {
+                var machineName = message.destinationName.substring(7, configIndex);
                 var msg = new Machine(message.payloadString);
                 var match = ko.utils.arrayFirst(self.Machines(), function (item) {
-                    return msg.name === item.name;
+                    return item.name === machineName;
                 });
-                if (match) {
+                if (msg.name === "Unknown") {
+                    self.Machines.remove(match);
+                } else if (match) {
                     self.Machines.replace(match, msg);
                 }
                 else {
@@ -97,9 +105,9 @@ var ViewModel = function () {
                 }
             }
             var outIndex = message.destinationName.indexOf("output")
-            if ( outIndex > -1) {
+            if (outIndex > -1) {
                 var match = ko.utils.arrayFirst(self.Machines(), function (item) {
-                    return message.destinationName.substring(0,outIndex-1) === item.name;
+                    return message.destinationName.substring(0, outIndex - 1) === item.name;
                 });
                 match.output(match.output() + message.payloadString);
             }
@@ -117,7 +125,15 @@ var ViewModel = function () {
         self.cmdVisible(true)
     }
 
-
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
     self.Send = function () {
         var machine = self.CurrentNode();
         var command = preProcessCommand(self.Command(), machine.config.os === "win32");
@@ -133,7 +149,7 @@ var ViewModel = function () {
 
         currentSubscriptions.forEach(function (sub) {
             self.client.unsubscribe(sub);
-        });        
+        });
         //self.Input("");
         self.CurrentNode(machine);
         self.client.subscribe(machine.name);
@@ -165,9 +181,9 @@ var ViewModel = function () {
             if (isChangeDirectory(command)) {
                 var cdCommand = {
                     command: "setenv",
-                    options : {
-                        cwd: arg[0] || ""    
-                    }                    
+                    options: {
+                        cwd: arg[0] || ""
+                    }
                 }
 
                 command = JSON.stringify(cdCommand);
@@ -186,7 +202,9 @@ var ViewModel = function () {
     function isChangeDirectory(cmd) {
         return (cmd.match(/cd/i));
     }
-    self.CurrentNode(self.Machines()[0]);
+    if (self.Machines().length > 0) {
+        self.CurrentNode(self.Machines()[0]);
+    }
 
 };
 

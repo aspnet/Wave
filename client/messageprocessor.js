@@ -73,7 +73,7 @@ function process(in_msg, callbacktopic) {
     var envid = "";
     
 
-    if (msg.exitcode && msg.exitcode != 0) {
+    if (msg.exitcode && msg.exitcode != 0 && msg.continueOnError != 'true') {
         console.log('[EndTest       ] ');
         console.log(colors.red("[Exec+Callback]  " + "ERR_EXITCODE" + msg.exitcode));
         return null;
@@ -145,6 +145,7 @@ function process(in_msg, callbacktopic) {
                     jobid: msg.jobid,
                     testid: msg.testid,
                     async: cmd.async,
+                    continueOnError: cmd.continueOnError,
                     exitcode: undefined
                 },
                 target: cmd.target

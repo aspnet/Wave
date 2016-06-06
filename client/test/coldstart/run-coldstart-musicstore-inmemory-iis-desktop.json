@@ -1,0 +1,28 @@
+{
+    "logdir": "c:\\$(testid)",
+    "path" : "%localappdata%\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd",
+
+    "rebootCommand" : "shutdown /r /f /t 0",
+    "measureScript" : "Measure-IIS.ps1",
+    "publishScript" : "Publish-IIS.ps1",
+    "archiveScript" : "Archive-IIS.ps1",
+
+    "$targets": {
+        "server": {
+            "name": "Asp-xHPc7",
+            "targetApp" : "MusicStore",
+            "framework" : "net451",
+
+            "gitHome" : "D:\\git\\aspnet",
+            "scriptSource": "https://github.com/aspnet/Performance.git",
+            "perfHome" : "D:\\git\\aspnet\\Performance",
+            "scriptHome" : "D:\\git\\aspnet\\Performance\\test\\ColdStart",
+
+            "testAppBranch" : "shhsu/coldstart_inmemory",
+            "testAppSource" : "https://github.com/aspnet/MusicStore.git",
+            "testAppHome" : "D:\\git\\aspnet\\MusicStore",
+            "testAppDir" : "D:\\git\\aspnet\\MusicStore\\src\\MusicStore"
+        }
+    }
+}
+

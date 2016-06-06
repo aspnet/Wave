@@ -21,6 +21,7 @@ function add_creds(args) {
     var broker = credentials.broker;
     var options = [
         "--hostname", broker.host,
+        "--port", broker.port,
         "--username", broker.username,
         "--password", broker.password,
         "-q", "1"

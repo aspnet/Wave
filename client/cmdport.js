@@ -31,6 +31,7 @@ function cli(inputargs) {
     var options =
         [
             "--hostname", broker.host,
+            "--port", broker.port,
             "--username", broker.username,
             "--password", broker.password,
             "-q", "1"

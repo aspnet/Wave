@@ -5,4 +5,4 @@ WORKDIR /wave
 RUN npm install
 RUN ./scripts/write_version.sh
 EXPOSE 8000
-CMD node setup.js -h ${BROKER} -p {PORT} -u ${USERNAME} -P ${PASSWORD} && node app.js
+CMD node setup.js -h ${BROKER} -p ${PORT} -u ${USERNAME} -P ${PASSWORD} && node app.js

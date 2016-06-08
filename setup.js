@@ -22,7 +22,7 @@ function cli(args) {
     });
 
     if (!args.host || !args.username || !args.password) {
-        console.log("Usage : \r" + "setup -h {broker} [-p {port}] -u {username} -P {password} [-id clientid] ")
+        console.log("Usage : \r" + "setup -h {broker} [-p {port}] -u {username} -P {password} [--id clientid] ")
         return;
     }
 

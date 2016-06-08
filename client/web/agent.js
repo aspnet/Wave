@@ -13,7 +13,7 @@ function Machine(payload) {
     var self = this;
     try {
         self.config = JSON.parse(payload);
-        self.name = self.config.hostname;
+        self.name = self.config.clientid;
         self.output = ko.observable("");
 
         var outputelement = document.getElementById("outputWindow");
@@ -35,7 +35,7 @@ var ViewModel = function () {
     self.Machines = ko.observableArray();
     self.broker = ko.observable();
     self.username = ko.observable();
-    self.password = ko.observable();
+    self.password = ko.observable();    
     self.connected = ko.observable(false);
     self.broker((creds && creds.broker) ? creds.broker.host : "broker");
     self.username((creds && creds.broker) ? creds.broker.username : "admin");

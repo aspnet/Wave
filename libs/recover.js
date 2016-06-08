@@ -11,13 +11,14 @@ function isInterrupt(cmd) {
 function backup(msg) {
     var cmd = msg.payload;
 	if (isInterrupt(cmd)) {
+        console.log("Shutdown received.")
         var msgStr = JSON.stringify(msg);
         fs.writeFileSync(backupFileLocation, msgStr);
     }
     return msg;
 }
 
-function interrupt(msg) {
+function interrupt(msg) {    
     var cmd = msg.requestpayload.command;
     if (isInterrupt(cmd) && msg.payload.exitcode == 0) {
         return null;

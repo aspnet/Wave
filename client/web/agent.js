@@ -35,7 +35,7 @@ var ViewModel = function () {
     self.Machines = ko.observableArray();
     self.broker = ko.observable();
     self.username = ko.observable();
-    self.password = ko.observable();    
+    self.password = ko.observable();
     self.connected = ko.observable(false);
     self.broker((creds && creds.broker) ? creds.broker.host : "broker");
     self.username((creds && creds.broker) ? creds.broker.username : "admin");
@@ -48,7 +48,8 @@ var ViewModel = function () {
     //var broker = data.broker;
     function Subscribe() {
         // Create a client instance
-        client = new Paho.MQTT.Client(self.broker(), 443, guid());
+        
+        client = new Paho.MQTT.Client(self.broker(), creds.broker.port, guid());
 
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -56,7 +57,7 @@ var ViewModel = function () {
 
         // connect the client
         function connect() {
-            client.connect({ onSuccess: onConnect, onFailure: onFailure, userName: self.username(), password: self.password(), useSSL: true });
+            client.connect({ onSuccess: onConnect, onFailure: onFailure, userName: self.username(), password: self.password(), useSSL: +creds.broker.port == 443 ? true: false  });
         }
 
         function onFailure(err) {

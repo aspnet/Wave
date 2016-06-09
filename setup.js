@@ -37,7 +37,7 @@ function cli(args) {
     config.clientid = args.clientid;  
 
     var objstr = JSON.stringify(config, null, '\t');
-    var configStr = util.format("var _creds = %s; \r\nmodule.exports = _creds; \r\n", objstr)
+    var configStr = util.format("var _creds = %s; \r\nif(typeof module != 'undefined') { \n\tmodule.exports = _creds; \n} \r\n", objstr)
     var fs = require('fs');
     var filename = path.resolve(__dirname, "./client/_creds.js");
     fs.writeFile(filename, configStr, function (err) {

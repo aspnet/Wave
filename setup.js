@@ -34,7 +34,10 @@ function cli(args) {
         password: args.password,
     };
     
-    config.clientid = args.clientid;  
+    
+    var id = (args.clientid && typeof(args.clientid) == "string")? args.clientid : os.hostname().toLowerCase();
+    console.log("[ClientID]:" + id);
+    config.clientid = id;  
 
     var objstr = JSON.stringify(config, null, '\t');
     var configStr = util.format("var _creds = %s; \r\nmodule.exports = _creds; \r\n", objstr)

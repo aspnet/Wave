@@ -21,9 +21,9 @@ rm -rf $outDir || true
 mkdir $outDir
 pushd $outDir
 
-curl  $1 | tar -zxv
+curl  $1 | tar -zxv  >/dev/null
 
 #Navigate back 
-popd
+popd >/dev/null
 
-popd
+popd >/dev/null

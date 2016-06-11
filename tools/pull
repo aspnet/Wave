@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+pushd `dirname $0`
+
+if [ -z "$1" ]; then 
+    echo "No resource url specified." ; 
+    exit 1; 
+fi
+
+if [ -z "$2" ]; then
+  echo "No Target directory specified"
+  exit 1  
+fi
+
+echo "Target Output : $2"
+outDir="$2"
+
+#Create the output directory for download
+rm -rf $outDir || true
+
+mkdir $outDir
+pushd $outDir
+
+curl  $1 | tar -zxv
+
+#Navigate back 
+popd
+
+popd

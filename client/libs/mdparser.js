@@ -57,7 +57,11 @@ function getcommandText(contents, index) {
                     var async = parts[1].match(/async=\"(.*?)\"/m);
                     if(async && async.length >1) {
                         command.async = (async[1] == "true") ? true:false;
-                    } 
+                    }
+                    var continueOnError = parts[1].match(/continueOnError=\"(.*?)\"/m);
+                    if(continueOnError && continueOnError.length > 1) {
+                        command.continueOnError = continueOnError[1].toLowerCase();
+                    }
                     return command;
                 }
             }

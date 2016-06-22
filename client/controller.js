@@ -75,7 +75,7 @@ function start(inputargs) {
                     return;
                 }
             }
-    
+
             var nextcmd = msgProcessor.process(msg, args.topic);
             if (nextcmd == null) {
                 //client.end();

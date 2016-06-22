@@ -27,15 +27,17 @@ Commands can be directly executed or options can be passed in using json as foll
 {
   command : "/home/aspuser/.dotnet/dotnet run"  
   cwd : "/home/aspuser/app/"
-  logfile : "dotnet_out.txt"
+  logfile : "dotnet_out.txt",
+  continueOnError : "true"
 }
 ```
 |Option| Description |
 |------|-------------|
-|command | The executable that needs to be launced on the target machine. |
-|cwd | The current workign directory that should be used when spawning the process.| 
+| command | The executable that needs to be launced on the target machine. |
+| cwd | The current workign directory that should be used when spawning the process.|
 | logfile | The file name used to output the stdout & stderr. The pid of the process is inserted into filename. So if the passed in filenamem is `output.txt` the output would be placed in `output_{pid}.txt` |  
-| env | Set of key value pairs which will be set before launch of the process. | 
+| env | Set of key value pairs which will be set before launch of the process. |
+| continueOnError | The job would typical fail if a command fails. However, if continueOnError is set to "true", the error would be ignored |
 
 ### Setting Environment Variables. 
 

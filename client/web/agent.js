@@ -52,7 +52,8 @@ var ViewModel = function () {
     function Subscribe() {
         // Create a client instance
 
-        client = new Paho.MQTT.Client(self.broker(), self.port(), guid());
+        console.log(self.port());
+        client = new Paho.MQTT.Client(self.broker(), parseInt(self.port()), guid());
 
         // set callback handlers
         client.onConnectionLost = onConnectionLost;

@@ -1,0 +1,27 @@
+{
+    "logdir": "/home/asplab/$(testid)",
+    "path" : "/home/asplab/.dotnet",
+
+    "rebootCommand" : "sudo shutdown -r now",
+    "measureScript" : "./Measure.sh",
+    "publishScript" : "./Publish.sh",
+    "archiveScript" : "./Archive.sh",
+
+    "$targets": {
+        "server": {
+            "name": "Asp-xHPSLC1",
+            "targetApp" : "MusicStore",
+            "framework" : "netcoreapp1.0",
+            
+            "gitHome" : "/home/asplab/git/aspnet",
+            "scriptSource": "https://github.com/aspnet/Performance.git",
+            "perfHome" : "/home/asplab/git/aspnet/Performance",
+            "scriptHome" : "/home/asplab/git/aspnet/Performance/test/ColdStart",
+
+            "testAppBranch" : "shhsu/coldstart_remote_sql2016",
+            "testAppSource" : "https://github.com/aspnet/MusicStore.git",
+            "testAppHome" : "/home/asplab/git/aspnet/MusicStore",
+            "testAppDir" : "/home/asplab/git/aspnet/MusicStore/src/MusicStore"
+        }
+    }
+}

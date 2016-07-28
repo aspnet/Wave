@@ -1,5 +1,5 @@
-docker pull dotnetperf/broker
-docker run --name "broker-main" -p 1883-1884:1883-1884/tcp -e USERNAME=<mqttUserName> -e PASSWORD=<mqttPassword> -h "broker-main" -d dotnetperf/broker
+docker pull <dockerBrokerTag>
+docker run --name "broker-main" -p 1883-1884:1883-1884/tcp -e ADMINPWD=<mqttPassword> -e READPWD=<mqttReadPassword> -h "broker-main" -d <dockerBrokerTag>
 sudo apt-get -y install git
 git clone https://github.com/aspnet/Wave.git
 sudo ./Wave/scripts/install.sh  <mqttBroker> <mqttPort> <mqttUserName> <mqttPassword>

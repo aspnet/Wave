@@ -18,7 +18,7 @@
     "dnsNamePrefix": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 10,
+      "maxLength": 100,
       "metadata": {
         "description": "Globally unique DNS Name prefix to which the VM names will be prepended for to access the Virtual Machine."
       }

@@ -6,38 +6,49 @@
     [string] [Parameter(Mandatory=$true)] $OsType,
     [string] [Parameter(Mandatory=$true)] $AdminUser,
     [string] [Parameter(Mandatory=$true)] $AdminPassword,
-    [string] [Parameter(Mandatory=$true)] $MqttUser,
-    [string] [Parameter(Mandatory=$true)] $MqttPassword
+    [string] [Parameter(Mandatory=$true)] $MqttPassword,
+    [string] [Parameter(Mandatory=$true)] $MqttReadPassword,
+    [string] [Parameter(Mandatory=$false)] $DockerBrokerTag
 )
 
+#our docker images only require the setup of passwords, mqtt user names are always 'admin' and 'readuser'
+$MqttUser = "admin"
+$MqttPort = "1883"
 $brokerIp = ""
 $brokerFQDN = ""
 
+if ([string]::IsNullOrEmpty($DockerBrokerTag))
+{
+    $DockerBrokerTag = "dotnetperf/broker"
+}
+
 function DoBrokerSetup()
 {
-	Write-Host "Starting Setup for Broker"
+    Write-Host "Starting Setup for Broker"
 
     $BrokerIpName = "LinuxPublicIP-Broker"
     $BrokerIpResource = Get-AzureRmPublicIpAddress -ResourceGroupName $ResourceGroupName  -Name $BrokerIpName
     $brokerFQDN = $BrokerIpResource.DnsSettings.Fqdn
-	$brokerIp = $BrokerIpResource.IpAddress
+    $brokerIp = $BrokerIpResource.IpAddress
     Write-Host "Broker FQ Domain Name: "$brokerFQDN
     Write-Host "Broker IP Address: "$brokerIp
 
-	$MqttBroker = $brokerFQDN
+    $MqttBroker = $brokerFQDN
     $tempScriptName = [System.IO.Path]::GetTempFileName() + ".ssh"
-	$sshScriptContent = Get-Content "LinuxBrokerSetup.ssh"
-	$sshScriptContent = $sshScriptContent -replace "<mqttBroker>", $MqttBroker
-    $sshScriptContent = $sshScriptContent -replace "<mqttPort>", "1883"
-	$sshScriptContent = $sshScriptContent -replace "<mqttUserName>", $MqttUser
-	$sshScriptContent = $sshScriptContent -replace "<mqttPassword>", $MqttPassword
-	Set-Content $tempScriptName -Value $sshScriptContent
+    $sshScriptContent = Get-Content "LinuxBrokerSetup.ssh"
+    $sshScriptContent = $sshScriptContent -replace "<mqttBroker>", $MqttBroker
+    $sshScriptContent = $sshScriptContent -replace "<mqttPort>", $MqttPort
+    $sshScriptContent = $sshScriptContent -replace "<mqttUserName>", $MqttUser
+    $sshScriptContent = $sshScriptContent -replace "<mqttPassword>", $MqttPassword
+    $sshScriptContent = $sshScriptContent -replace "<mqttReadPassword>", $MqttReadPassword
+    $sshScriptContent = $sshScriptContent -replace "<dockerBrokerTag>", $DockerBrokerTag
+    Set-Content $tempScriptName -Value $sshScriptContent
 
-	Write-Host "Doing broker config using temporary file: " $tempScriptName
-	cmd /c echo "Y`r" |  plink.exe  $brokerIp  -ssh -l $AdminUser -pw $AdminPassword -m $tempScriptName 
-	cmd /c echo "Y`r" |  plink.exe  $brokerIp  -ssh -l $AdminUser -pw $AdminPassword  sudo npm install -g loadtest
+    Write-Host "Doing broker config using temporary file: " $tempScriptName
+    cmd /c echo "Y`r" |  plink.exe  $brokerIp  -ssh -l $AdminUser -pw $AdminPassword -m $tempScriptName
+    cmd /c echo "Y`r" |  plink.exe  $brokerIp  -ssh -l $AdminUser -pw $AdminPassword  sudo npm install -g loadtest
 
-	Remove-Item $tempScriptName 
+    Remove-Item $tempScriptName
     $script:brokerFQDN = $brokerFQDN
     $script:brokerIp = $brokerIp
 } 
@@ -52,7 +63,7 @@ function DoWindowsDeployment()
 
     if ($ResourceGroupName.Length -gt 7)  #make max length contingent on trimmed max location length. 
     {
-	    Write-Host "Error:  The ResourceGroupName parameter must be 7 chars or shorter.  "
+        Write-Host "Error:  The ResourceGroupName parameter must be 7 chars or shorter.  "
         Write-Host "  This limitation is necessary because of windows machine name length limitations, "
         Write-Host "  and the fact that the ResourceGroupName will become part of the windows machine name. "
         return
@@ -74,9 +85,9 @@ function DoWindowsDeployment()
                                        -locationNames $locationNames `
                                        -Force -Verbose
 
-	DoBrokerSetup
+    DoBrokerSetup
 
-	$MqttBroker = $script:brokerFQDN
+    $MqttBroker = $script:brokerFQDN
 
     #Set up Windows VMs
     $FQDNs = @()
@@ -120,7 +131,7 @@ function DoWindowsDeployment()
         "{0,-22}{1,-20}{2}" -f $LocationList[$i], $hostName, $FQDNs[$i]
     }
     Write-Host ""
-	Write-Host "Broker IP/FQDN:  $script:brokerIp / $MqttBroker"
+    Write-Host "Broker IP/FQDN:  $script:brokerIp / $MqttBroker"
     Write-Host "******************************************************************************************"
 }
 
@@ -132,12 +143,12 @@ function DoLinuxDeployment()
         [string[]] [Parameter(Mandatory=$true)] $locationNames
     )
 
-	$res = cmd /c where plink.exe
-	if (-not $res) 
-	{
-		Write-Host "Error:  To configure Linux VMs, the plink.exe ssh utility must be in the path. "
-		return
-	}
+    $res = cmd /c where plink.exe
+    if (-not $res)
+    {
+        Write-Host "Error:  To configure Linux VMs, the plink.exe ssh utility must be in the path. "
+        return
+    }
 
     $TemplateFile = "MultiRegion_Linux_CellDeployment_VmSizes.json"
     $TemplateFile = [System.IO.Path]::Combine($PSScriptRoot, $TemplateFile)
@@ -156,13 +167,13 @@ function DoLinuxDeployment()
                                        -vmSizes  $VmSizes `
                                        -Force -Verbose
 
-	DoBrokerSetup
+    DoBrokerSetup
 
-	$MqttBroker = $script:brokerFQDN
+    $MqttBroker = $script:brokerFQDN
 
-	#Set up Linux VMs
+    #Set up Linux VMs
     $IPAddresses = @()
-	
+
     for($i = 0; $i -lt $locations.Count; $i++)
     {
         $location = $locations[$i]
@@ -170,24 +181,24 @@ function DoLinuxDeployment()
         Write-Host "Starting Setup for region: $location"
 
         $publicIpName = "LinuxPublicIP-" + $locationName
-		$linuxIpResource = Get-AzureRmResource -ResourceGroupName $ResourceGroupName -ResourceName $publicIpName -ExpandProperties
-		$linuxIP = $linuxIpResource.Properties.IpAddress
-		Write-Host "Linux VM IP:  "$linuxIP
-		$IPAddresses += $linuxIP
+        $linuxIpResource = Get-AzureRmResource -ResourceGroupName $ResourceGroupName -ResourceName $publicIpName -ExpandProperties
+        $linuxIP = $linuxIpResource.Properties.IpAddress
+        Write-Host "Linux VM IP:  "$linuxIP
+        $IPAddresses += $linuxIP
 
-		$tempScriptName = [System.IO.Path]::GetTempFileName() + ".ssh"
-		$sshScriptContent = Get-Content "LinuxSetup.ssh"
-		$sshScriptContent = $sshScriptContent -replace "<mqttBroker>", $MqttBroker
-        $sshScriptContent = $sshScriptContent -replace "<mqttPort>", "1883"
-		$sshScriptContent = $sshScriptContent -replace "<mqttUserName>", $MqttUser
-		$sshScriptContent = $sshScriptContent -replace "<mqttPassword>", $MqttPassword
-		Set-Content $tempScriptName -Value $sshScriptContent
+        $tempScriptName = [System.IO.Path]::GetTempFileName() + ".ssh"
+        $sshScriptContent = Get-Content "LinuxSetup.ssh"
+        $sshScriptContent = $sshScriptContent -replace "<mqttBroker>", $MqttBroker
+        $sshScriptContent = $sshScriptContent -replace "<mqttPort>", $MqttPort
+        $sshScriptContent = $sshScriptContent -replace "<mqttUserName>", $MqttUser
+        $sshScriptContent = $sshScriptContent -replace "<mqttPassword>", $MqttPassword
+        Set-Content $tempScriptName -Value $sshScriptContent
 
-		Write-Host "Doing linux config using temporary file: " $tempScriptName
-		cmd /c echo "Y`r" |  plink.exe  $linuxIP  -ssh -l $AdminUser -pw $AdminPassword -m $tempScriptName 
-		cmd /c echo "Y`r" |  plink.exe  $linuxIP  -ssh -l $AdminUser -pw $AdminPassword  sudo npm install -g loadtest
+        Write-Host "Doing linux config using temporary file: " $tempScriptName
+        cmd /c echo "Y`r" |  plink.exe  $linuxIP  -ssh -l $AdminUser -pw $AdminPassword -m $tempScriptName
+        cmd /c echo "Y`r" |  plink.exe  $linuxIP  -ssh -l $AdminUser -pw $AdminPassword  sudo npm install -g loadtest
 
-		Remove-Item $tempScriptName 
+        Remove-Item $tempScriptName
     }
 
     Write-Host ""
@@ -204,7 +215,7 @@ function DoLinuxDeployment()
         "{0,-22}{1,-20}{2}" -f $LocationList[$i], $hostName, $IPAddresses[$i]
     }
     Write-Host ""
-	Write-Host "Broker IP/FQDN:  $script:brokerIp / $MqttBroker"
+    Write-Host "Broker IP/FQDN:  $script:brokerIp / $MqttBroker"
     Write-Host "******************************************************************************************"
 }
 
@@ -264,7 +275,7 @@ function GetLocationNameArray
 $currentSubscription = (Get-AzureRmContext).Subscription
 if ($currentSubscription.SubscriptionId -ne $SubscriptionId)
 {
-	Write-Host "Setting current subscription"
+    Write-Host "Setting current subscription"
     Select-AzureRmSubscription -SubscriptionID $SubscriptionId
 }
 

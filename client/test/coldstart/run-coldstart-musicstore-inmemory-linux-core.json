@@ -10,12 +10,14 @@
     "$targets": {
         "server": {
             "name": "Asp-xHPSLC1",
+            "testName": "inmemory-linux-core",
             "targetApp" : "MusicStore",
             "framework" : "netcoreapp1.0",
             
             "gitHome" : "/home/asplab/git/aspnet",
             "scriptSource": "https://github.com/aspnet/Performance.git",
             "perfHome" : "/home/asplab/git/aspnet/Performance",
+            "perfBranch" : "shhsu/coldstart",
             "scriptHome" : "/home/asplab/git/aspnet/Performance/test/ColdStart",
 
             "testAppBranch" : "shhsu/coldstart_inmemory",

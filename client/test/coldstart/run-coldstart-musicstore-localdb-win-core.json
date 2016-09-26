@@ -10,12 +10,14 @@
     "$targets": {
         "server": {
             "name": "Asp-xHPc7",
+            "testName": "localdb-win-core",
             "targetApp" : "MusicStore",
             "framework" : "netcoreapp1.0",
 
             "gitHome" : "D:\\git\\aspnet",
             "scriptSource": "https://github.com/aspnet/Performance.git",
             "perfHome" : "D:\\git\\aspnet\\Performance",
+            "perfBranch" : "shhsu/coldstart",
             "scriptHome" : "D:\\git\\aspnet\\Performance\\test\\ColdStart",
 
             "testAppBranch" : "shhsu/coldstart",

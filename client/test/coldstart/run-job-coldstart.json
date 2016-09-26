@@ -1,6 +1,6 @@
 {
-    "HelloWorldText-Windows-Core" : {
-        "spec" : "./test/coldstart/run-coldstart.md",
-        "env": "./test/coldstart/run-coldstart-text-win-core.json"
-    }
+    "mvc-iis":  {
+                    "spec":  "./test/coldstart/run-coldstart.md",
+                    "env":  "./test/coldstart/run-coldstart-mvc-iis-core.json"
+                }
 }

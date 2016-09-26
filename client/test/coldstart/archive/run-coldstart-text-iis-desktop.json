@@ -3,19 +3,21 @@
     "path" : "%localappdata%\\microsoft\\dotnet;%ProgramFiles%\\Git\\cmd",
 
     "rebootCommand" : "shutdown /r /f /t 0",
-    "measureScript" : "Measure.ps1",
-    "publishScript" : "Publish.ps1",
-    "archiveScript" : "Archive.ps1",
+    "measureScript" : "Measure-IIS.ps1",
+    "publishScript" : "Publish-IIS.ps1",
+    "archiveScript" : "Archive-IIS.ps1",
 
     "$targets": {
         "server": {
             "name": "Asp-xHPc7",
-            "targetApp" : "HelloWorldMvc",
+            "testName": "text-iis-desktop",
+            "targetApp" : "BasicKestrel",
             "framework" : "net451",
 
             "gitHome" : "D:\\git\\aspnet",
             "scriptSource": "https://github.com/aspnet/Performance.git",
             "perfHome" : "D:\\git\\aspnet\\Performance",
+            "perfBranch" : "shhsu/coldstart",
             "scriptHome" : "D:\\git\\aspnet\\Performance\\test\\ColdStart",
 
             "testAppBranch" : "shhsu/coldstart",

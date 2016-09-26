@@ -52,7 +52,7 @@ var ViewModel = function () {
     function Subscribe() {
         // Create a client instance
 
-        console.log(self.port());
+        client = new Paho.MQTT.Client(self.broker(), 1884, guid());
         client = new Paho.MQTT.Client(self.broker(), parseInt(self.port()), guid());
 
         // set callback handlers
@@ -66,7 +66,7 @@ var ViewModel = function () {
                 onFailure: onFailure,
                 userName: self.username(),
                 password: self.password(),
-                useSSL: self.port() == 443
+                useSSL: false
             });
         }
 

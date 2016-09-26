@@ -9,9 +9,9 @@ $scPrefix = "run-coldstart-"
 $scPostfix = "-core.json"
 foreach ( $scenarioFile in (Get-ChildItem $coldstartDir -Filter "${scPrefix}*${scPostfix}") | Select -ExpandProperty Name )
 {
+    $scenarioName = $scenarioFile.substring($scPrefix.Length, $scenarioFile.Length - $scPrefix.Length - $scPostfix.Length)
     if ((!$include) -or ($scenarioName -match $include))
     {
-        $scenarioName = $scenarioFile.substring($scPrefix.Length, $scenarioFile.Length - $scPrefix.Length - $scPostfix.Length)
         if ( $exclude -and ($scenarioName -match $exclude) )
         {
             continue;

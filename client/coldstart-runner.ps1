@@ -1,4 +1,4 @@
-param([string] $include, [string] $exclude)
+param([string] $include, [string] $exclude, [int] $timeout = -1)
 
 $coldstartDir = [System.IO.Path]::Combine($PSScriptRoot, "test", "coldstart")
 $hostname = & hostname
@@ -17,13 +17,21 @@ foreach ( $scenarioFile in (Get-ChildItem $coldstartDir -Filter "${scPrefix}*${s
             continue;
         }
 
+        Write-Host "Running scenario ${scenarioName}..."
         ConvertTo-Json @{ $scenarioName = @{ "spec" = "./test/coldstart/run-coldstart.md" ; env = "./test/coldstart/${scenarioFile}" }} `
             | Out-File $jobfile -Encoding Default
 
-        Write-Host "Executing: node ${controller} --job ${jobfile} --topic controller/${hostname} --verbose"
-        node ${controller} --job ${jobfile} --topic controller/${hostname} --verbose
+        $nodeProc = Start-Process "node" -ArgumentList "${controller} --job ${jobfile} --topic controller/${hostname} --verbose" -PassThru
 
-        Write-Host "Job done, press enter to run the next..."
-        Read-Host
+        if ($timeout -gt 0)
+        {
+            Start-Sleep -s $timeout
+        }
+        else
+        {
+            Read-Host "Press enter to run the next test..."
+        }
+
+        Stop-Process $nodeProc
     }
 }

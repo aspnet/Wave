@@ -23,7 +23,7 @@
             "testAppBranch" : "shhsu/coldstart_inmemory",
             "testAppSource" : "https://github.com/aspnet/MusicStore.git",
             "testAppHome" : "D:\\git\\aspnet\\MusicStore",
-            "testAppDir" : "D:\\git\\aspnet\\MusicStore\\src\\MusicStore"
+            "testAppDir" : "D:\\git\\aspnet\\MusicStore\\samples\\MusicStore"
         }
     }
 }

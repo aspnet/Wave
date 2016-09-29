@@ -1,9 +1,10 @@
 *** Running coldstart tests
 
-This directory contain tests for every cold start scenario. coldstart-runner.ps1 is a helper to start a series of tests.
+Run ${WaveHome}\client\run-coldstart-all.ps1 to test all tracked coldstart scenario
+Run run-coldstart.ps1 to test a single scenario
 
-Due to the current design limiation, tests have to be run in sequence. There is no way for the test to notify caller that it has completed. coldstart-runner.ps1
-can take a timeout parameter or user input so it knows when to stop the current test and run the next test.
+Due to the current design limiation, tests have to be run in sequence. There is no way for the test to notify caller that it has completed.
+The tests can take a timeout parameter or user input so it knows when to stop the current test and run the next test.
 
 *** Music Store DB Connections
 

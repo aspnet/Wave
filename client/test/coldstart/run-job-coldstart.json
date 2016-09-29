@@ -1,6 +1,0 @@
-{
-    "mvc-iis":  {
-                    "spec":  "./test/coldstart/run-coldstart.md",
-                    "env":  "./test/coldstart/run-coldstart-mvc-iis-core.json"
-                }
-}

@@ -44,3 +44,10 @@ _logdir.json
 logs/
 logslink
 artifacts/
+
+# VSCode stuff
+.BROWSE.VC.DB*
+
+# ColdStart tests are automated
+/client/test/coldstart/run-coldstart-*.json
+/client/test/coldstart/run-job-coldstart.json

@@ -189,3 +189,5 @@ else
 {
     Read-Host "Press enter to run the next test..."
 }
+
+Stop-Process $nodeProc

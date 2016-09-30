@@ -44,7 +44,7 @@ function AppendScriptExtension($scriptName)
     }
     elseif ($os -eq "linux")
     {
-        $scriptName + ".sh"
+        "./" + $scriptName + ".sh"
     }
     else
     {

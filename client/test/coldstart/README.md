@@ -1,6 +1,8 @@
 *** Running coldstart tests
 
-Run ${WaveHome}\client\run-coldstart-all.ps1 to test all tracked coldstart scenario
+Run ${WaveHome}\client\run-coldstart-all.ps1 to test all tracked coldstart scenario.
+You can also create a new config file run-coldstart.config.json to change which scenarios to run
+
 Run run-coldstart.ps1 to test a single scenario
 
 Due to the current design limiation, tests have to be run in sequence. There is no way for the test to notify caller that it has completed.

@@ -12,7 +12,7 @@
 | `git checkout $(testAppBranch)` <config cwd="$(testAppHome)"/> | $(server) | Checkout, in case the clone command failed due to dir exists |
 | `git clean -xdf` <config cwd="$(testAppHome)"/> | $(server) | Cleanup local test app repo |
 | `git reset --hard origin/$(testAppBranch)` <config cwd="$(testAppHome)"/> | $(server) | Reset to coldstart branch |
-| `$(publishScript) -t $(targetApp) -f $(framework) -d $(testAppDir)` <config cwd="$(scriptHome)"> | $(server) | Publish App |
+| `$(publishScript) -t $(targetApp) -f $(framework) -d $(testAppDir) $(precompileOption)` <config cwd="$(scriptHome)"> | $(server) | Publish App |
 | `$(rebootCommand)` | $(server) | Reboot |
 | `$(measureScript) -t $(targetApp) -f $(framework)` <config cwd="$(scriptHome)"> | $(server) | Measure Iteration 1 |
 | `$(rebootCommand)` | $(server) | Reboot |

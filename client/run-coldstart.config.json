@@ -1,0 +1,9 @@
+{
+    "os" : [ "win", "linux" ],
+    "framework" : [ "netcoreapp1.0" ],
+    "scenario" : [ "musicstore", "mvc", "text" ],
+    "precompile_options" : [ "none", "1.0.0" ],
+    "os_hosts_support" : { "win" : [ "none", "iis" ], "linux" : [ "none", "nginx" ] },
+    "os_db_support" : { "win" : [ "inmemory", "localdb", "remotedb" ], "linux" : [ "inmemory", "remotedb" ] },
+    "db_scenarios" : [ "musicstore" ]
+}

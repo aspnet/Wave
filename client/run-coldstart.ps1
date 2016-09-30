@@ -17,7 +17,9 @@ param (
     [ValidateSet("netcoreapp1.0")]
     $framework,
 
-    [int]
+    $precompileVersion,
+
+    [Int]
     $timeout = -1
 )
 
@@ -32,6 +34,54 @@ function CombinePath()
         $separator = "/"
     }
     [System.String]::Join($separator, $args)
+}
+
+function AppendScriptExtension($scriptName)
+{
+    if ($os -eq "win")
+    {
+        $scriptName + ".ps1"
+    }
+    elseif ($os -eq "linux")
+    {
+        $scriptName + ".sh"
+    }
+    else
+    {
+        Exit -1
+    }
+}
+
+function AppendIISPostfix($scriptName)
+{
+    if ($appHost -eq "iis")
+    {
+        $scriptName + "-IIS"
+    }
+    else
+    {
+        $scriptName
+    }
+}
+
+function AppendAppHostPostfix($scriptName)
+{
+    if (!$appHost)
+    {
+        $scriptName
+    }
+    elseif ($appHost -eq "iis")
+    {
+        $scriptName + "-IIS"
+    }
+    elseif ($appHost -eq "nginx")
+    {
+        $scriptName + "-nginx"
+    }
+    else
+    {
+        Exit -1
+    }
 }
 
 $logdirMap = @{
@@ -49,20 +99,14 @@ $rebootCommandMap = @{
     "linux" = "sudo shutdown -r now"
 }
 
-$measureScriptMap = @{
-    "win" = "Measure-IIS.ps1";
-    "linux" = "./Measure.sh"
-}
+$publishScript = AppendIISPostfix "Publish"
+$publishScript = AppendScriptExtension $publishScript
 
-$publishScriptMap = @{
-    "win" = "Publish-IIS.ps1";
-    "linux" = "./Publish.sh"
-}
+$measureScript = AppendAppHostPostfix "Measure"
+$measureScript = AppendScriptExtension $measureScript
 
-$archiveScriptMap = @{
-    "win" = "Archive-IIS.ps1";
-    "linux" = "./Archive.sh"
-}
+$archiveScript = AppendAppHostPostfix "Archive"
+$archiveScript = AppendScriptExtension $archiveScript
 
 $serverMap = @{
     "win" = "Asp-xHPc7";
@@ -132,20 +176,44 @@ else
     $testAppDir = "null"
 }
 
-$testName = "${scenario}-${osHostAbbreviation}-${frameworkAbbreviation}"
+if ($precompileVersion)
+{
+    $precompileOption = "-p ${precompileVersion}"
+}
+else
+{
+    # mdparser actually ignores empty string for some reason (ln 109: return env[$1] || match)
+    $precompileOption = " "
+}
+
+$testName = "${scenario}"
+
+if ($database)
+{
+    $testName += "-${database}"
+}
+
+$testName += "-${osHostAbbreviation}-${frameworkAbbreviation}"
+
+if ($precompileVersion)
+{
+    $testName += "-precompile-${precompileVersion}"
+}
+
 $scenarioObj = @{
     "logdir" = $logdirMap.Get_Item($os);
     "path" = $pathMap.Get_Item($os);
     "rebootCommand" = $rebootCommandMap.Get_Item($os);
-    "measureScript" = $measureScriptMap.Get_Item($os);
-    "publishScript" = $publishScriptMap.Get_Item($os);
-    "archiveScript" = $archiveScriptMap.Get_Item($os);
+    "measureScript" = $measureScript;
+    "publishScript" = $publishScript;
+    "archiveScript" = $archiveScript;
     "`$targets" = @{
         "server" = @{
             "name" = $serverMap.Get_Item($os);
             "testName" = $testName;
             "targetApp" = $appMap.Get_Item($scenario);
             "framework" = $framework;
+            "precompileOption" = $precompileOption;
             "gitHome" = $gitHome;
             "scriptSource" = "https://github.com/aspnet/Performance.git";
             "perfHome" = $perfHome;
@@ -159,14 +227,7 @@ $scenarioObj = @{
     }
 }
 
-if ($database)
-{
-    $outputFileName = "run-coldstart-${scenario}-${database}-${osHostAbbreviation}-${frameworkAbbreviation}.json"
-}
-else
-{
-    $outputFileName = "run-coldstart-${scenario}-${osHostAbbreviation}-${frameworkAbbreviation}.json"
-}
+$outputFileName = "run-coldstart-${testName}.json"
 
 $coldstartTestsDir = [System.IO.Path]::Combine($PSScriptRoot, "test", "coldstart")
 $scenarioFile = [System.IO.Path]::Combine($coldstartTestsDir, $outputFileName)

@@ -240,15 +240,20 @@ ConvertTo-Json @{ $testName = @{ spec = "./test/coldstart/run-coldstart.md" ; en
 $program = [System.IO.Path]::Combine($PSScriptRoot, "controller.js")
 $hostname = & hostname
 
-$nodeProc = Start-Process "node" -ArgumentList "${program} --job ${jobfile} --topic controller/${hostname} --verbose" -PassThru
+do {
+    $rerun = $false
+    $nodeProc = Start-Process "node" -ArgumentList "${program} --job ${jobfile} --topic controller/${hostname} --verbose" -PassThru
 
-if ($timeout -gt 0)
-{
-    Start-Sleep -s $timeout
-}
-else
-{
-    Read-Host "Press enter to run the next test..."
-}
+    if ($timeout -gt 0)
+    {
+        Start-Sleep -s $timeout
+    }
+    else
+    {
+        $input = Read-Host "Press enter to run the next test, r for rerun..."
+        $rerun = ($input -eq "r")
+    }
 
-Stop-Process $nodeProc
+    Stop-Process $nodeProc
+
+} while ($rerun)

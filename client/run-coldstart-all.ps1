@@ -42,47 +42,84 @@ $configObject = gc $config | ConvertFrom-Json
 $osList = $configObject.os
 $frameworkList =  $configObject.framework
 $scenarioList = $configObject.scenario
-$precompileOptions = $configObject.precompile_options
+$precompileOptionsMap = $configObject.precompile_options
 
 $osHostMap = $configObject.os_hosts_support
 $osDBMap = $configObject.os_db_support
 $dbscenarios = $configObject.db_scenarios
 
-foreach ($precompileVersion in $precompileOptions)
+$completedRecordsPath = Join-Path $PSScriptRoot "run-coldstart-completed.txt"
+$excludePath = Join-Path $PSScriptRoot "run-coldstart-exclude.txt"
+
+if (Test-Path $completedRecordsPath)
 {
-    if ($precompileVersion -eq "none")
-    {
-        $precompileVersion = $null
-    }
+    Remove-Item $completedRecordsPath
+}
 
-    foreach ($os in $osList)
+if (Test-Path $excludePath)
+{
+    $excludeList = Get-Content $excludePath
+}
+
+
+foreach ($os in $osList)
+{
+    foreach ($framework in $frameworkList)
     {
-        foreach ($framework in $frameworkList)
+        $hosts = $osHostMap | Select -ExpandProperty $os
+
+        foreach ($appHost in $hosts)
         {
-            $hosts = $osHostMap | Select -ExpandProperty $os
-
-            foreach ($appHost in $hosts)
+            # the parser has problem handle null value, use "none" instead for no app host
+            if ($appHost -eq "none")
             {
-                # the parser has problem handle null value, use "none" instead for no app host
-                if ($appHost -eq "none")
+                $appHost = $null
+            }
+
+            foreach ($scenario in $scenarioList)
+            {
+                if ($dbscenarios.Contains($scenario))
                 {
-                    $appHost = $null
+                    $dbList = $osDBMap | Select -ExpandProperty $os
+                }
+                else
+                {
+                    $dbList = @( $null )
                 }
 
-                foreach ($scenario in $scenarioList)
+                foreach ($database in $dbList)
                 {
-                    if ($dbscenarios.Contains($scenario))
+                    $precompileOptionsDefined = Get-Member -inputobject $precompileOptionsMap -name $scenario -Membertype Properties
+
+                    if ($precompileOptionsDefined)
                     {
-                        $dbList = $osDBMap | Select -ExpandProperty $os
+                        $precompileOptions = $precompileOptionsMap | Select -ExpandProperty $scenario
+                        ## powershell serialization would actually automatically unwrap singleton list to a flat object, annoying...
+                        if ($precompileOptions -is [System.String])
+                        {
+                            $precompileOptions = @( $precompileOptions )
+                        }
                     }
                     else
                     {
-                        $dbList = @( $null )
+                        $precompileOptions = @()
                     }
 
-                    foreach ($database in $dbList)
+                    $precompileOptions += $null
+
+                    foreach ($precompileVersion in $precompileOptions)
                     {
-                        RunTest -os $os -framework $framework -appHost $appHost -scenario $scenario -database $database -precompileVersion $precompileVersion
+                        $scenarioDescription = "os:${os} framework:${framework} appHost:${appHost} scenario:${scenario} database:${database} precompileVersion:${precompileVersion}"
+                        if ($excludeList -and $excludeList.Contains($scenarioDescription))
+                        {
+                            Write-Host "Skipping scenario: ${scenarioDescription}"
+                        }
+                        else
+                        {
+                            Write-Host "Running scenario: ${scenarioDescription}"
+                            RunTest -os $os -framework $framework -appHost $appHost -scenario $scenario -database $database -precompileVersion $precompileVersion
+                            $scenarioDescription | Out-File $completedRecordsPath -Append
+                        }
                     }
                 }
             }

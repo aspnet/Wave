@@ -1,6 +1,6 @@
 {
     "os" : [ "win", "linux" ],
-    "framework" : [ "netcoreapp1.0" ],
+    "framework" : [ "netcoreapp1.1" ],
     "scenario" : [ "musicstore", "mvc", "text" ],
     "precompile_options" : { "musicstore" : [ "1.0.0" ], "mvc" : [ "1.0.0" ] },
     "os_hosts_support" : { "win" : [ "none", "iis" ], "linux" : [ "none", "nginx" ] },

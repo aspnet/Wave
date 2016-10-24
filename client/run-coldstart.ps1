@@ -14,7 +14,6 @@ param (
     $appHost,
 
     [Parameter(Mandatory=$true)]
-    [ValidateSet("netcoreapp1.0")]
     $framework,
 
     $precompileVersion,

@@ -1,0 +1,687 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "User name for the Virtual Machine."
+      }
+    },
+    "adminPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "dnsNamePrefix": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "metadata": {
+        "description": "Globally unique DNS Name prefix to which the VM names will be prepended for to access the Virtual Machine."
+      }
+    },
+    "locations": {
+      "type": "array",
+      "minLength": 1,
+      "metadata": {
+        "description": "An array of locations to which VM will be deployed"
+      }
+    },
+    "locationNames": {
+      "type": "array",
+      "minLength": 1,
+      "metadata": {
+        "description": "An array of location names that will be appended to the VM and other object names"
+      }
+    },
+    "vmSizes": {
+      "type": "array",
+      "minLength": 1,
+      "metadata": {
+        "description": "An array of VM sizes corresponding to the location list"
+      }
+    },
+    "ubuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.4-LTS",
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+      }
+    }
+  },
+  "variables": {
+    "locationCount": "[length(parameters('locations'))]",
+    "networkSecurityGroupPrefix": "networkSecurityGroup-",
+    "imagePublisher": "Canonical",
+    "imageOffer": "UbuntuServer",
+    "OSDiskName": "osdiskforlinux",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetName": "Subnet",
+    "subnetPrefix": "10.0.0.0/24",
+    "vhdStorageType": "Standard_LRS",
+    "publicIPAddressType": "Dynamic",
+    "linuxPublicIPAddressPrefix": "LinuxPublicIP-",
+    "vhdStorageContainerName": "vhds",
+    "virtualNetworkNamePrefix": "VNET-",
+    "vhdStorageNamePrefix": "[uniqueString(resourceGroup().id)]",
+    "VmSize": "Standard_D3",
+    "VmSizeBroker": "Standard_D4",
+    "StorageAccountContainerName": "vhds",
+    "NicNamePrefix": "Nic-",
+    "vmNamePrefix": "LinuxVM-",
+    "brokerLocation": "Central US"
+
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[toLower(concat(variables('vhdStorageNamePrefix'),parameters('locationNames')[copyIndex()]))]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "tags": {
+        "displayName": "[toLower(concat(variables('vhdStorageNamePrefix'),parameters('dnsNamePrefix'),parameters('locationNames')[copyIndex()]))]"
+      },
+      "properties": {
+        "accountType": "[variables('vhdStorageType')]"
+      },
+      "copy": {
+        "name": "storageCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[concat(variables('linuxPublicIPAddressPrefix'),parameters('locationNames')[copyIndex()])]",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "tags": {
+        "displayName": "[concat(variables('linuxPublicIPAddressPrefix'),parameters('locationNames')[copyIndex()])]"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[toLower(concat(parameters('dnsNamePrefix'),parameters('locationNames')[copyIndex()]))]"
+        }
+      },
+      "copy": {
+        "name": "publicIPAddressCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[concat(variables('networkSecurityGroupPrefix'),parameters('locationNames')[copyIndex()])]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "tags": {
+        "displayName": "[concat(variables('networkSecurityGroupPrefix'),parameters('locations')[copyIndex()])]"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_rdp",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_ssh",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+
+          {
+            "name": "allow_remote_powershell_http",
+            "properties": {
+              "description": "Allow Remote Powershell HTTP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5985",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_remote_powershell_https",
+            "properties": {
+              "description": "Allow Remote Powershell HTTPS",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5986",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+
+
+          {
+            "name": "allow_web",
+            "properties": {
+              "description": "Allow WEB",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80-85",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_web_proxy",
+            "properties": {
+              "description": "Allow WEB Proxy",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8080",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_kestrel",
+            "properties": {
+              "description": "Allow Kestrel",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5000-5010",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 106,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_docker",
+            "properties": {
+              "description": "Allow Docker",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "2376",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 107,
+              "direction": "Inbound"
+            }
+          }
+
+        ]
+      },
+      "copy": {
+        "name": "networkSecurityGroupCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[concat(variables('virtualNetworkNamePrefix'),parameters('locationNames')[copyIndex()])]",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "tags": {
+        "displayName": "[concat(variables('virtualNetworkNamePrefix'),parameters('locationNames')[copyIndex()])]"
+      },
+      "dependsOn": [
+        "networkSecurityGroupCopy"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('networkSecurityGroupPrefix'),parameters('locationNames')[copyIndex()]))]"
+              }
+            }
+          }
+        ]
+      },
+      "copy": {
+        "name": "virtualNetworksCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+    {
+      "name": "[concat(variables('NicNamePrefix'),parameters('locationNames')[copyIndex()])]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "publicIPAddressCopy",
+        "virtualNetworksCopy"
+      ],
+      "tags": {
+        "displayName": "[concat(variables('NicNamePrefix'),parameters('locationNames')[copyIndex()])]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('linuxPublicIPAddressPrefix'),parameters('locationNames')[copyIndex()]))]"
+              },
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', concat(variables('virtualNetworkNamePrefix'),parameters('locationNames')[copyIndex()])), '/subnets/', variables('subnetName'))]"
+              }
+            }
+          }
+        ]
+      },
+      "copy": {
+        "name": "networkInterfacesCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+    {
+      "name": "[concat(variables('vmNamePrefix'),parameters('locations')[copyIndex()],'-',toLower(parameters('dnsNamePrefix')),toLower(parameters('locationNames')[copyIndex()]))]",
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[parameters('locations')[copyIndex()]]",
+      "tags": {
+        "displayName": "[concat(variables('vmNamePrefix'),parameters('locations')[copyIndex()],'-',parameters('dnsNamePrefix'),parameters('locationNames')[copyIndex()])]"
+      },
+      "dependsOn": [
+        "storageCopy",
+        "networkInterfacesCopy"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSizes')[copyIndex()]]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('dnsNamePrefix'),parameters('locationNames')[copyIndex()])]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "LinuxOsdisk",
+            "vhd": {
+              "uri": "[concat('http://', toLower(concat(variables('vhdStorageNamePrefix'),parameters('locationNames')[copyIndex()])), '.blob.core.windows.net/', variables('StorageAccountContainerName'), '/', variables('OSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('NicNamePrefix'),parameters('locationNames')[copyIndex()]))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vmNamePrefix'),parameters('locations')[copyIndex()],'-',toLower(parameters('dnsNamePrefix')),toLower(parameters('locationNames')[copyIndex()]),'/DockerExtension')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[parameters('locations')[copyIndex()]]",
+          "dependsOn": [
+            "[concat(variables('vmNamePrefix'),parameters('locations')[copyIndex()],'-',toLower(parameters('dnsNamePrefix')),toLower(parameters('locationNames')[copyIndex()]))]"
+          ],
+          "tags": {
+            "displayName": "[concat(variables('vmNamePrefix'),parameters('locations')[copyIndex()],'-',toLower(parameters('dnsNamePrefix')),toLower(parameters('locationNames')[copyIndex()]),'/DockerExtension')]"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "DockerExtension",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+            }
+          }
+        }
+      ],
+      "copy": {
+        "name": "virtualMachineCopy",
+        "count": "[variables('locationCount')]"
+      }
+    },
+
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[toLower(concat(variables('vhdStorageNamePrefix'),'broker'))]",
+      "apiVersion": "2015-06-15",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "[toLower(concat(variables('vhdStorageNamePrefix'),'broker'))]"
+      },
+      "properties": {
+        "accountType": "[variables('vhdStorageType')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "LinuxPublicIP-Broker",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "LinuxPublicIP-Broker"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+        "dnsSettings": {
+          "domainNameLabel": "[toLower(concat(parameters('dnsNamePrefix'),'broker'))]"
+        }
+      }
+    },
+
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "networkSecurityGroup-Broker",
+      "apiVersion": "2015-06-15",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "networkSecurityGroup-Broker"
+      },
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_rdp",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_ssh",
+            "properties": {
+              "description": "Allow RDP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+
+          {
+            "name": "allow_remote_powershell_http",
+            "properties": {
+              "description": "Allow Remote Powershell HTTP",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5985",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_remote_powershell_https",
+            "properties": {
+              "description": "Allow Remote Powershell HTTPS",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5986",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+
+
+          {
+            "name": "allow_web",
+            "properties": {
+              "description": "Allow WEB",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80-85",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_web_proxy",
+            "properties": {
+              "description": "Allow WEB Proxy",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "8080",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 105,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_kestrel",
+            "properties": {
+              "description": "Allow Kestrel",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "5000-5010",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 106,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_broker",
+            "properties": {
+              "description": "Allow Broker",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1883-1884",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 107,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow_docker",
+            "properties": {
+              "description": "Allow Docker",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "2376",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 108,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "VNET-Broker",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "VNET-Broker"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', 'networkSecurityGroup-Broker')]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('subnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'networkSecurityGroup-Broker')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "Nic-Broker",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "Nic-Broker"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', 'LinuxPublicIP-Broker')]",
+        "[concat('Microsoft.Network/virtualNetworks/', 'VNET-Broker')]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'LinuxPublicIP-Broker')]"
+              },
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', 'VNET-Broker'), '/subnets/', variables('subnetName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[concat(variables('vmNamePrefix'),'Broker-', toLower(concat(parameters('dnsNamePrefix'),'broker')))]",
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "location": "[variables('brokerLocation')]",
+      "tags": {
+        "displayName": "[concat(variables('vmNamePrefix'),'Broker-', toLower(concat(parameters('dnsNamePrefix'),'broker')))]"
+      },
+      "dependsOn": [
+        "[toLower(concat(variables('vhdStorageNamePrefix'),'broker'))]",
+        "Nic-Broker"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('VmSizeBroker')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('dnsNamePrefix'),'broker')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[parameters('ubuntuOSVersion')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "LinuxOsdisk",
+            "vhd": {
+              "uri": "[concat('http://', toLower(concat(variables('vhdStorageNamePrefix'),'broker')), '.blob.core.windows.net/', variables('StorageAccountContainerName'), '/', variables('OSDiskName'), '.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'Nic-Broker')]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(variables('vmNamePrefix'),'Broker-', toLower(concat(parameters('dnsNamePrefix'),'broker')),'/DockerExtension')]",
+          "apiVersion": "2015-05-01-preview",
+          "location": "[variables('brokerLocation')]",
+          "dependsOn": [
+            "[concat(variables('vmNamePrefix'),'Broker-', toLower(concat(parameters('dnsNamePrefix'),'broker')))]"
+          ],
+          "tags": {
+            "displayName": "[concat(variables('vmNamePrefix'),'Broker','/DockerExtension')]"
+          },
+          "properties": {
+            "publisher": "Microsoft.Azure.Extensions",
+            "type": "DockerExtension",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+            }
+          }
+        }
+      ]
+    }
+
+  ]
+}
